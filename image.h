@@ -1,0 +1,21 @@
+#ifndef IMAGE_H
+#define IMAGE_H
+#include "color.h"
+#include <string>
+#include <memory>
+#include <QImage>
+class Image
+{
+public:
+    Image(int width, int height);
+    static QColor toQColor (const Color& c);
+    void fill (const Color& color = Color ());
+    void setPixel (int x, int y, const Color& color);
+    bool save (const std::string& fileName);
+private:
+    std::unique_ptr<QImage> image;
+    int _width;
+    int _height;
+};
+
+#endif // IMAGE_H
