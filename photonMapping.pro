@@ -9,7 +9,11 @@ SOURCES += main.cpp \
     camera.cpp \
     photonmap.cpp \
     image.cpp \
-    material.cpp
+    material.cpp \
+    primitive.cpp \
+    tracer.cpp \
+    raytracer.cpp \
+    photontracer.cpp
 
 HEADERS += \
     condutor.h \
@@ -22,4 +26,8 @@ HEADERS += \
     vector.h \
     ray.h \
     material.h \
-    base.h
+    base.h \
+    primitive.h \
+    tracer.h \
+    raytracer.h \
+    photontracer.h
