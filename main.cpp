@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     unique_ptr<Condutor> condutor(new Condutor(input));
+    condutor->setOutputFileName (outputFileName);
     condutor->run ();
     condutor->save (outputFileName);
     input.close ();

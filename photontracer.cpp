@@ -1,6 +1,6 @@
 #include "photontracer.h"
 
-PhotonTracer::PhotonTracer()
+PhotonTracer::PhotonTracer(Condutor* condutor):Tracer (condutor)
 {
 
 }

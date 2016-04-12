@@ -13,7 +13,9 @@ SOURCES += main.cpp \
     primitive.cpp \
     tracer.cpp \
     raytracer.cpp \
-    photontracer.cpp
+    photontracer.cpp \
+    ray.cpp \
+    vector.cpp
 
 HEADERS += \
     condutor.h \
