@@ -166,7 +166,7 @@ void Condutor::oneThreadPerRay ()
         for (int y = 0; y < imageY; ++y)
         {
             lineTracers.push_back (std::move (std::unique_ptr<RayTracer>(new RayTracer(_camera->emitRay(x * dx, y * dy), this))));
-            lineThreads.push_back (std::move (std::unique_ptr<std::thread>(new std::thread(RayTracer::run , lineTracers.back ().get()))));
+            lineThreads.push_back (std::move (std::unique_ptr<std::thread>(new std::thread(&RayTracer::run , lineTracers.back ().get()))));
         }
         for (int y = 0; y < imageY; ++y)
         {
@@ -182,9 +182,9 @@ void Condutor::fixedNumTheads ()
     std::array<std::unique_ptr<std::thread>, maxThreadNum> threads;
     for (int i = 0; i < maxThreadNum - 1; ++i)
     {
-        threads[i] = std::move (std::unique_ptr<std::thread>(new std::thread(Condutor::handleSegments, this, i * segment, (i + 1) * segment)));
+        threads[i] = std::move (std::unique_ptr<std::thread>(new std::thread(&Condutor::handleSegments, this, i * segment, (i + 1) * segment)));
     }
-    threads[maxThreadNum - 1] = std::move (std::unique_ptr<std::thread>(new std::thread(Condutor::handleSegments, this, (maxThreadNum - 1) * segment, camera ()->width () - 1)));
+    threads[maxThreadNum - 1] = std::move (std::unique_ptr<std::thread>(new std::thread(&Condutor::handleSegments, this, (maxThreadNum - 1) * segment, camera ()->width () - 1)));
     for (int i = 0; i < maxThreadNum; ++i)
         threads[i]->join ();
 }
