@@ -178,7 +178,6 @@ void Condutor::oneThreadPerRay ()
 
 void Condutor::fixedNumTheads ()
 {
-    int p = 0;
     int segment = camera ()->width () / maxThreadNum;
     std::array<std::unique_ptr<std::thread>, maxThreadNum> threads;
     for (int i = 0; i < maxThreadNum - 1; ++i)
