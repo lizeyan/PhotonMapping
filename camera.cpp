@@ -23,6 +23,7 @@ void Camera::display (std::ostream &os) const
     os << "_center:" << _center << ";";
     os << "_normal:" << _normal << ";";
     os << "_focus:" << _focus << ";";
+    os << "_dpi:" << _dpi << ";";
     os << "}";
 }
 
@@ -35,6 +36,7 @@ void Camera::init ()
     _center = Vec3 ();
     _normal = Vec3 (std::array<float, 3>{{0, 0, 1}});
     _focus = 1;
+    _dpi = 1;
     _environment = Color ();
 }
 
@@ -49,7 +51,7 @@ std::ostream& operator<< (std::ostream& os, const Camera& camera)
     return os;
 }
 
-Ray Camera::emitRay (int x, int y)
+Ray Camera::emitRay (float x, float y)
 {
     x = (_width >> 1) - x;
     y = (_height >> 1) - y;
@@ -107,6 +109,10 @@ void Camera::analyseContent (const std::string &content)
         else if (key == std::string ("focus"))
         {
             valueStream >> _focus;
+        }
+        else if (key == std::string ("dpi"))
+        {
+            valueStream >> _dpi;
         }
         else
         {

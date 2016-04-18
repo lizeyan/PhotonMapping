@@ -30,3 +30,10 @@ QColor Image::toQColor (const Color &c)
 {
     return QColor(std::max(std::min(255 * c.arg(R), 255.0f), 0.0f), std::max(std::min(255 * c.arg(G), 255.0f), 0.0f), std::max(std::min(255 * c.arg(B), 255.0f), 0.0f));
 }
+
+Color Image::smoothPixel (float x, float y)
+{
+    return Color ();
+}
+
+                                                                    

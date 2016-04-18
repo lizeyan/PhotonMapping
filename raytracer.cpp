@@ -83,7 +83,7 @@ void RayTracer::handleReflection ()
     if (dot(N, I) < -EPS)
     {
         Vec3 R = I - 2 * dot (I, N) * N;
-        std::unique_ptr<RayTracer> reflTracer(new RayTracer(std::make_pair(collide.point, R), condutor (), _depth + 1));
+        std::unique_ptr<RayTracer> reflTracer(new RayTracer(std::make_pair(collide.point + R, R), condutor (), _depth + 1));
         Color reflColor = reflTracer->run ();
         resColor += nearest->material ()->reflection () * reflColor * nearest->material ()->color ();
     }
@@ -95,9 +95,9 @@ void RayTracer::handleRefraction ()
     Color resColor = color ();
     Vec3 N = standardize (collide.normal);
     Vec3 I = standardize (_ray.second);
-    float n = nearest->material ()->refractivity ();
-    float cosi = dot(I, N);
-    if (dot(N, I) < -EPS)
+    double n = nearest->material ()->refractivity ();
+    double cosi = dot(I, N);
+    if (dot(N, I) < 0)
     {
         cosi = -cosi;
         I = -1 * I;
@@ -108,9 +108,9 @@ void RayTracer::handleRefraction ()
         I = -1 * I;
         N = -1 * N;
     }
-    float cost = sqrt (1 - n * n * (1 - cosi * cosi));
+    double cost = sqrt (1 - n * n * (1 - cosi * cosi));
     Vec3 T = -n * I + (n * cosi - cost) * N;
-    std::unique_ptr<RayTracer> refrTracer(new RayTracer(std::make_pair(collide.point, T), condutor (), _depth + 1));
+    std::unique_ptr<RayTracer> refrTracer(new RayTracer(std::make_pair(collide.point + T, T), condutor (), _depth + 1));
     Color refrColor = refrTracer->run ();
 #ifdef DEBUG
     if (_depth == 0)

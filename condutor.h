@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 const int MAX_RAY_TRACING_DEPTH = 30;
+const int maxThreadNum = 4;
 class ifstream;
 class ofstream;
 class Condutor
@@ -29,7 +30,10 @@ public:
 protected:
     void init ();
     void readScene ();
-
+    void singleThread ();
+    void oneThreadPerRay ();
+    void fixedNumTheads ();
+    void handleSegments (int x1, int x2);
     void addElement (const std::string& name, const std::string& content);
 private:
     std::string outputName;

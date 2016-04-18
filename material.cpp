@@ -72,7 +72,7 @@ std::ostream& operator << (std::ostream& os, const Material& material)
     return os;
 }
 
-Color Material::color (double x, double y)
+Color Material::color (float x, float y)
 {
     if (!_texture)
         throw std::logic_error ("unaccessable memory of _texture");

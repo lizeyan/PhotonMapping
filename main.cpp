@@ -3,10 +3,12 @@
 #include <string>
 #include <memory>
 #include <fstream>
+#include <chrono>
 using namespace std;
 #define CMDLINE
 int main(int argc, char *argv[])
 {
+    auto startTime = chrono::system_clock::now ();
 #ifdef CMDLINE
     string inputFileName, outputFileName;
     if (argc < 2)
@@ -28,6 +30,9 @@ int main(int argc, char *argv[])
     condutor->run ();
     condutor->save (outputFileName);
     input.close ();
+    auto endTime = chrono::system_clock::now ();
+    auto timeCost = chrono::duration_cast<chrono::milliseconds> (endTime - startTime);
+    cout << "total time cost: " << double(timeCost.count()) / 1000 << " seconds" << endl;
     return 0;
 #endif
 }

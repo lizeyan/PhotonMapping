@@ -2,7 +2,6 @@
 #define BASE_H
 #include <regex>
 #include <fstream>
-//#define DEBUG
 const float EPS = 1e-2;
 const std::regex entryReg("^\\s*([\\w\\d-_.](\\s*[\\w\\d-_.])*)\\s*:\\s*([\\w\\d-_.](\\s*[\\w\\d-_.])*)\\s*(#.*)?");
 const int keyRank = 1;

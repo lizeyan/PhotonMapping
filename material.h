@@ -16,8 +16,8 @@ public:
     inline float refraction () const {return _refraction;}
     inline float refractivity () const {return _refractivity;}
     inline Color color () {return _color;}
-    Color color (double x, double y);
-    Image* texture () {return _texture;}
+    Color color (float x, float y);
+    Image* texture () {return _texture.get ();}
 private:
     float _diffusion, _reflection, _refraction;
     float _refractivity;
