@@ -18,9 +18,9 @@ protected:
     void handleReflection ();
     void handleRefraction ();
 private:
+    Ray _ray;
     Object* nearest;
     Collide collide;
-    Ray _ray;
     int _depth;
 };
 

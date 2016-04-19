@@ -1,5 +1,26 @@
 #include "vector.h"
-Vector<3> cross (const Vector<3>& a, const Vector<3>& b)
+#include <cmath>
+
+
+Vector<3> vertical (const Vector<3> &v, const Vector<3> &p)
 {
-    return Vector<3>(std::array<float, 3>{{a.arg(1) * b.arg(2)-a.arg(2) * b.arg(1), a.arg(2) * b.arg(0) - a.arg(0) * b.arg(2), a.arg(0) * b.arg(1) - a.arg(1) * b.arg(0)}});
+    if (fabs(v.arg (2)) > EPS)
+    {
+        float z = (v.arg (0) * (p.arg (0) - 1) + v.arg (1) * (p.arg (1) - 1) + v.arg (2) * p.arg (2)) / v.arg (2);
+        return Vector<3>(std::array<float, 3>{{1, 1, z}});
+    }
+    else if (fabs(v.arg (1)) > EPS)
+    {
+        float b = (v.arg (0) * (p.arg (0) - 1) + v.arg (2) * (p.arg (2) - 1) + v.arg (1) * p.arg (1)) / v.arg (1);
+        return Vector<3>(std::array<float, 3>{{1, b, 1}});
+    }
+    else if (fabs(v.arg (1)) > EPS)
+    {
+        float a = (v.arg (2) * (p.arg (2) - 1) + v.arg (1) * (p.arg (1) - 1) + v.arg (0) * p.arg (0)) / v.arg (0);
+        return Vector<3>(std::array<float, 3>{{a, 1, 1}});
+    }
+    else
+        throw std::logic_error ("trying to find a vector vertical to a zero vector");
 }
+
+

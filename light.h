@@ -40,6 +40,45 @@ protected:
 private:
     Vec3 _center;
 };
+class RectLight: public Light
+{
+public:
+    RectLight (std::stringstream& content, Condutor* condutor = nullptr);
+    RectLight (const Vec3& center, const Vec3& normal, const Vec3& dx, const Vec3& dy, float width, float height, const Color& color, Condutor* condutor = nullptr);
+    Ray emitPhoton ();
+    Collide collide (const Ray &ray) const;
+    inline Vec3 point () const {return _center;}
+    Color illuminate (const Vec3 &point, const Vec3 &normal);
+    bool block (Object* ob, const Vec3&, Condutor* condutor) const;
+    void display (std::ostream& os) const;
+protected:
+    void analyseContent (std::stringstream& content);
+    void init ();
+    bool check ();
+private:
+    Vec3 _center, _normal, _dx, _dy;
+    float _width, _height;
+};
+
+class CircleLight: public Light
+{
+public:
+    CircleLight (std::stringstream& content, Condutor* condutor = nullptr);
+    CircleLight (const Vec3& center, const Vec3& normal, float radius, const Color& color, Condutor* condutor = nullptr);
+    Ray emitPhoton ();
+    Collide collide (const Ray &ray) const;
+    inline Vec3 point () const {return _center;}
+    Color illuminate (const Vec3 &point, const Vec3 &normal);
+    bool block (Object* ob, const Vec3&, Condutor* condutor) const;
+    void display (std::ostream& os) const;
+protected:
+    void analyseContent (std::stringstream& content);
+    void init ();
+    bool check ();
+private:
+    Vec3 _center, _normal;
+    float _radius;
+};
 
 
 #endif // LIGHT_H

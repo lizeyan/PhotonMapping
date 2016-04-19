@@ -8,7 +8,7 @@
 #ifdef DEBUG
 extern std::ofstream Log;
 #endif
-RayTracer::RayTracer(const Ray& ray, Condutor* condutor, int depth): Tracer (condutor), _ray (ray), _depth (depth), nearest(nullptr), collide ()
+RayTracer::RayTracer(const Ray& ray, Condutor* condutor, int depth): Tracer (condutor), _ray (ray), nearest(nullptr), collide (), _depth (depth)
 {
 }
 

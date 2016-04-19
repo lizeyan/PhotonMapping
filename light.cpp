@@ -6,6 +6,7 @@
 #include <utility>
 #include <iostream>
 #include <stdexcept>
+extern std::mt19937 rd;
 Light* Light::produce (const std::string &content, Condutor* condutor)
 {
     //必须首先指定类型
@@ -26,6 +27,14 @@ Light* Light::produce (const std::string &content, Condutor* condutor)
         if (value == std::string("point"))
         {
             return new PointLight(entryStream, condutor);
+        }
+        else if (value == std::string("rectangle"))
+        {
+            return new RectLight (entryStream, condutor);
+        }
+        else if (value == std::string("circle"))
+        {
+            return new CircleLight (entryStream, condutor);
         }
         else
             throw std::out_of_range("unkonwn light type:" + value);
@@ -167,4 +176,326 @@ bool PointLight::block (Object* ob, const Vec3 &point, Condutor *condutor) const
         }
     }
     return false;
+}
+//==============================================
+RectLight::RectLight (std::stringstream &content, Condutor *condutor)
+{
+    setCondutor (condutor);
+    init ();
+    analyseContent (content);
+    if (!check ())
+        throw std::logic_error ("invalid arguments, RectLight");
+}
+RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, const Vec3 &dy, float width, float height, const Color &color, Condutor *condutor):Light (color, condutor), _center (center), _normal (normal), _dx (dx), _dy (dy), _width (width), _height (height)
+{
+
+}
+
+Ray RectLight::emitPhoton ()
+{
+    return std::make_pair (Vec3 (), Vec3 ());
+}
+
+Collide RectLight::collide (const Ray &ray) const
+{
+//use triangle
+    Vec3 halfX = (_width / 2) * _dx, halfY = (_height / 2) * _dy;
+    Vec3 a = _center + halfX + halfY, b = _center + halfX - halfY;
+    Vec3 c = _center - halfX + halfY, d = _center - halfX - halfY;
+    std::unique_ptr<Triangle> t1, t2;
+    t1.reset (new Triangle(a, d, b, condutor ()));
+    t2.reset (new Triangle(a, d, c, condutor ()));
+    Collide c1 = t1->collide (ray), c2 = t2->collide (ray);
+    Collide res;
+    res.collide = c1.collide || c2.collide;
+    res.distance = std::min (c1.distance, c2.distance);
+    if (c1.collide)
+        res.point = c1.point;
+    else if (c2.collide)
+        res.point = c2.point;
+    else
+        res.point = Vec3 ();
+    res.normal = _normal;
+    return res;
+}
+
+Color RectLight::illuminate (const Vec3 &point, const Vec3 &normal)
+{
+    static std::uniform_real_distribution<> disX (0, _width);
+    static std::uniform_real_distribution<> disY (0, _height);
+    Vec3 rdPoint = ((_height / 2) - disY(rd)) * _dy + ((_width / 2) - disX (rd)) * _dx + _center;
+    Vec3 admitLight = standardize(rdPoint - point);
+    float coefficient = dot (admitLight, standardize(normal));
+    return coefficient * color ();
+}
+
+bool RectLight::block (Object *ob, const Vec3 &point, Condutor *condutor) const
+{
+    static float halfX = _width / 2;
+    static float halfY = _height / 2;
+    static std::array<Vec3, 4> cornors{{Vec3(_center + halfX * _dx + halfY * _dy), Vec3(_center + halfX * _dx - halfY * _dy), Vec3(_center - halfX * _dx + halfY * _dy), Vec3(_center - halfX * _dx - halfY * _dy)}};
+    for (unsigned int i = 0; i < cornors.size(); ++i)
+    {
+        Vec3 link = cornors[i] - point;
+        Ray ray = std::make_pair (point, link);
+        for (const auto& object:condutor->objects ())
+        {
+            if (object.get () == ob || ob->material ()->refraction () > EPS)
+                continue;
+            Collide collide = object->collide (ray);
+            if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
+            {
+                //std::cout << "collide point:" << collide.point << std::endl;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void RectLight::display (std::ostream &os) const
+{
+    os << "{";
+    Light::display (os);
+    os << "_center:" << _center << ";";
+    os << "_normal:" << _normal << ";";
+    os << "_dx:" << _dx << ";";
+    os << "_dy:" << _dy << ";";
+    os << "_width:" << _width << ";";
+    os << "_height:" << _height << ";";
+    os << "}";
+}
+
+void RectLight::analyseContent (std::stringstream &entryStream)
+{
+    std::smatch matchRes;
+    std::string line;
+    while (!entryStream.eof())
+    {
+        getline (entryStream, line);
+        if (!std::regex_match(line, matchRes, entryReg))
+            continue;
+        std::string key = matchRes[keyRank].str ();
+        std::string value = matchRes[valueRank].str ();
+        if (key == std::string("color"))
+        {
+            Color c;
+            std::stringstream valueStream (value);
+            valueStream >> c[R] >> c[G] >> c[B];
+            setColor (c);
+        }
+        else if (key == std::string ("center"))
+        {
+            Vec3 c;
+            std::stringstream valueStream (value);
+            valueStream >> c[0] >> c[1] >> c[2];
+            _center = c;
+        }
+        else if (key == std::string ("normal"))
+        {
+            Vec3 c;
+            std::stringstream valueStream (value);
+            valueStream >> c[0] >> c[1] >> c[2];
+            _normal = c;
+        }
+        else if (key == std::string ("dx"))
+        {
+            Vec3 c;
+            std::stringstream valueStream (value);
+            valueStream >> c[0] >> c[1] >> c[2];
+            _dx = c;
+        }
+        else if (key == std::string ("dy"))
+        {
+            Vec3 c;
+            std::stringstream valueStream (value);
+            valueStream >> c[0] >> c[1] >> c[2];
+            _dy = c;
+        }
+        else if (key == std::string ("size"))
+        {
+            std::stringstream valueStream (value);
+            valueStream >> _width >> _height;
+        }
+        else
+        {
+            throw std::logic_error("unexcepted key type in scene, rectangle light");
+        }
+    }
+}
+
+void RectLight::init ()
+{
+    _center = Vec3 ();
+    _normal = Vec3 (std::array<float, 3>{{0, 0, 1}});
+    _dx = Vec3 (std::array<float, 3>{{1, 0, 0}});
+    _dy = Vec3 (std::array<float, 3>{{0, 1, 0}});
+    _width = 1;
+    _height = 1;
+}
+
+bool RectLight::check ()
+{
+    return fabs(dot (_dx, _normal)) < EPS && fabs (dot (_dy, _normal)) < EPS;
+}
+
+//===========================================
+CircleLight::CircleLight (std::stringstream &content, Condutor *condutor)
+{
+    setCondutor (condutor);
+    init ();
+    analyseContent (content);
+    if (!check ())
+        throw std::logic_error ("invalid arguments, CircleLight");
+}
+
+CircleLight::CircleLight (const Vec3 &center, const Vec3 &normal, float radius, const Color &color, Condutor *condutor): Light(color, condutor), _center (center), _normal (normal), _radius (radius)
+{
+
+}
+
+Ray CircleLight::emitPhoton ()
+{
+    return Ray ();
+}
+
+Collide CircleLight::collide (const Ray &ray) const
+{
+    Collide collide = Plane (_center, _normal, condutor ()).collide (ray);
+    Collide res;
+    res.distance = collide.distance;
+    res.normal = collide.normal;
+    if (collide.collide)
+    {
+        Vec3 link = collide.point - _center;
+        float m = model (link);
+        if (dot (link, _normal) < EPS && m <= _radius)
+        {
+            res.point = collide.point;
+            res.collide = collide.collide;
+        }
+        else
+        {
+            res.point = Vec3 ();
+            res.collide = false;
+        }
+    }
+    else
+    {
+        res.point = collide.point;
+        res.collide = collide.collide;
+    }
+    return res;
+}
+
+Color CircleLight::illuminate (const Vec3 &point, const Vec3 &normal)
+{
+    Vec3 dx = vertical (_normal, _center);
+    Vec3 dy = cross (_normal, dx);
+    dx = standardize (dx);
+    dy = standardize (dy);
+    static std::uniform_real_distribution<> disR (0, _radius);
+    float a, b, r2 = _radius * _radius;
+    do
+    {
+        a =disR (rd);
+        b = disR (rd);
+    }
+    while (a * a + b * b > r2);
+    Vec3 rdPoint  = _center + dx * a + dy * b;
+    Vec3 admitLight = standardize(rdPoint - point);
+    float coefficient = dot (admitLight, standardize(normal));
+    return coefficient * color ();
+}
+
+bool CircleLight::block (Object *ob, const Vec3 &point, Condutor *condutor) const
+{
+    Vec3 dx = vertical (_normal, _center);
+    Vec3 dy = cross (_normal, dx);
+    dx = standardize (dx);
+    dy = standardize (dy);
+    static std::array<Vec3, 4> cornors{{Vec3(_center + dx + dy), Vec3(_center + dx - dy), Vec3(_center - dx + dy), Vec3(_center - dx - dy)}};
+    for (unsigned int i = 0; i < cornors.size(); ++i)
+    {
+        Vec3 link = cornors[i] - point;
+        Ray ray = std::make_pair (point, link);
+        for (const auto& object:condutor->objects ())
+        {
+            if (object.get () == ob || ob->material ()->refraction () > EPS)
+                continue;
+            Collide collide = object->collide (ray);
+            if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
+            {
+                //std::cout << "collide point:" << collide.point << std::endl;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void CircleLight::display (std::ostream &os) const
+{
+    os << "{";
+    Light::display (os);
+    os << "_center:" << _center << ";";
+    os << "_normal:" << _normal << ";";
+    os << "_radius:" << _radius << ";";
+    os << "}";
+}
+
+void CircleLight::analyseContent (std::stringstream &entryStream)
+{
+    std::smatch matchRes;
+    std::string line;
+    while (!entryStream.eof())
+    {
+        getline (entryStream, line);
+        if (!std::regex_match(line, matchRes, entryReg))
+            continue;
+        std::string key = matchRes[keyRank].str ();
+        std::string value = matchRes[valueRank].str ();
+        if (key == std::string("color"))
+        {
+            Color c;
+            std::stringstream valueStream (value);
+            valueStream >> c[R] >> c[G] >> c[B];
+            setColor (c);
+        }
+        else if (key == std::string ("center"))
+        {
+            Vec3 c;
+            std::stringstream valueStream (value);
+            valueStream >> c[0] >> c[1] >> c[2];
+            _center = c;
+        }
+        else if (key == std::string ("normal"))
+        {
+            Vec3 c;
+            std::stringstream valueStream (value);
+            valueStream >> c[0] >> c[1] >> c[2];
+            _normal = c;
+        }
+        else if (key == std::string("radius"))
+        {
+            std::stringstream valueStream (value);
+            valueStream >> _radius;
+        }
+        else
+        {
+            throw std::logic_error("unexcepted key type in scene, rectangle light");
+        }
+    }
+}
+
+void CircleLight::init ()
+{
+    _center = Vec3 ();
+    _normal = Vec3 (std::array<float, 3>{{0, 0, 1}});
+    _radius = 1;
+}
+
+bool CircleLight::check ()
+{
+    return _radius > 0 && model (_normal) > EPS;
 }

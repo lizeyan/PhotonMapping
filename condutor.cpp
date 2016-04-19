@@ -7,11 +7,13 @@
 #include <utility>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 #include <thread>
 #include <algorithm>
 #ifdef DEBUG
 std::ofstream Log("rayTrace.log");
 #endif
+std::mt19937 rd(time(0));
 Condutor::Condutor(std::ifstream& _input): input(_input)
 {
     init ();

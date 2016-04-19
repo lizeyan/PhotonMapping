@@ -16,8 +16,10 @@ public:
     virtual void display (std::ostream& os) const;
     Material* material () {return _material;}
     inline void setMaterial (Material* m) {_material = m;}
+    void calcBoudingBoxes ();
 private:
     Material* _material;
+    std::vector<Object*> _boudingBoxes;
 };
 class Sphere: public Object
 {
@@ -58,7 +60,7 @@ class Triangle: public Object
 {
 public:
     Triangle (const Vec3& a, const Vec3& b, const Vec3& c, Condutor* condutor = nullptr);
-    Triangle (std::stringstream& content, Condutor* condutor = nullptr);;
+    Triangle (std::stringstream& content, Condutor* condutor = nullptr);
     inline Vec3 a () {return _a;}
     inline Vec3 b () {return _b;}
     inline Vec3 c () {return _c;}
@@ -72,6 +74,22 @@ protected:
 private:
     Vec3 _a, _b, _c;
     Vec3 _normal;
+};
+
+class Cobic: public Object
+{
+public:
+    Cobic (std::stringstream& content, Condutor* condutor = nullptr);
+    Cobic (const Vec3& center, const Vec3& dx, const Vec3& dy, float a, float b, float c, Condutor* condutor = nullptr);
+    Collide collide (const Ray& ray) const;
+    void display (std::ostream& os) const;
+protected:
+    void analyseContent (std::stringstream& content);
+    bool check ();
+    void init ();
+private:
+    Vec3 _center, _dx, _dy;
+    float _a, _b, _c;
 };
 
 #endif // OBJECT_H
