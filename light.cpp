@@ -148,6 +148,8 @@ Color PointLight::illuminate (const Vec3 &point, const Vec3 &normal)
 {
     Vec3 admitLight = standardize(_center - point);
     float coefficient = dot (admitLight, standardize(normal));
+    if (coefficient < 0)
+        return Color ();
     return coefficient * color ();
 }
 
@@ -226,6 +228,8 @@ Color RectLight::illuminate (const Vec3 &point, const Vec3 &normal)
     Vec3 rdPoint = ((_height / 2) - disY(rd)) * _dy + ((_width / 2) - disX (rd)) * _dx + _center;
     Vec3 admitLight = standardize(rdPoint - point);
     float coefficient = dot (admitLight, standardize(normal));
+    if (coefficient < 0)
+        return Color ();
     return coefficient * color ();
 }
 
@@ -405,6 +409,8 @@ Color CircleLight::illuminate (const Vec3 &point, const Vec3 &normal)
     Vec3 rdPoint  = _center + dx * a + dy * b;
     Vec3 admitLight = standardize(rdPoint - point);
     float coefficient = dot (admitLight, standardize(normal));
+    if (coefficient < 0)
+        return Color ();
     return coefficient * color ();
 }
 

@@ -47,6 +47,10 @@ void Condutor::run ()
     }
  */
     //ray tracing
+//    Vec3 o = camera ()->center ();
+//    Vec3 link = Vec3(std::array<float,3>{{20, 5, 3}}) - o;
+//    RayTracer rt (std::make_pair(o, link), this);
+//    std::cout << rt.run () << std::endl;
     fixedNumTheads ();
 
     std::cout << "finished" << std::endl;

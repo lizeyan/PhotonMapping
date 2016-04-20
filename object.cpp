@@ -317,6 +317,8 @@ void Triangle::init ()
 
 bool Triangle::check ()
 {
+    if (_normal == Vec3 ())
+        _normal = cross (_a - _b, _a - _c);
     if (_a == _b || _b == _c || _a == _c || _normal == Vec3 ())
         return false;
     else
@@ -397,17 +399,17 @@ Collide Triangle::collide (const Ray &ray) const
     Vec3 e1 = _a - _b, e2 = _a - _c, r = standardize(ray.second);
     Vec3 S;
     float det1, det2, det3;
-    float det0 = det (r , e1, e2);
+    float det0 = det (r, e1, e2);
     if (fabs (det0) < EPS)
     {
         goto fail;
     }
     S = _a - ray.first;
     det1 = det (S, e1, e2), det2 = det (r, S, e2), det3 = det (r, e1, S);
-    if (det1 < EPS || det2 + det3 >= det0 || det2 < EPS || det3 < EPS)
-    {
+    if (det0 > 0 && (det1 < 0 || det2 + det3 > det0 || det2 < 0 || det3 < 0))
         goto fail;
-    }
+    if (det0 < 0 && (det1 > 0 || det2 + det3 < det0 || det2 > 0 || det3 > 0))
+        goto fail;
     res.collide = true;
     res.distance = det1 / det0;
     res.point = ray.first + res.distance * r;
