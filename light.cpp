@@ -205,8 +205,8 @@ Collide RectLight::collide (const Ray &ray) const
     Vec3 a = _center + halfX + halfY, b = _center + halfX - halfY;
     Vec3 c = _center - halfX + halfY, d = _center - halfX - halfY;
     std::unique_ptr<Triangle> t1, t2;
-    t1.reset (new Triangle(a, d, b, condutor ()));
-    t2.reset (new Triangle(a, d, c, condutor ()));
+    t1.reset (new Triangle(a, d, b, nullptr, condutor ()));
+    t2.reset (new Triangle(a, d, c, nullptr, condutor ()));
     Collide c1 = t1->collide (ray), c2 = t2->collide (ray);
     Collide res;
     res.collide = c1.collide || c2.collide;
@@ -365,7 +365,7 @@ Ray CircleLight::emitPhoton ()
 
 Collide CircleLight::collide (const Ray &ray) const
 {
-    Collide collide = Plane (_center, _normal, condutor ()).collide (ray);
+    Collide collide = Plane (_center, _normal, nullptr, condutor ()).collide (ray);
     Collide res;
     res.distance = collide.distance;
     res.normal = collide.normal;

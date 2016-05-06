@@ -42,7 +42,7 @@ private:
 class Plane: public Object
 {
 public:
-    Plane (const Vec3& center, const Vec3& normal, Condutor* condutor = nullptr);
+    Plane (const Vec3& center, const Vec3& normal, Material* material = nullptr, Condutor* condutor = nullptr);
     Plane (std::stringstream& content, Condutor* condutor = nullptr);
     Vec3 center () const {return _center;}
     Vec3 normal () const {return _normal;}
@@ -59,7 +59,7 @@ private:
 class Triangle: public Object
 {
 public:
-    Triangle (const Vec3& a, const Vec3& b, const Vec3& c, Condutor* condutor = nullptr);
+    Triangle (const Vec3& a, const Vec3& b, const Vec3& c, Material* material = nullptr, Condutor* condutor = nullptr);
     Triangle (std::stringstream& content, Condutor* condutor = nullptr);
     inline Vec3 a () {return _a;}
     inline Vec3 b () {return _b;}
@@ -80,7 +80,7 @@ class Cobic: public Object
 {
 public:
     Cobic (std::stringstream& content, Condutor* condutor = nullptr);
-    Cobic (const Vec3& center, const Vec3& dx, const Vec3& dy, float a, float b, float c, Condutor* condutor = nullptr);
+    Cobic (const Vec3& center, const Vec3& dx, const Vec3& dy, const Vec3& dz, float a, float b, float c, Material* material, Condutor* condutor = nullptr);
     Collide collide (const Ray& ray) const;
     void display (std::ostream& os) const;
 protected:
@@ -88,7 +88,7 @@ protected:
     bool check ();
     void init ();
 private:
-    Vec3 _center, _dx, _dy;
+    Vec3 _center, _dx, _dy, _dz;
     float _a, _b, _c;
 };
 

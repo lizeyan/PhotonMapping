@@ -177,10 +177,8 @@ void Sphere::display (std::ostream &os) const
 }
 
 //=======================================================================================
-Plane::Plane (const Vec3& center, const Vec3& normal, Condutor* condutor): _center (center), _normal (normal)
+Plane::Plane (const Vec3& center, const Vec3& normal, Material* material, Condutor* conductor):Object(material, conductor), _center (center), _normal (normal)
 {
-    setCondutor (condutor);
-
 }
 
 Plane::Plane (std::stringstream &content, Condutor* condutor)
@@ -293,9 +291,8 @@ void Plane::display (std::ostream &os) const
 }
 
 //======================================
-Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Condutor *condutor): _a(a), _b(b), _c(c)
+Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor):Object (material, condutor), _a(a), _b(b), _c(c)
 {
-    setCondutor (condutor);
 }
 
 Triangle::Triangle (std::stringstream &content, Condutor *condutor)
@@ -429,21 +426,151 @@ Collide Triangle::collide (const Ray &ray) const
 
 Cobic::Cobic (std::stringstream &content, Condutor *condutor)
 {
-
+    setCondutor (condutor);
+    init ();
+    analyseContent (content);
+    if (!check ())
+        throw std::logic_error ("invalid arguments, Cobic");
 }
-Cobic::Cobic (const Vec3 &center, const Vec3 &dx, const Vec3 &dy, float a, float b, float c, Condutor *condutor)
+Cobic::Cobic (const Vec3 &center, const Vec3 &dx, const Vec3 &dy, const Vec3 &dz, float a, float b, float c, Material* material, Condutor *condutor): Object (material, condutor), _center (center), _dx(dx), _dy(dy), _dz (dz), _a(a), _b(b), _c(c)
 {
 
 }
 
 Collide Cobic::collide (const Ray &ray) const
 {
-
+    float ha = _a / 2, hb = _b / 2, hc = _c / 2;
+    std::vector<Collide> co1, co2;
+    co1.push_back (Plane (_center + ha * _dx, _dx).collide (ray));
+    co2.push_back (Plane (_center - ha * _dx, -1 * _dx).collide (ray));
+    co1.push_back (Plane (_center + hb * _dy, _dy).collide (ray));
+    co2.push_back (Plane (_center - hb * _dy,  -1 *_dy).collide (ray));
+    co1.push_back (Plane (_center + hc * _dz, _dz).collide (ray));
+    co2.push_back (Plane (_center - hc * _dz,  -1 *_dz).collide (ray));
+    for (int i = 0; i < 3; ++i)
+        if (co1[i].distance > co2[i].distance)
+        {
+            std::swap (co1[i], co2[i]);
+        }
+    Collide *tmax1 = &co1[0], *tmin2 = &co2[0];
+    for (int i = 1; i < 3; ++i)
+    {
+        if (tmax1->distance < co1[i].distance)
+            tmax1 = &co1[i];
+        if (tmin2->distance > co2[i].distance)
+            tmin2 = &co2[i];
+    }
+    if (tmax1->distance > tmin2->distance)
+    {
+        Collide res;
+        res.collide = false;
+        res.distance = 1 << 30;
+        return res;
+    }
+    else
+    {
+        return *tmax1;
+    }
 }
 
 void Cobic::display (std::ostream &os) const
 {
-
+    os << "{";
+    Object::display (os);
+    os << "_center:" << _center << ";";
+    os << "_dx:" << _dx << ";";
+    os << "_dy:" << _dy << ";";
+    os << "_dz:" << _dz << ";";
+    os << "_a:" << _a << ";";
+    os << "_b:" << _b << ";";
+    os << "_c:" << _c << ";";
+    os << "}";
 }
 
+void Cobic::analyseContent (std::stringstream &entryStream)
+{
+    std::smatch matchRes;
+    std::string line;
+    while (!entryStream.eof())
+    {
+        getline (entryStream, line);
+        if (!std::regex_match(line, matchRes, entryReg))
+            continue;
+        std::string key = matchRes[keyRank].str ();
+        std::string value = matchRes[valueRank].str ();
 
+        if (key == std::string ("a"))
+        {
+            std::stringstream valueStream (value);
+            valueStream >> _a;
+        }
+        else if (key == std::string ("b"))
+        {
+            std::stringstream valueStream (value);
+            valueStream >>  _b;
+        }
+        else if (key == std::string ("c"))
+        {
+            std::stringstream valueStream (value);
+            valueStream >>  _c;
+        }
+
+        else if (key == std::string ("material"))
+        {
+            int materialRank = 0;
+            std::stringstream valueStream (value);
+            valueStream >> materialRank;
+            if (condutor () == nullptr)
+                throw std::logic_error("access a null pointer of Condutor");
+            setMaterial (condutor()->materials ().at (materialRank).get ());
+        }
+        else if (key == std::string ("center"))
+        {
+            Vec3 n;
+            std::stringstream valueStream (value);
+            valueStream >> n[0] >> n[1] >> n[2];
+            _center = n;
+        }
+        else if (key == std::string ("dx"))
+        {
+            Vec3 n;
+            std::stringstream valueStream (value);
+            valueStream >> n[0] >> n[1] >> n[2];
+            _dx = n;
+        }
+        else if (key == std::string ("dy"))
+        {
+            Vec3 n;
+            std::stringstream valueStream (value);
+            valueStream >> n[0] >> n[1] >> n[2];
+            _dy = n;
+        }
+        else if (key == std::string ("dz"))
+        {
+            Vec3 n;
+            std::stringstream valueStream (value);
+            valueStream >> n[0] >> n[1] >> n[2];
+            _dz = n;
+        }
+
+
+        else
+        {
+            throw std::logic_error("unexcepted key type in scene, point light");
+        }
+    }
+}
+
+bool Cobic::check ()
+{
+    return _a > EPS && _b > EPS && _c > EPS;
+}
+
+void Cobic::init ()
+{
+    _center = Vec3 ();
+    _dx = Vec3 (std::array<float, 3>{{1, 0 , 0}});
+    _dy = Vec3 (std::array<float, 3>{{0, 1 , 0}});
+    _dz = Vec3 (std::array<float, 3>{{0, 0 , 1}});
+    _a = 0, _b = 0, _c = 0;
+}
