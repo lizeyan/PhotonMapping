@@ -7,6 +7,7 @@
 class Image
 {
 public:
+    Image (std::string fileName);
     Image(int width, int height);
     static QColor toQColor (const Color& c);
     void fill (const Color& color = Color ());

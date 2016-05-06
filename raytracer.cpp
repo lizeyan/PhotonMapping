@@ -54,7 +54,7 @@ Color RayTracer::run ()
 Color RayTracer::calcDiffusion (const Collide &collide, Object *object, Light *light)
 {
     Color illuminate = light->illuminate (collide.point, collide.normal);
-    Color material = object->material ()->color ();
+    Color material = object->color ();
     float diff = object->material ()->diffusion ();
 #ifdef DEBUG
     Log << "illuminate:" << illuminate << " material:" << material << " diff:" << diff << std::endl;
@@ -85,7 +85,7 @@ void RayTracer::handleReflection ()
         Vec3 R = I - 2 * dot (I, N) * N;
         std::unique_ptr<RayTracer> reflTracer(new RayTracer(std::make_pair(collide.point + R, R), condutor (), _depth + 1));
         Color reflColor = reflTracer->run ();
-        resColor += nearest->material ()->reflection () * reflColor * nearest->material ()->color ();
+        resColor += nearest->material ()->reflection () * reflColor * nearest->color ();
     }
     setColor (resColor);
 }
@@ -119,6 +119,6 @@ void RayTracer::handleRefraction ()
         Log << "refr Color:" << refrColor << std::endl;
     }
 #endif
-    resColor += nearest->material ()->refraction () * refrColor * nearest->material ()->color ();
+    resColor += nearest->material ()->refraction () * refrColor * nearest->material ()->absorb ();
     setColor (resColor);
 }

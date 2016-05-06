@@ -4,121 +4,97 @@
 
 start camera
     size: 50 50
-    dx:0 -1 0
-    dy:0 0 1
-    center:95 50 30
-    normal:-1 0 0
+    dx:1 -0.6 0
+    dy:0.36 0.6 1.36
+    center:-2 2 0.5
+    normal:0.6 1 -0.6
     focus: 30
-    dpi: 40
+    dpi: 10
     environment: 0 0 0
 end
 
 #add circle light
 start light
     type: circle
-    center: 50 50 90
+    center: 3 3 3
     normal: 0 0 -1
-    radius: 50
-    color: 1 1 1
+    radius: 1.5
+    color: 25 25 25
 end
 
 start material #rank0
     color: 1 0 0
-    absorb: 1 1 1
-    diffusion: 0.01
-    reflection: 0.99
-    refraction: 0
-end
-
-start material #rank1
-    color: 1 1 1
-    absorb: 1 1 1
-    diffusion: 0.8
-    reflection: 0.2
-    refraction: 0
-end
-
-start material #rank2
-    color: 1 1 1
-    absorb: 0 0 0
-    diffusion: 0.1
-    reflection: 0.9
-    refraction: 0
+    absorb: 1 0 0 
+    diffusion: 0
+    reflection: 0
+    refraction: 1
     refractivity: 1.7
 end
 
-start material # rank3
+start material #rank1
     color: 1 0 0
-    absorb: 0 0 0
-    diffusion: 0.2
+    absorb: 0 1 0 
+    diffusion: 0
     reflection: 0
-    refraction: 0.8
-    refractivity: 1.2
+    refraction: 1
+    refractivity: 1.7
+end
+
+start material #rank2
+    color: 0.5 0.5 1
+    absorb: 0 0 0
+    diffusion: 0
+    reflection: 1
+    refraction: 0
+end
+
+start material # rank3
+    color: 1 1 1
+    absorb: 0 0 0
+    diffusion: 0.7
+    reflection: 0.3
+    refraction: 0
+end
+
+start material # rank3
+    color: 1 1 1
+    absorb: 0 0 0
+    diffusion: 0.5
+    reflection: 0.5
+    refraction: 0
 end
 
 start object
     type: sphere
-    center: 50 50 10
-    material: 2
-    radius: 10
-end
-
-#=========this is a cobic consisting of triangles==============
-start object
-    type: cobic
+    center: -0.5 5.14 -1.8
     material: 0
-    a: 10
-    b: 10
-    c: 10
-    center: 5 5 5
-    dx: 1 0 0
-    dy: 0 1 0
-    dz: 0 0 1
+    radius: 0.2
 end
-#==============================================
 
-#================================================
-#add the bouding box
+start object
+    type: sphere
+    center: 0 5 -1.8
+    material: 1
+    radius: 0.2
+end
+
+start object
+    type: sphere
+    center: 1.5 6.3 -1.6
+    material: 2
+    radius: 0.4
+end
+
+start object
+    type: sphere
+    center: 0 6 -1.5
+    material: 3
+    radius: 0.5
+end
+
 start object
     type: plane
-    center: 0 0 0
-    material: 1
+    center: 0 0 0 
     normal: 0 0 1
+    material: 4
 end
-
-start object
-    type: plane
-    center:0 0 0
-    material: 1
-    normal: 1 0 0
-end
-
-start object
-    type: plane
-    center:0 0 0
-    material: 1
-    normal: 0 1 0
-end
-
-start object
-    type: plane
-    center:0 0 100
-    material: 1
-    normal: 0 0 -1
-end
-
-start object
-    type: plane
-    center:0 100 0
-    material: 1
-    normal: 0 -1 0
-end
-
-start object
-    type: plane
-    center:100 0 0
-    material: 1
-    normal: -1 0 0
-end
-#end box 
-#================================================

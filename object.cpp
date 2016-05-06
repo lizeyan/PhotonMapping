@@ -68,6 +68,23 @@ Sphere::Sphere (std::stringstream &content, Condutor* condutor)
         throw std::logic_error ("incorrect argument of sphere");
 }
 
+Color Sphere::color (const Vec3 &v) const
+{
+    if (v == Vec3 () || this->material ()->texture () == nullptr)
+        return this->material ()->color ();
+    else
+    {
+        Vec3 r = v - this->center ();
+        float modelXY = sqrt (r.arg (0) * r.arg (0) + r.arg (1) * r.arg (1));
+        float xita = atan (r.arg (2) / modelXY);
+        float phi = acos (r.arg (0) / modelXY);
+        if (r.arg (1) < 0)
+            phi += PI;
+        return this->material ()->color (xita / PI, phi / PI_Double);
+    }
+}
+
+
 void Sphere::init ()
 {
     _center = Vec3 ();
@@ -190,6 +207,16 @@ Plane::Plane (std::stringstream &content, Condutor* condutor)
         throw std::logic_error ("incorrect argument of plane");
 }
 
+Color Plane::color (const Vec3 &v) const
+{
+    if (v == Vec3 () || this->material ()->texture () == nullptr)
+        return this->material ()->color ();
+    else
+    {
+
+    }
+}
+
 void Plane::init ()
 {
     _center = Vec3 ();
@@ -304,6 +331,11 @@ Triangle::Triangle (std::stringstream &content, Condutor *condutor)
         throw std::logic_error ("incorrect argument of triangle");
 }
 
+Color Triangle::color (const Vec3 &v) const
+{
+    if (v == Vec3 () || this->material ()->texture () == nullptr)
+        return this->material ()->color ();
+}
 void Triangle::init ()
 {
     _a = Vec3 ();
@@ -435,6 +467,12 @@ Cobic::Cobic (std::stringstream &content, Condutor *condutor)
 Cobic::Cobic (const Vec3 &center, const Vec3 &dx, const Vec3 &dy, const Vec3 &dz, float a, float b, float c, Material* material, Condutor *condutor): Object (material, condutor), _center (center), _dx(dx), _dy(dy), _dz (dz), _a(a), _b(b), _c(c)
 {
 
+}
+
+Color Cobic::color (const Vec3 &v) const
+{
+    if (v == Vec3 () || this->material ()->texture () == nullptr)
+        return this->material ()->color ();
 }
 
 Collide Cobic::collide (const Ray &ray) const

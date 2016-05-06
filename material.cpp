@@ -46,6 +46,10 @@ Material* Material::produce (const std::string &content)
         {
             valueStream >> refraction;
         }
+        else if (key == std::string ("texture"))
+        {
+            _texture.reset (new Image(value));
+        }
 
         else
         {

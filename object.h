@@ -15,6 +15,7 @@ public:
     virtual Collide collide (const Ray& ray) const = 0;
     virtual void display (std::ostream& os) const;
     Material* material () {return _material;}
+    virtual Color color (const Vec3& v = Vec3 ()) const = 0;
     inline void setMaterial (Material* m) {_material = m;}
     void calcBoudingBoxes ();
 private:
@@ -30,6 +31,7 @@ public:
     float radius () const {return _radius;}
     virtual Collide collide (const Ray &ray) const;
     virtual void display (std::ostream& os) const;
+    virtual Color color (const Vec3 &v = Vec3 ()) const;
 protected:
     void analyseContent (std::stringstream& content);
     bool check ();
@@ -48,6 +50,7 @@ public:
     Vec3 normal () const {return _normal;}
     void display (std::ostream& os) const;
     Collide collide (const Ray &ray) const;
+    virtual Color color (const Vec3 &v = Vec3 ()) const;
 protected:
     void analyseContent (std::stringstream& content);
     bool check ();
@@ -66,6 +69,7 @@ public:
     inline Vec3 c () {return _c;}
     inline Vec3 normal () {return _normal;}
     Collide collide (const Ray &ray) const;
+    virtual Color color (const Vec3 &v = Vec3 ()) const;
     void display (std::ostream& os) const;
 protected:
     void analyseContent (std::stringstream& content);
@@ -82,6 +86,7 @@ public:
     Cobic (std::stringstream& content, Condutor* condutor = nullptr);
     Cobic (const Vec3& center, const Vec3& dx, const Vec3& dy, const Vec3& dz, float a, float b, float c, Material* material, Condutor* condutor = nullptr);
     Collide collide (const Ray& ray) const;
+    virtual Color color (const Vec3 &v = Vec3 ()) const;
     void display (std::ostream& os) const;
 protected:
     void analyseContent (std::stringstream& content);
