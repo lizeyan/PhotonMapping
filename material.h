@@ -15,9 +15,9 @@ public:
     inline float diffusion () const {return _diffusion;}
     inline float refraction () const {return _refraction;}
     inline float refractivity () const {return _refractivity;}
-    inline Color color () {return _color;}
-    inline Color absorb () {return _absorb;}
-    Color color (float x, float y);
+    inline Color color () const {return _color;}
+    inline Color absorb () const {return _absorb;}
+    Color color (float x, float y) const;
     Image* texture () {return _texture.get ();}
 private:
     float _diffusion, _reflection, _refraction;

@@ -163,7 +163,6 @@ void PointLight::display (std::ostream &os) const
 
 bool PointLight::block (Object* ob, const Vec3 &point, Condutor *condutor) const
 {
-    //std::cout << "point:" << point << " center:" << _center << std::endl;
     Vec3 link = _center - point;
     Ray ray = std::make_pair (point, link);
     for (const auto& object:condutor->objects ())
@@ -173,7 +172,6 @@ bool PointLight::block (Object* ob, const Vec3 &point, Condutor *condutor) const
         Collide collide = object->collide (ray);
         if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
         {
-            //std::cout << "collide point:" << collide.point << std::endl;
             return true;
         }
     }
@@ -249,7 +247,6 @@ bool RectLight::block (Object *ob, const Vec3 &point, Condutor *condutor) const
             Collide collide = object->collide (ray);
             if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
             {
-                //std::cout << "collide point:" << collide.point << std::endl;
                 return true;
             }
         }
@@ -432,7 +429,6 @@ bool CircleLight::block (Object *ob, const Vec3 &point, Condutor *condutor) cons
             Collide collide = object->collide (ray);
             if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
             {
-                //std::cout << "collide point:" << collide.point << std::endl;
                 return true;
             }
         }

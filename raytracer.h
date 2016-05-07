@@ -13,7 +13,7 @@ public:
     Color run ();
     Ray ray() {return _ray;}
 protected:
-    Color calcDiffusion (const Collide& collide, Object* object, Light* light);
+    Color calcDiffusion (Light* light);
     void handleDiffusion ();
     void handleReflection ();
     void handleRefraction ();

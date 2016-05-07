@@ -3,10 +3,11 @@
 #include <regex>
 #include <fstream>
 #include <random>
-const float EPS = 1e-2f;
+const float EPS = 1e-3f;
 const float PI = 3.141592654f;
 const float PI_Double = 6.283185307f;
-const std::regex entryReg("^\\s*([\\w\\d-_.](\\s*[\\w\\d-_.])*)\\s*:\\s*([\\w\\d-_.](\\s*[\\w\\d-_.])*)\\s*(#.*)?");
+const float PI_Half = 1.5707963267948966192313216916398f;
+const std::regex entryReg("^\\s*([\\w\\d-_.](\\s*[\\w\\d-_.])*)\\s*:\\s*([\\w\\d-_./](\\s*[\\w\\d-_./])*)\\s*(#.*)?");
 const int keyRank = 1;
 const int valueRank = 3;
 const int commentRank = 5;

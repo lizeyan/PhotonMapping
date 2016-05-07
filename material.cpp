@@ -14,6 +14,7 @@ Material* Material::produce (const std::string &content)
     Color color, absorb;
     float diffusion = 1, reflection = 0, refraction = 0;
     float refractivity = 1;
+    Image* texture = nullptr;
     while (!entryStream.eof())
     {
         getline (entryStream, line);
@@ -48,15 +49,14 @@ Material* Material::produce (const std::string &content)
         }
         else if (key == std::string ("texture"))
         {
-            _texture.reset (new Image(value));
+            texture = (new Image(value));
         }
-
         else
         {
             throw std::logic_error("unexcepted key type in scene, material");
         }
     }
-    return new Material(diffusion, reflection, refraction, color, absorb, refractivity);
+    return new Material(diffusion, reflection, refraction, color, absorb, refractivity, texture);
 }
 
 void Material::display (std::ostream &os) const
@@ -76,7 +76,7 @@ std::ostream& operator << (std::ostream& os, const Material& material)
     return os;
 }
 
-Color Material::color (float x, float y)
+Color Material::color (float x, float y) const
 {
     if (!_texture)
         throw std::logic_error ("unaccessable memory of _texture");

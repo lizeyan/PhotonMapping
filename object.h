@@ -14,7 +14,7 @@ public:
     Object(Material* = nullptr, Condutor* condutor = nullptr);
     virtual Collide collide (const Ray& ray) const = 0;
     virtual void display (std::ostream& os) const;
-    Material* material () {return _material;}
+    Material* material () const {return _material;}
     virtual Color color (const Vec3& v = Vec3 ()) const = 0;
     inline void setMaterial (Material* m) {_material = m;}
     void calcBoudingBoxes ();
@@ -55,8 +55,11 @@ protected:
     void analyseContent (std::stringstream& content);
     bool check ();
     void init ();
+    void unitize ();
 private:
-    Vec3 _center, _normal;
+    Vec3 _center, _normal, _dx, _dy;
+    float _modelDx, _modelDy;
+    //dx和dy只是为了指定纹理时使用，用来确定纹理的大小和方向
 };
 
 class Triangle: public Object
@@ -92,9 +95,11 @@ protected:
     void analyseContent (std::stringstream& content);
     bool check ();
     void init ();
+    void unitize ();
 private:
     Vec3 _center, _dx, _dy, _dz;
     float _a, _b, _c;
+    float _a_half, _b_half, _c_half;
 };
 
 #endif // OBJECT_H

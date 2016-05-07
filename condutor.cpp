@@ -9,9 +9,12 @@
 #include <fstream>
 #include <ctime>
 #include <thread>
+#include <mutex>
 #include <algorithm>
+//#define DEBUG
 #ifdef DEBUG
 std::ofstream Log("rayTrace.log");
+std::mutex logMutex;
 #endif
 std::mt19937 rd(time(0));
 Condutor::Condutor(std::ifstream& _input): input(_input)
@@ -46,11 +49,13 @@ void Condutor::run ()
         photonTracing(light->emitPhoton ());
     }
  */
-    //ray tracing
+//    ray tracing
 //    Vec3 o = camera ()->center ();
-//    Vec3 link = Vec3(std::array<float,3>{{10, 5, 5}}) - o;
+//    Vec3 link = Vec3(std::array<float,3>{{50, 50, 10}}) - o;
+//    Vec3 link = Vec3 (std::array<float, 3>{{-0.978324, 0, -0.207079}});
 //    RayTracer rt (std::make_pair(o, link), this);
 //    std::cout << rt.run () << std::endl;
+//    singleThread ();
     fixedNumTheads ();
 
     std::cout << "finished" << std::endl;
@@ -211,11 +216,16 @@ void Condutor::handleSegments (int x1, int x2)
             Ray ray = _camera->emitRay(x * dx, y * dy);
             RayTracer rayTracer (ray, this);
 #ifdef DEBUG
+            logMutex.lock ();
             Log << "emitted ray, source:" << ray.first << " direction:" << ray.second << std::endl;
+            Log << "x:" << x << ", y:" << y << std::endl;
+            logMutex.unlock ();
 #endif
             Color c = rayTracer.run ();
 #ifdef DEBUG
+            logMutex.lock ();
             Log << "result:" << c << std::endl;
+            logMutex.unlock ();
 #endif
             _image->setPixel (x, y, c);
         }

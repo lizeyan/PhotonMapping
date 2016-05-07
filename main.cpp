@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     else
         inputFileName = string(argv[1]);
     if (argc < 3)
-        outputFileName = string ("res.bmp");
+        outputFileName = string ("res.jpg");
     else
         outputFileName = string (argv[2]);
     std::ifstream input(inputFileName.c_str ());

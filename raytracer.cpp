@@ -34,10 +34,10 @@ Color RayTracer::run ()
     {
         return color();
     }
-#ifdef DEBUG
-    Log << "nearest intersect object:" << *nearest << std::endl;
-    Log << "collide point of it:" << collide.point << " normal:" << collide.normal << std::endl;
-#endif
+//#ifdef DEBUG
+//    Log << "nearest intersect object:" << *nearest << std::endl;
+//    Log << "collide point of it:" << collide.point << " normal:" << collide.normal << std::endl;
+//#endif
     //calc diffusion
     handleDiffusion ();
     if (_depth > MAX_RAY_TRACING_DEPTH)
@@ -51,14 +51,14 @@ Color RayTracer::run ()
     return color ();
 }
 
-Color RayTracer::calcDiffusion (const Collide &collide, Object *object, Light *light)
+Color RayTracer::calcDiffusion (Light *light)
 {
     Color illuminate = light->illuminate (collide.point, collide.normal);
-    Color material = object->color ();
-    float diff = object->material ()->diffusion ();
-#ifdef DEBUG
-    Log << "illuminate:" << illuminate << " material:" << material << " diff:" << diff << std::endl;
-#endif
+    Color material = nearest->color (collide.point);
+    float diff = nearest->material ()->diffusion ();
+//#ifdef DEBUG
+//    Log << "illuminate:" << illuminate << " material:" << material << " diff:" << diff << std::endl;
+//#endif
     return diff * material * illuminate;
 }
 
@@ -70,7 +70,7 @@ void RayTracer::handleDiffusion ()
         //test shadow
         if (light->block (nearest, collide.point, condutor ()))
             continue;
-        resColor += calcDiffusion (collide, nearest, light.get ());
+        resColor += calcDiffusion (light.get ());
     }
     setColor (resColor);
 }
@@ -83,9 +83,9 @@ void RayTracer::handleReflection ()
     if (dot(N, I) < -EPS)
     {
         Vec3 R = I - 2 * dot (I, N) * N;
-        std::unique_ptr<RayTracer> reflTracer(new RayTracer(std::make_pair(collide.point + R, R), condutor (), _depth + 1));
+        std::unique_ptr<RayTracer> reflTracer(new RayTracer(std::make_pair(collide.point + EPS * R, R), condutor (), _depth + 1));
         Color reflColor = reflTracer->run ();
-        resColor += nearest->material ()->reflection () * reflColor * nearest->color ();
+        resColor += nearest->material ()->reflection () * reflColor * nearest->color (collide.point);
     }
     setColor (resColor);
 }
@@ -110,15 +110,15 @@ void RayTracer::handleRefraction ()
     }
     double cost = sqrt (1 - n * n * (1 - cosi * cosi));
     Vec3 T = -n * I + (n * cosi - cost) * N;
-    std::unique_ptr<RayTracer> refrTracer(new RayTracer(std::make_pair(collide.point + T, T), condutor (), _depth + 1));
+    std::unique_ptr<RayTracer> refrTracer(new RayTracer(std::make_pair(collide.point + EPS * T, T), condutor (), _depth + 1));
     Color refrColor = refrTracer->run ();
-#ifdef DEBUG
-    if (_depth == 0)
-    {
-        Log << "T:" << T << std::endl;
-        Log << "refr Color:" << refrColor << std::endl;
-    }
-#endif
+//#ifdef DEBUG
+//    if (_depth == 0)
+//    {
+//        Log << "T:" << T << std::endl;
+//        Log << "refr Color:" << refrColor << std::endl;
+//    }
+//#endif
     resColor += nearest->material ()->refraction () * refrColor * nearest->material ()->absorb ();
     setColor (resColor);
 }

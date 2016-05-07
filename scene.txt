@@ -4,97 +4,93 @@
 
 start camera
     size: 50 50
-    dx:1 -0.6 0
-    dy:0.36 0.6 1.36
-    center:-2 2 0.5
-    normal:0.6 1 -0.6
+    dx:0 -1 0
+    dy:0 0 1
+    center:95 50 30
+    normal:-1 0 0
     focus: 30
-    dpi: 10
+    dpi: 20
     environment: 0 0 0
 end
 
 #add circle light
 start light
-    type: circle
-    center: 3 3 3
-    normal: 0 0 -1
-    radius: 1.5
-    color: 25 25 25
+    type: point
+    center: 50 50 90
+    #normal: 0 0 -1
+    #radius: 50
+    color: 1 1 1
 end
 
 start material #rank0
-    color: 1 0 0
-    absorb: 1 0 0 
-    diffusion: 0
-    reflection: 0
-    refraction: 1
-    refractivity: 1.7
-end
-
-start material #rank1
-    color: 1 0 0
-    absorb: 0 1 0 
-    diffusion: 0
-    reflection: 0
-    refraction: 1
-    refractivity: 1.7
-end
-
-start material #rank2
     color: 0.5 0.5 1
-    absorb: 0 0 0
-    diffusion: 0
-    reflection: 1
-    refraction: 0
-end
-
-start material # rank3
-    color: 1 1 1
-    absorb: 0 0 0
-    diffusion: 0.7
-    reflection: 0.3
-    refraction: 0
-end
-
-start material # rank3
-    color: 1 1 1
-    absorb: 0 0 0
+    absorb: 1 0 0
     diffusion: 0.5
     reflection: 0.5
     refraction: 0
+
+end
+
+start material #rank1 for plane
+    color: 1 1 1
+    absorb: 1 1 1
+    diffusion: 0.5
+    reflection: 0.5
+    refraction: 0
+    texture: ../floor.bmp
+end
+
+start material #rank2
+    color: 1 1 1
+    absorb: 1 0 0
+    diffusion: 0.8
+    reflection: 0.2
+    refraction: 0
+    refractivity: 1.7
+    texture: ../marble.bmp
+end
+
+start material # rank3
+    color: 1 0 0
+    absorb: 0 0 0
+    diffusion: 0.2
+    reflection: 0
+    refraction: 0.8
+    refractivity: 1.2
 end
 
 start object
     type: sphere
-    center: -0.5 5.14 -1.8
-    material: 0
-    radius: 0.2
-end
-
-start object
-    type: sphere
-    center: 0 5 -1.8
-    material: 1
-    radius: 0.2
-end
-
-start object
-    type: sphere
-    center: 1.5 6.3 -1.6
+    center: 50 50 10
     material: 2
-    radius: 0.4
+    radius: 10
 end
 
 start object
     type: sphere
-    center: 0 6 -1.5
-    material: 3
-    radius: 0.5
+    center: 20 30 5
+    material: 0
+    radius: 5
+end
+
+#=========this is a cobic consisting of triangles==============
+start object
+    type: cobic
+    material: 2
+    a: 10
+    b: 10
+    c: 10
+    center: 5 5 5
+    dx: 1 0 0
+    dy: 0 1 0
+    dz: 0 0 1
 end
 
 start object
     type: plane
-    center: 0 0 0 
+    center: 0 0 0
+    material: 1
     normal: 0 0 1
-    material: 4
+    dx: 50 0 0
+    dy: 0 50 0
 end
