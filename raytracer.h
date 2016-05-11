@@ -17,6 +17,7 @@ protected:
     void handleDiffusion ();
     void handleReflection ();
     void handleRefraction ();
+    void calcNearestCollide ();
 private:
     Ray _ray;
     Object* nearest;

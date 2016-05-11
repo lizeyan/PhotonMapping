@@ -15,20 +15,7 @@ RayTracer::RayTracer(const Ray& ray, Condutor* condutor, int depth): Tracer (con
 Color RayTracer::run ()
 {
     setColor (condutor ()->camera ()->environment ());
-    //std::cout << "ray tracer, run" << std::endl;
-    //find nearest object
-    collide.distance = 1 << 30;
-    for (const auto& object: condutor ()->objects ())
-    {
-        Collide tmpCollide = object->collide (_ray);
-        if (!tmpCollide.collide)
-            continue;
-        if (tmpCollide.distance < collide.distance)
-        {
-            nearest = object.get ();
-            collide = std::move(tmpCollide);
-        }
-    }
+    calcNearestCollide ();
     //no collide found
     if (nearest == nullptr)
     {
@@ -49,6 +36,33 @@ Color RayTracer::run ()
     if (nearest->material ()->refraction () > EPS)
         handleRefraction ();
     return color ();
+}
+
+void RayTracer::calcNearestCollide ()
+{
+    nearest = nullptr;
+    collide.distance = Bound;
+    std::vector<std::pair<Object*, Collide> > potentialObs = condutor ()->kdTree ()->kdSearch (_ray);
+    if (potentialObs.size())
+    {
+        collide.collide = true;
+    }
+    for (const auto& entry: potentialObs)
+    {
+        if (entry.second.distance < collide.distance)
+        {
+            collide = std::move (entry.second);
+            nearest = entry.first;
+        }
+    }
+#ifdef DEBUG
+    Log << "depth:" << _depth << std::endl;
+    if (nearest)
+    {
+        Log << "nearest:" << *nearest << std::endl;
+        Log << "collide point:" << collide.point << std::endl;
+    }
+#endif
 }
 
 Color RayTracer::calcDiffusion (Light *light)

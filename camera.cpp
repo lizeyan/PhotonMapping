@@ -9,8 +9,16 @@ Camera::Camera(const std::string content)
 {
     init ();
     analyseContent (content);
+    preHandle ();
     if (!check ())
         throw std::logic_error("incorrect camera argument");
+}
+
+void Camera::preHandle ()
+{
+    _dx = standardize (_dx);
+    _dy = standardize (_dy);
+    _normal = standardize (_normal);
 }
 
 void Camera::display (std::ostream &os) const
@@ -55,7 +63,7 @@ Ray Camera::emitRay (float x, float y)
 {
     x = (_width >> 1) - x;
     y = (_height >> 1) - y;
-    Vec3 a = _focus * standardize(_normal);
+    Vec3 a = _focus * _normal;
     Vec3 b = x * _dx + y * _dy;
     Vec3 direction = standardize(a + b);
     return std::make_pair (_center, direction);

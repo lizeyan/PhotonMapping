@@ -55,18 +55,33 @@ void Object::display (std::ostream &os) const
 }
 
 //=======================================================================================
-Sphere::Sphere (const Vec3 &center, float radius, Material *material, Condutor* condutor): Object (material, condutor), _center (center), _radius (radius)
+Sphere::Sphere (const Vec3 &center, float radius, Material *material, Condutor* condutor, bool need): Object (material, condutor), _center (center), _radius (radius), _needBoudingBox (need)
 {
-
+    preHandle ();
 }
 
-Sphere::Sphere (std::stringstream &content, Condutor* condutor)
+Sphere::Sphere (std::stringstream &content, Condutor* condutor):_needBoudingBox (true)
 {
     init ();
     setCondutor (condutor);
     analyseContent (content);
+    preHandle ();
     if (!check ())
         throw std::logic_error ("incorrect argument of sphere");
+}
+
+void Sphere::preHandle ()
+{
+    _r2 = _radius * _radius;
+    float rDouble = _radius * 2;
+    if (_needBoudingBox)
+        _boudingBox = (new Cobic (_center, unitX, unitY, unitZ, rDouble, rDouble, rDouble, material (), condutor ()));
+}
+
+Sphere::~Sphere ()
+{
+    if (_needBoudingBox)
+        delete _boudingBox;
 }
 
 Color Sphere::color (const Vec3 &v) const
@@ -150,18 +165,17 @@ Collide Sphere::collide (const Ray &ray) const
     float tp = dot (l, rd);
     float tp2 = tp * tp;
     float d2 = l2 - tp2;
-    float r2 = _radius * _radius;
     Collide res;
-    if (d2 > r2 || (l2 > (r2 = _radius * _radius) && tp < 0))
+    if (d2 > _r2 || (l2 > _r2 && tp < 0))
     {
         res.collide = false;
     }
     else
     {
-        float t_2 = r2 - d2;
+        float t_2 = _r2 - d2;
         float t_ = sqrt (t_2);
         float t = tp;
-        if (l2 < r2)
+        if (l2 < _r2)
             t += t_;
         else
             t -= t_;
@@ -182,7 +196,7 @@ Collide Sphere::collide (const Ray &ray) const
     {
         res.point = Vec3 ();
         res.normal = Vec3 ();
-        res.distance = 1 << 30;
+        res.distance = Bound;
     }
     return std::move (res);
 }
@@ -197,24 +211,39 @@ void Sphere::display (std::ostream &os) const
 }
 
 //=======================================================================================
-Plane::Plane (const Vec3& center, const Vec3& normal, Material* material, Condutor* conductor):Object(material, conductor), _center (center), _normal (normal)
+Plane::Plane (const Vec3& center, const Vec3& normal, Material* material, Condutor* conductor, bool need):Object(material, conductor), _center (center), _normal (normal), _needBoudingBox (need)
 {
-    unitize ();
+    preHandle ();
 }
 
-Plane::Plane (std::stringstream &content, Condutor* condutor)
+Plane::Plane (std::stringstream &content, Condutor* condutor):_needBoudingBox (true)
 {
     init ();
     setCondutor (condutor);
     analyseContent (content);
-    unitize ();
+    preHandle ();
     if (!check ())
         throw std::logic_error ("incorrect argument of plane");
 }
 
-void Plane::unitize ()
+void Plane::preHandle ()
 {
     _normal = standardize (_normal);
+    _dot_center_normal = dot (_center, _normal);
+    if (_needBoudingBox)
+        _boudingBox = (new Cobic(_center, unitX, unitY, unitZ, Bound, Bound, Bound, material (), condutor ()));
+    _d = -dot (_center, _normal);
+}
+
+float Plane::calc (const Vec3 &point) const
+{
+    return dot (point, _normal) + _d;
+}
+
+Plane::~Plane ()
+{
+    if (_needBoudingBox)
+        delete _boudingBox;
 }
 
 Color Plane::color (const Vec3 &v) const
@@ -226,7 +255,9 @@ Color Plane::color (const Vec3 &v) const
         Vec3 r = v - _center;
         float x = fabs(dot (r, _dx));
         float y = fabs(dot (r, _dy));
-        return this->material ()->color ((x - _modelDx * int(x / _modelDx)) / _modelDx, (y - _modelDy * int(y / _modelDy)) / _modelDy);
+        float xRadio = (x - _modelDx * int(x / _modelDx)) / _modelDx;
+        float yRadio = (y - _modelDy * int(y / _modelDy)) / _modelDy;
+        return this->material ()->color (xRadio, yRadio);
     }
 }
 
@@ -310,16 +341,15 @@ Collide Plane::collide (const Ray &ray) const
 {
     Collide res;
     Vec3 rd = standardize (ray.second);
-    Vec3 n = standardize (_normal);
-    float rd_n = dot (rd, n);
-    res.distance = 1 << 30;
+    float rd_n = dot (rd, _normal);
+    res.distance = Bound;
     if (fabs(rd_n) < EPS)
         res.collide = false;
     else
     {
-        res.distance = (dot(_center, _normal) - dot(_normal, ray.first)) / rd_n;
+        res.distance = (_dot_center_normal - dot(_normal, ray.first)) / rd_n;
         res.point = ray.first + res.distance * rd;
-        res.normal = n;
+        res.normal = _normal;
         if (res.distance > 0)
             res.collide = true;           
         else
@@ -338,15 +368,17 @@ void Plane::display (std::ostream &os) const
 }
 
 //======================================
-Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor):Object (material, condutor), _a(a), _b(b), _c(c)
+Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor, bool need):Object (material, condutor), _a(a), _b(b), _c(c), _needBoudingBox (need)
 {
+    preHandle ();
 }
 
-Triangle::Triangle (std::stringstream &content, Condutor *condutor)
+Triangle::Triangle (std::stringstream &content, Condutor *condutor):_needBoudingBox (true)
 {
     init ();
     setCondutor (condutor);
     analyseContent (content);
+    preHandle ();
     if (!check ())
         throw std::logic_error ("incorrect argument of triangle");
 }
@@ -360,6 +392,45 @@ Color Triangle::color (const Vec3 &v) const
         std::cout << "warning: incomplete color for triangle" << std::endl;
         return Color ();
     }
+}
+
+void Triangle::preHandle ()
+{
+    if (_needBoudingBox)
+    {
+        float maxX = _a.arg (0), maxY = _a.arg (1), maxZ = _a.arg (2);
+        float minX = _a.arg (0), minY = _a.arg (1), minZ = _a.arg (2);
+        if (_b.arg (0) > maxX)
+            maxX = _b.arg (0);
+        else if (_b.arg (0) < minX)
+            minX = _b.arg (0);
+        if (_c.arg (0) > maxX)
+            maxX = _c.arg (0);
+        else if (_c.arg (0) < minX)
+            minX = _c.arg (0);
+        if (_b.arg (1) > maxY)
+            maxY = _b.arg (1);
+        else if (_b.arg (1) < minY)
+            minY = _b.arg (1);
+        if (_c.arg (1) > maxY)
+            maxY = _c.arg (1);
+        else if (_c.arg (1) < minY)
+            minY = _c.arg (1);
+        if (_b.arg (2) > maxZ)
+            maxZ = _b.arg (2);
+        else if (_b.arg (0) < minZ)
+            minZ = _b.arg (2);
+        if (_c.arg (2) > maxZ)
+            maxZ = _c.arg (2);
+        else if (_c.arg (2) < minZ)
+            minZ = _c.arg (2);
+        _boudingBox = (new Cobic (Vec3(std::array<float,3> {{(maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2}}), unitX, unitY, unitZ, maxX - minX, maxY - minY, maxZ - minZ, material (), condutor ()));
+    }
+}
+Triangle::~Triangle ()
+{
+    if (_needBoudingBox)
+        delete _boudingBox;
 }
 
 void Triangle::init ()
@@ -473,7 +544,7 @@ Collide Triangle::collide (const Ray &ray) const
     fail:
     {
         res.collide = false;
-        res.distance = 1 << 30;
+        res.distance = Bound;
         res.normal = Vec3 ();
         res.point = Vec3 ();
         return res;
@@ -482,25 +553,44 @@ Collide Triangle::collide (const Ray &ray) const
 
 //=========================================
 
-Cobic::Cobic (std::stringstream &content, Condutor *condutor)
+Cobic::Cobic (std::stringstream &content, Condutor *condutor):_needBoudingBox (true)
 {
     setCondutor (condutor);
     init ();
     analyseContent (content);
-    unitize ();
+    preHandle ();
     if (!check ())
         throw std::logic_error ("invalid arguments, Cobic");
 }
-Cobic::Cobic (const Vec3 &center, const Vec3 &dx, const Vec3 &dy, const Vec3 &dz, float a, float b, float c, Material* material, Condutor *condutor): Object (material, condutor), _center (center), _dx(dx), _dy(dy), _dz (dz), _a(a), _b(b), _c(c), _a_half (_a / 2), _b_half (_b / 2), _c_half (_c / 2)
+Cobic::Cobic (const Vec3 &center, const Vec3 &dx, const Vec3 &dy, const Vec3 &dz, float a, float b, float c, Material* material, Condutor *condutor, bool need): Object (material, condutor), _center (center), _dx(dx), _dy(dy), _dz (dz), _a(a), _b(b), _c(c), _a_half (_a / 2), _b_half (_b / 2), _c_half (_c / 2), _needBoudingBox (need)
 {
-    unitize ();
+    preHandle ();
 }
 
-void Cobic::unitize ()
+Cobic::~Cobic ()
+{
+
+}
+
+void Cobic::preHandle ()
 {
     _dx = standardize (_dx);
     _dy = standardize (_dy);
     _dz = standardize (_dz);
+    _x_h = _center.arg (0) + _a_half;
+    _x_l = _center.arg (0) - _a_half;
+    _y_h = _center.arg (1) + _b_half;
+    _y_l = _center.arg (1) - _b_half;
+    _z_h = _center.arg (2) + _c_half;
+    _z_l = _center.arg (2) - _c_half;
+    if (_needBoudingBox)
+        _boudingBox = this;
+    _sides[0][0] = Plane (_center + _a_half * _dx, _dx);
+    _sides[1][0] = Plane (_center - _a_half * _dx, -1 * _dx);
+    _sides[0][1] = Plane (_center + _b_half * _dy, _dy);
+    _sides[1][1] = Plane (_center - _b_half * _dy,  -1 *_dy);
+    _sides[0][2] = Plane (_center + _c_half * _dz, _dz);
+    _sides[1][2] = Plane (_center - _c_half * _dz,  -1 *_dz);
 }
 
 Color Cobic::color (const Vec3 &v) const
@@ -532,30 +622,57 @@ Color Cobic::color (const Vec3 &v) const
 
 Collide Cobic::collide (const Ray &ray) const
 {
-    Collide co1[3] = {Plane (_center + _a_half * _dx, _dx).collide (ray), Plane (_center + _b_half * _dy, _dy).collide (ray), Plane (_center + _c_half * _dz, _dz).collide (ray)}, co2[3] = {Plane (_center - _a_half * _dx, -1 * _dx).collide (ray), Plane (_center - _b_half * _dy,  -1 *_dy).collide (ray), Plane (_center - _c_half * _dz,  -1 *_dz).collide (ray)};
+//    Collide co1[3] = {Plane (_center + _a_half * _dx, _dx).collide (ray), Plane (_center + _b_half * _dy, _dy).collide (ray), Plane (_center + _c_half * _dz, _dz).collide (ray)}, co2[3] = {Plane (_center - _a_half * _dx, -1 * _dx).collide (ray), Plane (_center - _b_half * _dy,  -1 *_dy).collide (ray), Plane (_center - _c_half * _dz,  -1 *_dz).collide (ray)};
+    Collide co[2][3];
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 3; ++j)
+            co[i][j] = _sides[i][j].collide (ray);
     for (int i = 0; i < 3; ++i)
-        if (co1[i].distance > co2[i].distance)
+    {
+        if (co[0][i].distance > co[1][i].distance)
         {
-            std::swap (co1[i], co2[i]);
+            std::swap (co[0][i], co[1][i]);
         }
-    Collide *tmax1 = co1, *tmin2 = co2;
+        //此时光线和这一组边平行
+        if (co[0][i].distance == Bound && co[1][i].distance == Bound)
+        {
+            float d1 = _sides[0][i].calc (ray.first), d2 = _sides[1][i].calc (ray.first);
+            if ((d1 > 0 && d2 > 0) || (d1 < 0 && d2 < 0))
+            {
+                co[0][i].distance = -Bound;
+            }
+        }
+    }
+    Collide *tmax1 = co[0], *tmin2 = co[1];
     for (int i = 1; i < 3; ++i)
     {
-        if (tmax1->distance < co1[i].distance)
-            tmax1 = &co1[i];
-        if (tmin2->distance > co2[i].distance)
-            tmin2 = &co2[i];
+        if (tmax1->distance < co[0][i].distance)
+        {
+            tmax1 = co[0] + i;
+        }
+        if (tmin2->distance > co[1][i].distance)
+            tmin2 = co[1] + i;
     }
     if (tmax1->distance > tmin2->distance)
     {
         Collide res;
         res.collide = false;
-        res.distance = 1 << 30;
+        res.distance = Bound;
         return res;
     }
     else
     {
-        return *tmax1;
+//        tmax1->collide = co1[rankMax].collide || co2[rankMax].collide;
+        if (tmax1->collide)
+            return *tmax1;
+        else//说明co[0]中所有的distance都小于0
+        {
+            Collide* r = co[1];
+            for (int i = 1; i < 3; ++i)
+                if (co[1][i].distance < r->distance)
+                    r = co[1] + i;
+            return *r;
+        }
     }
 }
 

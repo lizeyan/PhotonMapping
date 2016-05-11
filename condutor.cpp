@@ -1,7 +1,6 @@
 #include "base.h"
 #include "condutor.h"
 #include "raytracer.h"
-#include "photontracer.h"
 #include <string>
 #include <regex>
 #include <utility>
@@ -11,7 +10,6 @@
 #include <thread>
 #include <mutex>
 #include <algorithm>
-//#define DEBUG
 #ifdef DEBUG
 std::ofstream Log("rayTrace.log");
 std::mutex logMutex;
@@ -21,6 +19,10 @@ Condutor::Condutor(std::ifstream& _input): input(_input)
 {
     init ();
     readScene ();
+#ifdef DEBUG
+    Log << "read scene" << std::endl;
+#endif
+    _kdTree.reset (new KdTree(this));
     //debug
 #ifdef DEBUG
 
@@ -42,17 +44,11 @@ Condutor::~Condutor ()
 void Condutor::run ()
 {
     std::cout << "running" << std::endl;
-    /*
-    //eimt photons and build photon map
-    for (const auto& light: lights)
-    {
-        photonTracing(light->emitPhoton ());
-    }
- */
 //    ray tracing
 //    Vec3 o = camera ()->center ();
-//    Vec3 link = Vec3(std::array<float,3>{{50, 50, 10}}) - o;
-//    Vec3 link = Vec3 (std::array<float, 3>{{-0.978324, 0, -0.207079}});
+//    Vec3 o = Vec3(std::array<float,3>{{10.0001, 6.83336, 100.833}});
+//    Vec3 link = Vec3(std::array<float,3>{{70, 50, 10}}) - o;
+//    Vec3 link = Vec3 (std::array<float, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
 //    std::cout << rt.run () << std::endl;
 //    singleThread ();
@@ -139,14 +135,6 @@ void Condutor::addElement (const std::string &name, const std::string &content)
         std::unique_ptr<Object> ptr(Object::produce(content, this));
         _objects.push_back (std::move(ptr));
     }
-    else if (name == std::string("photonMap"))
-    {
-        if (_photonMap)
-        {
-            std::cout << "warning: redefine a photon map, content" << std::endl << content << std::endl;
-        }
-        _photonMap.reset (new PhotonMap(content));
-    }
     else if (name == std::string("material"))
     {
         std::unique_ptr<Material> ptr (Material::produce (content));
@@ -195,7 +183,7 @@ void Condutor::fixedNumTheads ()
     {
         threads[i] = std::move (std::unique_ptr<std::thread>(new std::thread(&Condutor::handleSegments, this, i * segment, (i + 1) * segment)));
     }
-    threads[maxThreadNum - 1] = std::move (std::unique_ptr<std::thread>(new std::thread(&Condutor::handleSegments, this, (maxThreadNum - 1) * segment, camera ()->width () - 1)));
+    threads[maxThreadNum - 1] = std::move (std::unique_ptr<std::thread>(new std::thread(&Condutor::handleSegments, this, (maxThreadNum - 1) * segment, camera ()->width ())));
     for (int i = 0; i < maxThreadNum; ++i)
         threads[i]->join ();
 }

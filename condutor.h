@@ -3,9 +3,9 @@
 #include "light.h"
 #include "color.h"
 #include "object.h"
+#include "kdtree.h"
 #include "camera.h"
 #include "image.h"
-#include "photonmap.h"
 #include <memory>
 #include <vector>
 #include <string>
@@ -23,10 +23,10 @@ public:
     inline void setOutputFileName(const std::string& output) {outputName = output;}
     Image* image () {return _image.get ();}
     Camera* camera () {return _camera.get ();}
-    PhotonMap* photonMap () {return _photonMap.get ();}
     std::vector<std::unique_ptr<Light> >& lights () {return _lights;}
     std::vector<std::unique_ptr<Object> >& objects () {return _objects;}
     std::vector<std::unique_ptr<Material> >& materials () {return _materials;}
+    KdTree* kdTree () {return _kdTree.get ();}
 protected:
     void init ();
     void readScene ();
@@ -43,7 +43,8 @@ private:
     std::vector<std::unique_ptr<Object> > _objects;//innitialized in readScene
     std::vector<std::unique_ptr<Material> > _materials;//initialized in readScene.
     std::unique_ptr<Camera> _camera;//innitialized in readScene
-    std::unique_ptr<PhotonMap> _photonMap;//initialized in readScene
+
+    std::unique_ptr<KdTree> _kdTree;
 };
 
 #endif // CONDUTOR_H

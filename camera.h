@@ -24,6 +24,7 @@ protected:
     void analyseContent (const std::string& content);
     void init ();
     bool check ();
+    void preHandle ();
 private:
     int _width;
     int _height;
