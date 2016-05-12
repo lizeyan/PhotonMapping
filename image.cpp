@@ -55,7 +55,7 @@ bool Image::save (const std::string &fileName)
 {
     for (int i = 0; i < _width; ++i)
         for (int j = 0; j < _height; ++j)
-            image->setPixelColor (i, j, toQColor (_data[i][j]));
+            image->setPixel(i, j, toQColor (_data[i][j]).rgb ());
     return image->save (fileName.c_str (), "JPG", 100);
 }
 

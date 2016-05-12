@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     ray.cpp \
     vector.cpp \
     kdtree.cpp \
-    kdnode.cpp
+    kdnode.cpp \
+    objectparser.cpp
 
 HEADERS += \
     condutor.h \
@@ -33,4 +34,5 @@ HEADERS += \
     tracer.h \
     raytracer.h \
     kdtree.h \
-    kdnode.h
+    kdnode.h \
+    objectparser.h

@@ -70,7 +70,7 @@ start object
 end
 
 start model
-    model: ../models/fandisk.18k.obj
+    model: ../models/cube.obj
     center: 20 20 20
     size: 1
     rotate: 0 0 0
