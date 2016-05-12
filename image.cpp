@@ -26,9 +26,9 @@ Image::Image (std::string fileName)
     for (int i = 0; i < _width; ++i)
         for (int j = 0; j < _height; ++j)
         {
-            _data[i][j][0] = image->pixelColor (i, j).redF ();
-            _data[i][j][1] = image->pixelColor (i, j).greenF ();
-            _data[i][j][2] = image->pixelColor (i, j).blueF ();
+            _data[i][j][0] = qRed(image->pixel(i, j)) / 255.0;
+            _data[i][j][1] = qGreen (image->pixel(i, j)) / 255.0;
+            _data[i][j][2] = qBlue(image->pixel(i, j)) / 255.0;
         }
 }
 
