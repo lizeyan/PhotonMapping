@@ -1,5 +1,6 @@
 #ifndef CONDUTOR_H
 #define CONDUTOR_H
+#include "objectparser.h"
 #include "light.h"
 #include "color.h"
 #include "object.h"
@@ -45,6 +46,7 @@ private:
     std::unique_ptr<Camera> _camera;//innitialized in readScene
 
     std::unique_ptr<KdTree> _kdTree;
+    std::unique_ptr<ObjectParser> _parser;
 };
 
 #endif // CONDUTOR_H

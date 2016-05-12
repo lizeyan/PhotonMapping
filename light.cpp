@@ -149,7 +149,7 @@ Color PointLight::illuminate (const Vec3 &point, const Vec3 &normal)
     Vec3 admitLight = standardize(_center - point);
     float coefficient = dot (admitLight, standardize(normal));
     if (coefficient < 0)
-        return Color ();
+        coefficient = -coefficient;
     return coefficient * color ();
 }
 

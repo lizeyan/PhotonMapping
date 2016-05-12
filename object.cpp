@@ -350,6 +350,10 @@ Collide Plane::collide (const Ray &ray) const
         res.distance = (_dot_center_normal - dot(_normal, ray.first)) / rd_n;
         res.point = ray.first + res.distance * rd;
         res.normal = _normal;
+        if (rd_n > 0)
+        {
+            res.normal = -1 * res.normal;
+        }
         if (res.distance > 0)
             res.collide = true;           
         else
@@ -396,6 +400,10 @@ Color Triangle::color (const Vec3 &v) const
 
 void Triangle::preHandle ()
 {
+    if (_normal == Vec3 ())
+    {
+        _normal = standardize (cross (_a - _b, _a - _c));
+    }
     if (_needBoudingBox)
     {
         float maxX = _a.arg (0), maxY = _a.arg (1), maxZ = _a.arg (2);

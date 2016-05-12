@@ -126,7 +126,6 @@ void Camera::analyseContent (const std::string &content)
         {
             throw std::logic_error ("unexcepted key type in scene, camera");
         }
-
     }
 }
 

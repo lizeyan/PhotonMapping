@@ -15,7 +15,7 @@ std::ofstream Log("rayTrace.log");
 std::mutex logMutex;
 #endif
 std::mt19937 rd(time(0));
-Condutor::Condutor(std::ifstream& _input): input(_input)
+Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectParser(this))
 {
     init ();
     readScene ();
@@ -23,7 +23,6 @@ Condutor::Condutor(std::ifstream& _input): input(_input)
     Log << "read scene" << std::endl;
 #endif
     _kdTree.reset (new KdTree(this));
-    //debug
 #ifdef DEBUG
 
     Log << *_camera << std::endl;
@@ -47,7 +46,7 @@ void Condutor::run ()
 //    ray tracing
 //    Vec3 o = camera ()->center ();
 //    Vec3 o = Vec3(std::array<float,3>{{10.0001, 6.83336, 100.833}});
-//    Vec3 link = Vec3(std::array<float,3>{{70, 50, 10}}) - o;
+//    Vec3 link = Vec3(std::array<float,3>{{50, 50, 10}}) - o;
 //    Vec3 link = Vec3 (std::array<float, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
 //    std::cout << rt.run () << std::endl;
@@ -139,6 +138,10 @@ void Condutor::addElement (const std::string &name, const std::string &content)
     {
         std::unique_ptr<Material> ptr (Material::produce (content));
         _materials.push_back (std::move(ptr));
+    }
+    else if (name == std::string ("model"))
+    {
+        _parser->parse (content);
     }
     else
     {

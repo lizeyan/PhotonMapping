@@ -20,6 +20,7 @@ public:
 private:
     std::array<float, N> _args;
 };
+typedef Vector<3> Vec3;
 template <std::size_t N>
 std::ostream& operator<< (std::ostream& os, const Vector<N>& vec)
 {
@@ -194,4 +195,13 @@ inline float det (const Vector<3> &a, const Vector<3> &b, const Vector<3> &c)
 {
     return a.arg (0) * (b.arg (1) * c.arg (2) - b.arg (2) * c.arg (1)) + b.arg (0) * (c.arg (1) * a.arg (2) - c.arg (2) * a.arg (1)) + c.arg (0) * (a.arg (1) * b.arg (2) - a.arg (2) * b.arg (1));
 }
+
+inline Vec3 rotate (const Vec3& vec, const Vec3& r)
+{
+    float c0 = cos(r.arg (0)), s0 = sin (r.arg (0));
+    float c1 = cos(r.arg (1)), s1 = sin (r.arg (1));
+    float c2 = cos(r.arg (2)), s2 = sin (r.arg (2));
+    return Vec3 (std::array<float, 3> {{c1 * c2 * vec.arg (0) - (c0 * c1 * s2 + s0 * s1 * c2) * vec.arg (1) + (s0 * s2 * c1 + s1 * c0 * c2) * vec.arg (2), c1 * s2 * vec.arg (0) + (c0 * c1 * c2 - s0 * s1 * s2) * vec.arg (1) + (-s0 * c1 * c1 + c0 * s1 * s2) * vec.arg (2), -s1 * vec.arg (0) - c1 * s0 * vec.arg (1) + c0 * c1 * vec.arg (2)}});
+}
+
 #endif
