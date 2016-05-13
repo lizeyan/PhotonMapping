@@ -35,6 +35,7 @@ protected:
     void oneThreadPerRay ();
     void fixedNumTheads ();
     void handleSegments (int x1, int x2);
+    void handlePart (int remainder);
     void addElement (const std::string& name, const std::string& content);
 private:
     std::string outputName;

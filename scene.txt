@@ -88,11 +88,3 @@ start object
     dx: 50 0 0
     dy: 0 50 0
 end
-
-start model
-    model: ../models/block.obj
-    material: 0
-    center: 0 0 0
-    size: 5
-    rotate: 0 0 0
-end
