@@ -35,7 +35,7 @@ Vector<N>::Vector (const std::array<double, N> &args):_args(args)
 {
 }
 template <std::size_t N>
-double Vector<N>::arg (unsigned int n) const
+inline double Vector<N>::arg (unsigned int n) const
 {
     if (n < 0 || n >= N)
     {
@@ -44,7 +44,7 @@ double Vector<N>::arg (unsigned int n) const
     return _args[n];
 }
 template <std::size_t N>
-double& Vector<N>::operator [] (unsigned int n)
+inline double& Vector<N>::operator [] (unsigned int n)
 {
     if (n < 0 || n >= N)
     {
@@ -54,7 +54,7 @@ double& Vector<N>::operator [] (unsigned int n)
 }
 
 template <std::size_t N>
-void Vector<N>::setArg (int n, double newValue)
+inline void Vector<N>::setArg (int n, double newValue)
 {
     if (n < 0 || n >= int(N))
         return;
@@ -139,7 +139,7 @@ Vector<N> operator* (const Vector<N>& a, double factor)
     return std::move (res);
 }
 template <std::size_t N>
-Vector<N> operator* (double factor, const Vector<N>& a)
+inline Vector<N> operator* (double factor, const Vector<N>& a)
 {
     return std::move (a * factor);
 }
@@ -159,7 +159,7 @@ Vector<N> standardize (const Vector<N> &a)
     double s = 0;
     for (unsigned int i = 0; i < N; ++i)
         s += (a.arg (i) * a.arg (i));
-    if (fabs(s - 1) < EPS || fabs(s) < EPS)
+    if (fabs(s - 1) < EPS || s < EPS)
         return a;
     s = sqrt (s);
     Vector<N> res(a);
@@ -178,7 +178,7 @@ double distance (const Vector<N> &a, const Vector<N> &b)
 }
 
 template<std::size_t N>
-double model (const Vector<N> &a)
+inline double model (const Vector<N> &a)
 {
     return distance (a, Vector<N> ());
 }

@@ -167,9 +167,7 @@ Collide Sphere::collide (const Ray &ray) const
     double d2 = l2 - tp2;
     Collide res;
     if (d2 > _r2 || (l2 > _r2 && tp < 0))
-    {
         res.collide = false;
-    }
     else
     {
         double t_2 = _r2 - d2;
@@ -235,7 +233,7 @@ void Plane::preHandle ()
     _d = -dot (_center, _normal);
 }
 
-double Plane::calc (const Vec3 &point) const
+inline double Plane::calc (const Vec3 &point) const
 {
     return dot (point, _normal) + _d;
 }
@@ -340,22 +338,17 @@ void Plane::analyseContent (std::stringstream &entryStream)
 Collide Plane::collide (const Ray &ray) const
 {
     Collide res;
-    Vec3 rd = standardize (ray.second);
-    double rd_n = dot (rd, _normal);
-    res.distance = Bound;
-    if (fabs(rd_n) < EPS)
-        res.collide = false;
-    else
+    double rd_n = dot (ray.second, _normal);
+    if (fabs(rd_n) >= EPS)
     {
         res.distance = (_dot_center_normal - dot(_normal, ray.first)) / rd_n;
-        res.point = ray.first + res.distance * rd;
+        res.point = ray.first + res.distance * ray.second;
         res.normal = _normal;
-        if (res.distance > 0)
-            res.collide = true;           
-        else
-            res.collide = false;
+        if (res.distance > 0.0)
+            res.collide = true;
+        //collide has been initialized to be false
     }
-    return res;
+    return std::move(res);
 }
 
 void Plane::display (std::ostream &os) const
@@ -526,31 +519,25 @@ void Triangle::display (std::ostream& os) const
 Collide Triangle::collide (const Ray &ray) const
 {
     Collide res;
-    Vec3 e1 = _a - _b, e2 = _a - _c, r = standardize(ray.second);
+    Vec3 e1 = _a - _b, e2 = _a - _c;
     Vec3 S;
     double det1, det2, det3;
-    double det0 = det (r, e1, e2);
+    double det0 = det (ray.second, e1, e2);
     if (fabs (det0) < EPS)
-    {
         goto fail;
-    }
     S = _a - ray.first;
-    det1 = det (S, e1, e2), det2 = det (r, S, e2), det3 = det (r, e1, S);
-    if (det0 > 0 && (det1 < 0 || det2 + det3 > det0 || det2 < 0 || det3 < 0))
+    det1 = det (S, e1, e2), det2 = det (ray.second, S, e2), det3 = det (ray.second, e1, S);
+    if (det0 > 0.0 && (det1 < 0.0 || det2 + det3 > det0 || det2 < 0.0 || det3 < 0.0))
         goto fail;
-    if (det0 < 0 && (det1 > 0 || det2 + det3 < det0 || det2 > 0 || det3 > 0))
+    if (det0 < 0.0 && (det1 > 0.0 || det2 + det3 < det0 || det2 > 0.0 || det3 > 0.0))
         goto fail;
     res.collide = true;
     res.distance = det1 / det0;
-    res.point = ray.first + res.distance * r;
+    res.point = ray.first + res.distance * ray.second;
     res.normal = _normal;
     return res;
     fail:
     {
-        res.collide = false;
-        res.distance = Bound;
-        res.normal = Vec3 ();
-        res.point = Vec3 ();
         return res;
     }
 }
@@ -626,7 +613,6 @@ Color Cobic::color (const Vec3 &v) const
 
 Collide Cobic::collide (const Ray &ray) const
 {
-//    Collide co1[3] = {Plane (_center + _a_half * _dx, _dx).collide (ray), Plane (_center + _b_half * _dy, _dy).collide (ray), Plane (_center + _c_half * _dz, _dz).collide (ray)}, co2[3] = {Plane (_center - _a_half * _dx, -1 * _dx).collide (ray), Plane (_center - _b_half * _dy,  -1 *_dy).collide (ray), Plane (_center - _c_half * _dz,  -1 *_dz).collide (ray)};
     Collide co[2][3];
     for (int i = 0; i < 2; ++i)
         for (int j = 0; j < 3; ++j)
@@ -641,7 +627,7 @@ Collide Cobic::collide (const Ray &ray) const
         if (co[0][i].distance == Bound && co[1][i].distance == Bound)
         {
             double d1 = _sides[0][i].calc (ray.first), d2 = _sides[1][i].calc (ray.first);
-            if ((d1 > 0 && d2 > 0) || (d1 < 0 && d2 < 0))
+            if ((d1 > 0.0 && d2 > 0.0) || (d1 < 0.0 && d2 < 0.0))
             {
                 co[0][i].distance = -Bound;
             }
@@ -651,18 +637,13 @@ Collide Cobic::collide (const Ray &ray) const
     for (int i = 1; i < 3; ++i)
     {
         if (tmax1->distance < co[0][i].distance)
-        {
             tmax1 = co[0] + i;
-        }
         if (tmin2->distance > co[1][i].distance)
             tmin2 = co[1] + i;
     }
     if (tmax1->distance > tmin2->distance)
     {
-        Collide res;
-        res.collide = false;
-        res.distance = Bound;
-        return res;
+        return std::move (Collide ());
     }
     else
     {
@@ -670,13 +651,7 @@ Collide Cobic::collide (const Ray &ray) const
         if (tmax1->collide)
             return *tmax1;
         else//说明co[0]中所有的distance都小于0
-        {
-            Collide* r = co[1];
-            for (int i = 1; i < 3; ++i)
-                if (co[1][i].distance < r->distance)
-                    r = co[1] + i;
-            return *r;
-        }
+            return *tmin2;
     }
 }
 

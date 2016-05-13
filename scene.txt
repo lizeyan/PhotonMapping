@@ -88,3 +88,11 @@ start object
     dx: 50 0 0
     dy: 0 50 0
 end
+
+start model
+    model: ../models/cube.obj
+    material: 0
+    center: 20 0 0
+    size: 20
+    rotate: 0 0 0
+end

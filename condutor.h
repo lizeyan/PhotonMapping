@@ -10,7 +10,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-const int MAX_RAY_TRACING_DEPTH = 30;
+const int MAX_RAY_TRACING_DEPTH = 5;
 const int maxThreadNum = 4;
 class ifstream;
 class ofstream;

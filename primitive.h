@@ -10,6 +10,7 @@ struct Collide
     bool collide;
     double distance;
     Vec3 point, normal;
+    Collide (): collide (false), distance (Bound) {}
 };
 
 class Primitive

@@ -14,8 +14,10 @@ KdTree::KdTree(Condutor* condutor): _condutor (condutor)
 
 std::vector<std::pair<Object*, Collide> > KdTree::kdSearch (const Ray &ray) const
 {
+    Ray r(ray);
+    r.second = standardize (ray.second);
     std::vector<std::pair<Object*, Collide> >res;
-    this->search (ray, _root.get (), res);
+    this->search (r, _root.get (), res);
     return std::move (res);
 }
 
@@ -28,8 +30,8 @@ void KdTree::search (const Ray &ray, KdNode *v, std::vector<std::pair<Object*, C
             res.push_back (std::make_pair (v->object(), std::move(tmp)));
         return;
     }
-    auto tmp1 = v->lc ()->collide (ray);
-    auto tmp2 = v->rc ()->collide (ray);
+    Collide tmp1 = v->lc ()->collide (ray);
+    Collide tmp2 = v->rc ()->collide (ray);
     if (tmp1.collide)
         search (ray, v->lc (), res);
     if (tmp2.collide)
