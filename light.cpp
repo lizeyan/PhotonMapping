@@ -164,7 +164,7 @@ void PointLight::display (std::ostream &os) const
 bool PointLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
 {
     Vec3 link = standardize (_center - point);
-    Ray ray = std::make_pair (point, link);
+    Ray ray = std::make_pair (point + EPS * link, link);
     for (const auto& object:condutor->objects ())
     {
         Collide collide = object->collide (ray);
