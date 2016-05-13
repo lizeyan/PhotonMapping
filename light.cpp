@@ -147,7 +147,7 @@ Collide PointLight::collide (const Ray &ray) const
 Color PointLight::illuminate (const Vec3 &point, const Vec3 &normal)
 {
     Vec3 admitLight = standardize(_center - point);
-    double coefficient = dot (admitLight, standardize(normal));
+    double coefficient = dot (admitLight, normal);
     if (coefficient < 0)
         coefficient = -coefficient;
     return coefficient * color ();
@@ -163,7 +163,7 @@ void PointLight::display (std::ostream &os) const
 
 bool PointLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
 {
-    Vec3 link = _center - point;
+    Vec3 link = standardize (_center - point);
     Ray ray = std::make_pair (point, link);
     for (const auto& object:condutor->objects ())
     {
@@ -405,7 +405,7 @@ Color CircleLight::illuminate (const Vec3 &point, const Vec3 &normal)
     while (a * a + b * b > r2);
     Vec3 rdPoint  = _center + dx * a + dy * b;
     Vec3 admitLight = standardize(rdPoint - point);
-    double coefficient = dot (admitLight, standardize(normal));
+    double coefficient = dot (admitLight, normal);
     if (coefficient < 0)
         return Color ();
     return coefficient * color ();
@@ -420,7 +420,7 @@ bool CircleLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) con
     static std::array<Vec3, 4> cornors{{Vec3(_center + dx + dy), Vec3(_center + dx - dy), Vec3(_center - dx + dy), Vec3(_center - dx - dy)}};
     for (unsigned int i = 0; i < cornors.size(); ++i)
     {
-        Vec3 link = cornors[i] - point;
+        Vec3 link = standardize(cornors[i] - point);
         Ray ray = std::make_pair (point, link);
         for (const auto& object:condutor->objects ())
         {

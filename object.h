@@ -14,7 +14,7 @@ public:
     static Object* produce (const std::string& content, Condutor* condutor = nullptr);
     virtual ~Object() {}
     Object(Material* = nullptr, Condutor* condutor = nullptr);
-    virtual Collide collide (const Ray& ray) const = 0;
+    virtual Collide collide (const Ray& ray) const = 0;//返回的碰撞点法向必须是单位向量.传入的应该是单位向量
     virtual void display (std::ostream& os) const;
     Material* material () const {return _material;}
     virtual Color color (const Vec3& v = Vec3 ()) const = 0;

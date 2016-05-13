@@ -65,8 +65,7 @@ Ray Camera::emitRay (double x, double y)
     y = (_height >> 1) - y;
     Vec3 a = _focus * _normal;
     Vec3 b = x * _dx + y * _dy;
-    Vec3 direction = standardize(a + b);
-    return std::make_pair (_center, direction);
+    return std::make_pair (_center, a + b);
 }
 
 void Camera::analyseContent (const std::string &content)

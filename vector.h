@@ -37,32 +37,22 @@ Vector<N>::Vector (const std::array<double, N> &args):_args(args)
 template <std::size_t N>
 inline double Vector<N>::arg (unsigned int n) const
 {
-    if (n < 0 || n >= N)
-    {
-        throw std::out_of_range("n of Vector<N>::arg incorrect");
-    }
     return _args[n];
 }
 template <std::size_t N>
 inline double& Vector<N>::operator [] (unsigned int n)
 {
-    if (n < 0 || n >= N)
-    {
-        throw std::out_of_range("n of Vector<N>::arg incorrect");
-    }
     return _args[n];
 }
 
 template <std::size_t N>
 inline void Vector<N>::setArg (int n, double newValue)
 {
-    if (n < 0 || n >= int(N))
-        return;
     _args[n] = newValue;
 }
 
 template <std::size_t N>
-double dot (const Vector<N>& a, const Vector<N>& b)
+inline double dot (const Vector<N>& a, const Vector<N>& b)
 {
     double res = 0;
     for (unsigned int i = 0; i < N; ++i)
@@ -156,7 +146,7 @@ bool operator== (const Vector<N>& a, const Vector<N> &b)
 template <std::size_t N>
 Vector<N> standardize (const Vector<N> &a)
 {
-    double s = 0;
+    double s = 0.0;
     for (unsigned int i = 0; i < N; ++i)
         s += (a.arg (i) * a.arg (i));
     if (fabs(s - 1) < EPS || s < EPS)
@@ -171,7 +161,7 @@ Vector<N> standardize (const Vector<N> &a)
 template <std::size_t N>
 double distance (const Vector<N> &a, const Vector<N> &b)
 {
-    double res = 0;
+    double res = 0.0;
     for (unsigned int i = 0; i < N; ++i)
         res += ((a.arg (i) - b.arg (i)) * (a.arg(i) - b.arg (i)));
     return res;

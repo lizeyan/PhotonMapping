@@ -161,8 +161,7 @@ Collide Sphere::collide (const Ray &ray) const
 {
     Vec3 l = _center - ray.first;
     double l2 = dot (l, l);
-    Vec3 rd = standardize (ray.second);
-    double tp = dot (l, rd);
+    double tp = dot (l, ray.second);
     double tp2 = tp * tp;
     double d2 = l2 - tp2;
     Collide res;
@@ -181,20 +180,9 @@ Collide Sphere::collide (const Ray &ray) const
         {
             res.collide = true;
             res.distance = t;
-            res.point = ray.first + t * rd;
-            res.normal = res.point - _center;
+            res.point = ray.first + t * ray.second;
+            res.normal = standardize (res.point - _center);
         }
-        else
-        {
-            res.collide = false;
-        }
-    }
-
-    if (res.collide == false)
-    {
-        res.point = Vec3 ();
-        res.normal = Vec3 ();
-        res.distance = Bound;
     }
     return std::move (res);
 }

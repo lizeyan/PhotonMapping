@@ -15,8 +15,8 @@ end
 
 #add circle light
 start light
-    type: circle
-    center: 70 0 70
+    type: point
+    center: 70 0 100
     #normal: 0 0 -1
     #radius: 50
     color: 1 1 1
@@ -25,7 +25,7 @@ end
 start material #rank0
     color: 1 1 1
     absorb: 1 0 0
-    diffusion: 0.50
+    diffusion: 0.5
     reflection: 0.5
     refraction: 0
     refractivity: 1.7
@@ -52,11 +52,11 @@ end
 
 start material # rank3
     color: 1 1 1
-    absorb: 1 1 0
+    absorb: 1 0 0
     diffusion: 0
     reflection: 0
     refraction: 1
-    refractivity: 1.7
+    refractivity: 1.65
 end
 
 start object
