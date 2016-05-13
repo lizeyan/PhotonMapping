@@ -25,9 +25,9 @@ end
 start material #rank0
     color: 1 1 1
     absorb: 1 0 0
-    diffusion: 0
+    diffusion: 0.50
     reflection: 0.5
-    refraction: 0.5
+    refraction: 0
     refractivity: 1.7
 end
 
@@ -87,4 +87,12 @@ start object
     normal: 0 0 1
     dx: 50 0 0
     dy: 0 50 0
+end
+
+start model
+    model: ../models/block.obj
+    material: 0
+    center: 0 0 0
+    size: 5
+    rotate: 0 0 0
 end

@@ -51,6 +51,8 @@ void ObjectParser::parse (const std::string &content)
             throw std::logic_error ("unexcepted key type in scene, object model");
         }
     }
+    if (material == nullptr)
+        throw std::logic_error ("no material specified for model");
     analyseFile (modelFileName, material);
 }
 
