@@ -67,7 +67,14 @@ void RayTracer::calcNearestCollide ()
 
 Color RayTracer::calcDiffusion (Light *light)
 {
-    Color illuminate = light->illuminate (collide.point, collide.normal);
+    Color illuminate;
+    Object* co;
+    if (light->block (co, collide.point + EPS * collide.normal, condutor ()))
+    {
+        illuminate = co->material ()->refraction () * light->color ();
+    }
+    else
+        illuminate = light->illuminate (collide.point, collide.normal);
     Color material = nearest->color (collide.point);
     float diff = nearest->material ()->diffusion ();
 //#ifdef DEBUG
@@ -81,9 +88,6 @@ void RayTracer::handleDiffusion ()
     Color resColor = color ();
     for (const auto& light: condutor ()->lights ())
     {
-        //test shadow
-        if (light->block (nearest, collide.point, condutor ()))
-            continue;
         resColor += calcDiffusion (light.get ());
     }
     setColor (resColor);
@@ -122,8 +126,12 @@ void RayTracer::handleRefraction ()
         I = -1 * I;
         N = -1 * N;
     }
-    double cost = sqrt (1 - n * n * (1 - cosi * cosi));
-    Vec3 T = -n * I + (n * cosi - cost) * N;
+    double cost2 = 1 - n * n * (1 - cosi * cosi);
+    Vec3 T;
+    if (cost2 <= 0)//只有从光密介质到光疏介质才可能出现
+        T = 2 * cosi * N - I;
+    else
+        T = -n * I + (n * cosi - sqrt (cost2)) * N;
     std::unique_ptr<RayTracer> refrTracer(new RayTracer(std::make_pair(collide.point + EPS * T, T), condutor (), _depth + 1));
     Color refrColor = refrTracer->run ();
 //#ifdef DEBUG

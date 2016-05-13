@@ -9,14 +9,14 @@ start camera
     center:70 50 30
     normal:-1 0 0
     focus: 10
-    dpi: 10
+    dpi: 40
     environment: 0 0 0
 end
 
 #add circle light
 start light
     type: circle
-    center: 50 0 70
+    center: 70 0 70
     #normal: 0 0 -1
     #radius: 50
     color: 1 1 1
@@ -25,10 +25,10 @@ end
 start material #rank0
     color: 1 1 1
     absorb: 1 0 0
-    diffusion: 1
-    reflection: 0
-    refraction: 0
-
+    diffusion: 0
+    reflection: 0.5
+    refraction: 0.5
+    refractivity: 1.7
 end
 
 start material #rank1 for plane
@@ -52,27 +52,39 @@ end
 
 start material # rank3
     color: 1 1 1
-    absorb: 1 1 1
+    absorb: 1 1 0
     diffusion: 0
-    reflection: 0.5
-    refraction: 0.5
-    refractivity: 1.2
+    reflection: 0
+    refraction: 1
+    refractivity: 1.7
 end
 
+start object
+    type: sphere
+    center: 40 70 10
+    radius: 10
+    material: 2
+end
+
+start object
+    type: sphere
+    center: 40 40 10
+    radius: 10
+    material: 3
+end
+
+start object
+    type: sphere
+    center: 0 40 30
+    radius: 30
+    material: 0
+end
 
 start object
     type: plane
-    center: 0 0 0
+    center: 0 0 -0.5
     material: 1
     normal: 0 0 1
     dx: 50 0 0
     dy: 0 50 0
-end
-
-start model
-    model: ../models/cube.obj
-    center: 20 20 20
-    size: 1
-    rotate: 0 0 0
-    material: 0
 end

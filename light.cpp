@@ -161,20 +161,20 @@ void PointLight::display (std::ostream &os) const
     os << "}";
 }
 
-bool PointLight::block (Object* ob, const Vec3 &point, Condutor *condutor) const
+bool PointLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
 {
     Vec3 link = _center - point;
     Ray ray = std::make_pair (point, link);
     for (const auto& object:condutor->objects ())
     {
-        if (object.get () == ob || ob->material ()->refraction () > EPS)
-            continue;
         Collide collide = object->collide (ray);
         if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
         {
+            ob = object.get ();
             return true;
         }
     }
+    ob = nullptr;
     return false;
 }
 //==============================================
@@ -231,7 +231,7 @@ Color RectLight::illuminate (const Vec3 &point, const Vec3 &normal)
     return coefficient * color ();
 }
 
-bool RectLight::block (Object *ob, const Vec3 &point, Condutor *condutor) const
+bool RectLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
 {
     static float halfX = _width / 2;
     static float halfY = _height / 2;
@@ -411,7 +411,7 @@ Color CircleLight::illuminate (const Vec3 &point, const Vec3 &normal)
     return coefficient * color ();
 }
 
-bool CircleLight::block (Object *ob, const Vec3 &point, Condutor *condutor) const
+bool CircleLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
 {
     Vec3 dx = vertical (_normal, _center);
     Vec3 dy = cross (_normal, dx);
@@ -424,15 +424,15 @@ bool CircleLight::block (Object *ob, const Vec3 &point, Condutor *condutor) cons
         Ray ray = std::make_pair (point, link);
         for (const auto& object:condutor->objects ())
         {
-            if (object.get () == ob || ob->material ()->refraction () > EPS)
-                continue;
             Collide collide = object->collide (ray);
             if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
             {
+                ob = object.get ();
                 return true;
             }
         }
     }
+    ob = nullptr;
     return false;
 }
 
