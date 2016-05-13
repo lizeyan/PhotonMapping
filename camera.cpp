@@ -39,10 +39,10 @@ void Camera::init ()
 {
     _width = 1000;
     _height = 1000;
-    _dx = Vec3 (std::array<float, 3>{{1, 0, 0}});
-    _dy = Vec3 (std::array<float, 3>{{0, 1, 0}});
+    _dx = Vec3 (std::array<double, 3>{{1, 0, 0}});
+    _dy = Vec3 (std::array<double, 3>{{0, 1, 0}});
     _center = Vec3 ();
-    _normal = Vec3 (std::array<float, 3>{{0, 0, 1}});
+    _normal = Vec3 (std::array<double, 3>{{0, 0, 1}});
     _focus = 1;
     _dpi = 1;
     _environment = Color ();
@@ -59,7 +59,7 @@ std::ostream& operator<< (std::ostream& os, const Camera& camera)
     return os;
 }
 
-Ray Camera::emitRay (float x, float y)
+Ray Camera::emitRay (double x, double y)
 {
     x = (_width >> 1) - x;
     y = (_height >> 1) - y;

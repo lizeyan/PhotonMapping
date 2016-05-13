@@ -13,7 +13,7 @@ public:
     static QColor toQColor (const Color& c);
     void fill (const Color& color = Color ());
     Color pixel (int x, int y);
-    Color smoothPixel (float x_radio, float y_radio);
+    Color smoothPixel (double x_radio, double y_radio);
     int width () {return _width;}
     int height () {return _height;}
     void setPixel (int x, int y, const Color& color);

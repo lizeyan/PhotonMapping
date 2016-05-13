@@ -44,7 +44,7 @@ class RectLight: public Light
 {
 public:
     RectLight (std::stringstream& content, Condutor* condutor = nullptr);
-    RectLight (const Vec3& center, const Vec3& normal, const Vec3& dx, const Vec3& dy, float width, float height, const Color& color, Condutor* condutor = nullptr);
+    RectLight (const Vec3& center, const Vec3& normal, const Vec3& dx, const Vec3& dy, double width, double height, const Color& color, Condutor* condutor = nullptr);
     Ray emitPhoton ();
     Collide collide (const Ray &ray) const;
     inline Vec3 point () const {return _center;}
@@ -57,14 +57,14 @@ protected:
     bool check ();
 private:
     Vec3 _center, _normal, _dx, _dy;
-    float _width, _height;
+    double _width, _height;
 };
 
 class CircleLight: public Light
 {
 public:
     CircleLight (std::stringstream& content, Condutor* condutor = nullptr);
-    CircleLight (const Vec3& center, const Vec3& normal, float radius, const Color& color, Condutor* condutor = nullptr);
+    CircleLight (const Vec3& center, const Vec3& normal, double radius, const Color& color, Condutor* condutor = nullptr);
     Ray emitPhoton ();
     Collide collide (const Ray &ray) const;
     inline Vec3 point () const {return _center;}
@@ -77,7 +77,7 @@ protected:
     bool check ();
 private:
     Vec3 _center, _normal;
-    float _radius;
+    double _radius;
 };
 
 

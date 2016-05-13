@@ -66,7 +66,7 @@ KdNode* KdTree::createKdTree (std::vector<KdNode*>::iterator begin, std::vector<
     int length = std::distance (begin ,end);
     if (length == 1)
         return *begin;
-    float minX = Bound, maxX = -Bound, minY = Bound, maxY = -Bound, minZ = Bound, maxZ = -Bound;
+    double minX = Bound, maxX = -Bound, minY = Bound, maxY = -Bound, minZ = Bound, maxZ = -Bound;
     int d = depth % 3;
     for (auto c = begin; c != end; ++c)
     {
@@ -91,5 +91,5 @@ KdNode* KdTree::createKdTree (std::vector<KdNode*>::iterator begin, std::vector<
         std::nth_element (begin, begin + (length >> 1), end, zcmp);
     KdNode* lc = createKdTree (begin, begin + (length >> 1), depth + 1);
     KdNode* rc = createKdTree (begin + (length >> 1), end, depth + 1);
-    return new KdNode (Vec3(std::array<float, 3>{{minX, minY, minZ}}), Vec3(std::array<float, 3>{{maxX, maxY, maxZ}} ), lc, rc);
+    return new KdNode (Vec3(std::array<double, 3>{{minX, minY, minZ}}), Vec3(std::array<double, 3>{{maxX, maxY, maxZ}} ), lc, rc);
 }

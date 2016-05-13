@@ -147,7 +147,7 @@ Collide PointLight::collide (const Ray &ray) const
 Color PointLight::illuminate (const Vec3 &point, const Vec3 &normal)
 {
     Vec3 admitLight = standardize(_center - point);
-    float coefficient = dot (admitLight, standardize(normal));
+    double coefficient = dot (admitLight, standardize(normal));
     if (coefficient < 0)
         coefficient = -coefficient;
     return coefficient * color ();
@@ -186,7 +186,7 @@ RectLight::RectLight (std::stringstream &content, Condutor *condutor)
     if (!check ())
         throw std::logic_error ("invalid arguments, RectLight");
 }
-RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, const Vec3 &dy, float width, float height, const Color &color, Condutor *condutor):Light (color, condutor), _center (center), _normal (normal), _dx (dx), _dy (dy), _width (width), _height (height)
+RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, const Vec3 &dy, double width, double height, const Color &color, Condutor *condutor):Light (color, condutor), _center (center), _normal (normal), _dx (dx), _dy (dy), _width (width), _height (height)
 {
 
 }
@@ -225,7 +225,7 @@ Color RectLight::illuminate (const Vec3 &point, const Vec3 &normal)
     static std::uniform_real_distribution<> disY (0, _height);
     Vec3 rdPoint = ((_height / 2) - disY(rd)) * _dy + ((_width / 2) - disX (rd)) * _dx + _center;
     Vec3 admitLight = standardize(rdPoint - point);
-    float coefficient = dot (admitLight, standardize(normal));
+    double coefficient = dot (admitLight, standardize(normal));
     if (coefficient < 0)
         return Color ();
     return coefficient * color ();
@@ -233,8 +233,8 @@ Color RectLight::illuminate (const Vec3 &point, const Vec3 &normal)
 
 bool RectLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
 {
-    static float halfX = _width / 2;
-    static float halfY = _height / 2;
+    static double halfX = _width / 2;
+    static double halfY = _height / 2;
     static std::array<Vec3, 4> cornors{{Vec3(_center + halfX * _dx + halfY * _dy), Vec3(_center + halfX * _dx - halfY * _dy), Vec3(_center - halfX * _dx + halfY * _dy), Vec3(_center - halfX * _dx - halfY * _dy)}};
     for (unsigned int i = 0; i < cornors.size(); ++i)
     {
@@ -328,9 +328,9 @@ void RectLight::analyseContent (std::stringstream &entryStream)
 void RectLight::init ()
 {
     _center = Vec3 ();
-    _normal = Vec3 (std::array<float, 3>{{0, 0, 1}});
-    _dx = Vec3 (std::array<float, 3>{{1, 0, 0}});
-    _dy = Vec3 (std::array<float, 3>{{0, 1, 0}});
+    _normal = Vec3 (std::array<double, 3>{{0, 0, 1}});
+    _dx = Vec3 (std::array<double, 3>{{1, 0, 0}});
+    _dy = Vec3 (std::array<double, 3>{{0, 1, 0}});
     _width = 1;
     _height = 1;
 }
@@ -350,7 +350,7 @@ CircleLight::CircleLight (std::stringstream &content, Condutor *condutor)
         throw std::logic_error ("invalid arguments, CircleLight");
 }
 
-CircleLight::CircleLight (const Vec3 &center, const Vec3 &normal, float radius, const Color &color, Condutor *condutor): Light(color, condutor), _center (center), _normal (normal), _radius (radius)
+CircleLight::CircleLight (const Vec3 &center, const Vec3 &normal, double radius, const Color &color, Condutor *condutor): Light(color, condutor), _center (center), _normal (normal), _radius (radius)
 {
 
 }
@@ -369,7 +369,7 @@ Collide CircleLight::collide (const Ray &ray) const
     if (collide.collide)
     {
         Vec3 link = collide.point - _center;
-        float m = model (link);
+        double m = model (link);
         if (dot (link, _normal) < EPS && m <= _radius)
         {
             res.point = collide.point;
@@ -396,7 +396,7 @@ Color CircleLight::illuminate (const Vec3 &point, const Vec3 &normal)
     dx = standardize (dx);
     dy = standardize (dy);
     static std::uniform_real_distribution<> disR (0, _radius);
-    float a, b, r2 = _radius * _radius;
+    double a, b, r2 = _radius * _radius;
     do
     {
         a =disR (rd);
@@ -405,7 +405,7 @@ Color CircleLight::illuminate (const Vec3 &point, const Vec3 &normal)
     while (a * a + b * b > r2);
     Vec3 rdPoint  = _center + dx * a + dy * b;
     Vec3 admitLight = standardize(rdPoint - point);
-    float coefficient = dot (admitLight, standardize(normal));
+    double coefficient = dot (admitLight, standardize(normal));
     if (coefficient < 0)
         return Color ();
     return coefficient * color ();
@@ -493,7 +493,7 @@ void CircleLight::analyseContent (std::stringstream &entryStream)
 void CircleLight::init ()
 {
     _center = Vec3 ();
-    _normal = Vec3 (std::array<float, 3>{{0, 0, 1}});
+    _normal = Vec3 (std::array<double, 3>{{0, 0, 1}});
     _radius = 1;
 }
 

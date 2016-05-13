@@ -8,7 +8,7 @@ typedef Vector<3> Vec3;
 struct Collide
 {
     bool collide;
-    float distance;
+    double distance;
     Vec3 point, normal;
 };
 

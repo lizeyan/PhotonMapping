@@ -1,6 +1,6 @@
 #include "material.h"
 #include <stdexcept>
-Material::Material (float diffusion ,float reflection ,float refraction, const Color& color, const Color& absorb, float refractivity, Image* texture):_diffusion (diffusion), _reflection(reflection), _refraction (refraction), _refractivity(refractivity), _color (color), _absorb (absorb), _texture (texture)
+Material::Material (double diffusion ,double reflection ,double refraction, const Color& color, const Color& absorb, double refractivity, Image* texture):_diffusion (diffusion), _reflection(reflection), _refraction (refraction), _refractivity(refractivity), _color (color), _absorb (absorb), _texture (texture)
 {
     if (_refractivity < EPS)
         throw std::logic_error("zero refractivity");
@@ -12,8 +12,8 @@ Material* Material::produce (const std::string &content)
     std::smatch matchRes;
     std::string line;
     Color color, absorb;
-    float diffusion = 1, reflection = 0, refraction = 0;
-    float refractivity = 1;
+    double diffusion = 1, reflection = 0, refraction = 0;
+    double refractivity = 1;
     Image* texture = nullptr;
     while (!entryStream.eof())
     {
@@ -76,7 +76,7 @@ std::ostream& operator << (std::ostream& os, const Material& material)
     return os;
 }
 
-Color Material::color (float x, float y) const
+Color Material::color (double x, double y) const
 {
     if (!_texture)
         throw std::logic_error ("unaccessable memory of _texture");

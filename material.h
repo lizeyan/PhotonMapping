@@ -9,19 +9,19 @@ class Material
 {
 public:
     static Material* produce (const std::string& content);
-    Material(float diffusion  = 1, float reflection = 0, float refraction = 0, const Color& color = Color (), const Color& absorb = Color (), float refractivity = 1, Image* texture = nullptr);
+    Material(double diffusion  = 1, double reflection = 0, double refraction = 0, const Color& color = Color (), const Color& absorb = Color (), double refractivity = 1, Image* texture = nullptr);
     void display (std::ostream& os) const;
-    inline float reflection () const {return _reflection;}
-    inline float diffusion () const {return _diffusion;}
-    inline float refraction () const {return _refraction;}
-    inline float refractivity () const {return _refractivity;}
+    inline double reflection () const {return _reflection;}
+    inline double diffusion () const {return _diffusion;}
+    inline double refraction () const {return _refraction;}
+    inline double refractivity () const {return _refractivity;}
     inline Color color () const {return _color;}
     inline Color absorb () const {return _absorb;}
-    Color color (float x, float y) const;
+    Color color (double x, double y) const;
     Image* texture () {return _texture.get ();}
 private:
-    float _diffusion, _reflection, _refraction;
-    float _refractivity;
+    double _diffusion, _reflection, _refraction;
+    double _refractivity;
     Color _color, _absorb;
     std::unique_ptr<Image> _texture;
 };

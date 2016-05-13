@@ -61,10 +61,10 @@ bool Image::save (const std::string &fileName)
 
 QColor Image::toQColor (const Color &c)
 {
-    return QColor(std::max(std::min(255.0f * c.arg(R), 255.0f), 0.0f), std::max(std::min(255.0f * c.arg(G), 255.0f), 0.0f), std::max(std::min(255.0f * c.arg(B), 255.0f), 0.0f));
+    return QColor(std::max(std::min(255.0 * c.arg(R), 255.0), 0.0), std::max(std::min(255.0 * c.arg(G), 255.0), 0.0), std::max(std::min(255.0 * c.arg(B), 255.0), 0.0));
 }
 
-Color Image::smoothPixel (float x, float y)
+Color Image::smoothPixel (double x, double y)
 {
     x *= _width - 1;
     y *= _height - 1;

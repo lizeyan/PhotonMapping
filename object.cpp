@@ -55,7 +55,7 @@ void Object::display (std::ostream &os) const
 }
 
 //=======================================================================================
-Sphere::Sphere (const Vec3 &center, float radius, Material *material, Condutor* condutor, bool need): Object (material, condutor), _center (center), _radius (radius), _needBoudingBox (need)
+Sphere::Sphere (const Vec3 &center, double radius, Material *material, Condutor* condutor, bool need): Object (material, condutor), _center (center), _radius (radius), _needBoudingBox (need)
 {
     preHandle ();
 }
@@ -73,7 +73,7 @@ Sphere::Sphere (std::stringstream &content, Condutor* condutor):_needBoudingBox 
 void Sphere::preHandle ()
 {
     _r2 = _radius * _radius;
-    float rDouble = _radius * 2;
+    double rDouble = _radius * 2;
     if (_needBoudingBox)
         _boudingBox = (new Cobic (_center, unitX, unitY, unitZ, rDouble, rDouble, rDouble, material (), condutor ()));
 }
@@ -92,9 +92,9 @@ Color Sphere::color (const Vec3 &v) const
     else
     {
         Vec3 r = v - this->center ();
-        float modelXY = sqrt (r.arg (0) * r.arg (0) + r.arg (1) * r.arg (1));
-        float xita = atan (r.arg (2) / modelXY) + PI_Half;
-        float phi = acos (r.arg (1) / modelXY);
+        double modelXY = sqrt (r.arg (0) * r.arg (0) + r.arg (1) * r.arg (1));
+        double xita = atan (r.arg (2) / modelXY) + PI_Half;
+        double phi = acos (r.arg (1) / modelXY);
         if (r.arg (0) < 0)
             phi += PI;
         if ((phi < EPS || PI_Double - phi < EPS ) && choose(rd))
@@ -160,11 +160,11 @@ void Sphere::analyseContent (std::stringstream &entryStream)
 Collide Sphere::collide (const Ray &ray) const
 {
     Vec3 l = _center - ray.first;
-    float l2 = dot (l, l);
+    double l2 = dot (l, l);
     Vec3 rd = standardize (ray.second);
-    float tp = dot (l, rd);
-    float tp2 = tp * tp;
-    float d2 = l2 - tp2;
+    double tp = dot (l, rd);
+    double tp2 = tp * tp;
+    double d2 = l2 - tp2;
     Collide res;
     if (d2 > _r2 || (l2 > _r2 && tp < 0))
     {
@@ -172,9 +172,9 @@ Collide Sphere::collide (const Ray &ray) const
     }
     else
     {
-        float t_2 = _r2 - d2;
-        float t_ = sqrt (t_2);
-        float t = tp;
+        double t_2 = _r2 - d2;
+        double t_ = sqrt (t_2);
+        double t = tp;
         if (l2 < _r2)
             t += t_;
         else
@@ -235,7 +235,7 @@ void Plane::preHandle ()
     _d = -dot (_center, _normal);
 }
 
-float Plane::calc (const Vec3 &point) const
+double Plane::calc (const Vec3 &point) const
 {
     return dot (point, _normal) + _d;
 }
@@ -253,10 +253,10 @@ Color Plane::color (const Vec3 &v) const
     else
     {
         Vec3 r = v - _center;
-        float x = fabs(dot (r, _dx));
-        float y = fabs(dot (r, _dy));
-        float xRadio = (x - _modelDx * int(x / _modelDx)) / _modelDx;
-        float yRadio = (y - _modelDy * int(y / _modelDy)) / _modelDy;
+        double x = fabs(dot (r, _dx));
+        double y = fabs(dot (r, _dy));
+        double xRadio = (x - _modelDx * int(x / _modelDx)) / _modelDx;
+        double yRadio = (y - _modelDy * int(y / _modelDy)) / _modelDy;
         return this->material ()->color (xRadio, yRadio);
     }
 }
@@ -266,7 +266,7 @@ void Plane::init ()
     _center = Vec3 ();
     _dx = Vec3 ();
     _dy = Vec3 ();
-    _normal = Vec3 (std::array<float, 3>{{0, 0, 1}});
+    _normal = Vec3 (std::array<double, 3>{{0, 0, 1}});
 }
 
 bool Plane::check ()
@@ -341,7 +341,7 @@ Collide Plane::collide (const Ray &ray) const
 {
     Collide res;
     Vec3 rd = standardize (ray.second);
-    float rd_n = dot (rd, _normal);
+    double rd_n = dot (rd, _normal);
     res.distance = Bound;
     if (fabs(rd_n) < EPS)
         res.collide = false;
@@ -402,8 +402,8 @@ void Triangle::preHandle ()
     }
     if (_needBoudingBox)
     {
-        float maxX = _a.arg (0), maxY = _a.arg (1), maxZ = _a.arg (2);
-        float minX = _a.arg (0), minY = _a.arg (1), minZ = _a.arg (2);
+        double maxX = _a.arg (0), maxY = _a.arg (1), maxZ = _a.arg (2);
+        double minX = _a.arg (0), minY = _a.arg (1), minZ = _a.arg (2);
         if (_b.arg (0) > maxX)
             maxX = _b.arg (0);
         else if (_b.arg (0) < minX)
@@ -428,7 +428,7 @@ void Triangle::preHandle ()
             maxZ = _c.arg (2);
         else if (_c.arg (2) < minZ)
             minZ = _c.arg (2);
-        _boudingBox = (new Cobic (Vec3(std::array<float,3> {{(maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2}}), unitX, unitY, unitZ, maxX - minX, maxY - minY, maxZ - minZ, material (), condutor ()));
+        _boudingBox = (new Cobic (Vec3(std::array<double,3> {{(maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2}}), unitX, unitY, unitZ, maxX - minX, maxY - minY, maxZ - minZ, material (), condutor ()));
     }
 }
 Triangle::~Triangle ()
@@ -528,8 +528,8 @@ Collide Triangle::collide (const Ray &ray) const
     Collide res;
     Vec3 e1 = _a - _b, e2 = _a - _c, r = standardize(ray.second);
     Vec3 S;
-    float det1, det2, det3;
-    float det0 = det (r, e1, e2);
+    double det1, det2, det3;
+    double det0 = det (r, e1, e2);
     if (fabs (det0) < EPS)
     {
         goto fail;
@@ -566,7 +566,7 @@ Cobic::Cobic (std::stringstream &content, Condutor *condutor):_needBoudingBox (t
     if (!check ())
         throw std::logic_error ("invalid arguments, Cobic");
 }
-Cobic::Cobic (const Vec3 &center, const Vec3 &dx, const Vec3 &dy, const Vec3 &dz, float a, float b, float c, Material* material, Condutor *condutor, bool need): Object (material, condutor), _center (center), _dx(dx), _dy(dy), _dz (dz), _a(a), _b(b), _c(c), _a_half (_a / 2), _b_half (_b / 2), _c_half (_c / 2), _needBoudingBox (need)
+Cobic::Cobic (const Vec3 &center, const Vec3 &dx, const Vec3 &dy, const Vec3 &dz, double a, double b, double c, Material* material, Condutor *condutor, bool need): Object (material, condutor), _center (center), _dx(dx), _dy(dy), _dz (dz), _a(a), _b(b), _c(c), _a_half (_a / 2), _b_half (_b / 2), _c_half (_c / 2), _needBoudingBox (need)
 {
     preHandle ();
 }
@@ -604,9 +604,9 @@ Color Cobic::color (const Vec3 &v) const
     else
     {
         Vec3 r = v - _center;
-        float x = fabs(dot (r, _dx));
-        float y = fabs(dot (r, _dy));
-        float z = fabs(dot (r, _dz));
+        double x = fabs(dot (r, _dx));
+        double y = fabs(dot (r, _dy));
+        double z = fabs(dot (r, _dz));
         if (fabs (x - _a_half) < EPS)
         {
             return this->material ()->color (y / _b_half, z / _c_half);
@@ -640,7 +640,7 @@ Collide Cobic::collide (const Ray &ray) const
         //此时光线和这一组边平行
         if (co[0][i].distance == Bound && co[1][i].distance == Bound)
         {
-            float d1 = _sides[0][i].calc (ray.first), d2 = _sides[1][i].calc (ray.first);
+            double d1 = _sides[0][i].calc (ray.first), d2 = _sides[1][i].calc (ray.first);
             if ((d1 > 0 && d2 > 0) || (d1 < 0 && d2 < 0))
             {
                 co[0][i].distance = -Bound;
@@ -779,8 +779,8 @@ bool Cobic::check ()
 void Cobic::init ()
 {
     _center = Vec3 ();
-    _dx = Vec3 (std::array<float, 3>{{1, 0 , 0}});
-    _dy = Vec3 (std::array<float, 3>{{0, 1 , 0}});
-    _dz = Vec3 (std::array<float, 3>{{0, 0 , 1}});
+    _dx = Vec3 (std::array<double, 3>{{1, 0 , 0}});
+    _dy = Vec3 (std::array<double, 3>{{0, 1 , 0}});
+    _dz = Vec3 (std::array<double, 3>{{0, 0 , 1}});
     _a = 0, _b = 0, _c = 0;
 }

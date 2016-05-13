@@ -5,11 +5,11 @@
 #include <random>
 //#define DEBUG
 #define LOG
-const float EPS = 1e-3f;
-const float PI = 3.141592654f;
-const float PI_Double = 6.283185307f;
-const float PI_Half = 1.5707963267948966192313216916398f;
-const float Bound = 1e35f;
+const double EPS = 1e-10f;
+const double PI = 3.141592654f;
+const double PI_Double = 6.283185307f;
+const double PI_Half = 1.5707963267948966192313216916398f;
+const double Bound = 1e35f;
 const std::regex entryReg("^\\s*([\\w\\d-_.](\\s*[\\w\\d-_.])*)\\s*:\\s*([\\w\\d-_./](\\s*[\\w\\d-_./])*)\\s*(#.*)?");
 const std::regex objEntryReg("^\\s*(\\w+)(\\s+)([\\w\\d-_./](\\s*[\\w\\d-_./])*)\\s*(#.*)?");
 const std::regex simpleFaceReg("\\s*[\\d.]+\\s+[\\d.]+\\s+[\\d.]+\\s*");

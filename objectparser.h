@@ -17,7 +17,7 @@ private:
     Condutor* _condutor;
     Vec3 _center;
     Vec3 _rotate;
-    float _size;
+    double _size;
     std::vector<Vec3> _vertices;
     std::vector<Vec3> _normals;
 };

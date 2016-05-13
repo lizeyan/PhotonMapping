@@ -45,9 +45,9 @@ void Condutor::run ()
     std::cout << "running" << std::endl;
 //    ray tracing
 //    Vec3 o = camera ()->center ();
-//    Vec3 o = Vec3(std::array<float,3>{{10.0001, 6.83336, 100.833}});
-//    Vec3 link = Vec3(std::array<float,3>{{38, 21, 10}}) - o;
-//    Vec3 link = Vec3 (std::array<float, 3>{{-0.768221, -0.640184, 0}});
+//    Vec3 o = Vec3(std::array<double,3>{{10.0001, 6.83336, 100.833}});
+//    Vec3 link = Vec3(std::array<double,3>{{38, 21, 10}}) - o;
+//    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
 //    std::cout << rt.run () << std::endl;
 //    singleThread ();
@@ -155,8 +155,8 @@ void Condutor::singleThread ()
 }
 void Condutor::oneThreadPerRay ()
 {
-    float dx = 1.0f / camera ()->dpi ();
-    float dy = 1.0f / camera ()->dpi ();
+    double dx = 1.0f / camera ()->dpi ();
+    double dy = 1.0f / camera ()->dpi ();
     int imageX = camera ()->width () * camera ()->dpi ();
     int imageY = camera ()->height () * camera ()->dpi ();
     std::vector<std::unique_ptr<RayTracer> > lineTracers;
@@ -195,8 +195,8 @@ void Condutor::handleSegments (int x1, int x2)
 {
     if (x1 < 0 || x2 > camera ()->width () || x1 > x2)
         throw std::logic_error ("wrong arguments, in Condutor::handleSegments");
-    float dx = 1.0f / camera ()->dpi ();
-    float dy = 1.0f / camera ()->dpi ();
+    double dx = 1.0f / camera ()->dpi ();
+    double dy = 1.0f / camera ()->dpi ();
     int imageX1 = x1 * camera ()->dpi ();
     int imageX2 = x2 * camera ()->dpi ();
     int imageY = camera ()->height () * camera ()->dpi ();

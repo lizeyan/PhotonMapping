@@ -76,7 +76,7 @@ Color RayTracer::calcDiffusion (Light *light)
     else
         illuminate = light->illuminate (collide.point, collide.normal);
     Color material = nearest->color (collide.point);
-    float diff = nearest->material ()->diffusion ();
+    double diff = nearest->material ()->diffusion ();
 //#ifdef DEBUG
 //    Log << "illuminate:" << illuminate << " material:" << material << " diff:" << diff << std::endl;
 //#endif
