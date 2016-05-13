@@ -59,48 +59,10 @@ start material # rank3
     refractivity: 1.65
 end
 
-start object
-    type: sphere
-    center: 40 70 10
-    radius: 10
-    material: 2
-end
-
-start object
-    type: sphere
-    center: 40 40 10
-    radius: 10
-    material: 3
-end
-
-start object
-    type: sphere
-    center: 0 40 30
-    radius: 30
-    material: 0
-end
-
-start object
-    type: plane
-    center: 0 0 -0.5
-    material: 1
-    normal: 0 0 1
-    dx: 50 0 0
-    dy: 0 50 0
-end
-
-start model
-    model: ../models/cube.obj
-    material: 0
-    center: 20 0 0
-    size: 20
-    rotate: 0 0 0
-end
-
 start model
     model: ../models/block.obj
     material: 0
-    center: 50 10 0
-    size: 10
+    center: 62 40 20
+    size: 1
     rotate: 0 0 0
 end

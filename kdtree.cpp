@@ -48,6 +48,9 @@ void KdTree::buildTree ()
 #endif
         leafs.push_back (new KdNode (o->boudingBox(), o.get ()));
     }
+#ifdef DEBUG
+    Log << "all leafs: " << leafs.size () << std::endl;
+#endif
     _root.reset (createKdTree (std::begin(leafs), std::end(leafs), 0));
 }
 
@@ -93,5 +96,5 @@ KdNode* KdTree::createKdTree (std::vector<KdNode*>::iterator begin, std::vector<
         std::nth_element (begin, begin + (length >> 1), end, zcmp);
     KdNode* lc = createKdTree (begin, begin + (length >> 1), depth + 1);
     KdNode* rc = createKdTree (begin + (length >> 1), end, depth + 1);
-    return new KdNode (Vec3(std::array<double, 3>{{minX, minY, minZ}}), Vec3(std::array<double, 3>{{maxX, maxY, maxZ}} ), lc, rc);
+    return new KdNode (Vec3(std::array<double, 3>{{minX - EPS, minY - EPS, minZ - EPS}}), Vec3(std::array<double, 3>{{maxX + EPS, maxY + EPS, maxZ + EPS}} ), lc, rc);
 }

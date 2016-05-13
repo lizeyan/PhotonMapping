@@ -14,6 +14,9 @@
 std::ofstream Log("rayTrace.log");
 std::mutex logMutex;
 #endif
+#ifdef LOG
+std::ofstream info ("rayTrace.info");
+#endif
 std::mt19937 rd(time(0));
 Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectParser(this))
 {
@@ -49,9 +52,10 @@ void Condutor::run ()
 //    Vec3 link = Vec3(std::array<double,3>{{40, 70, 10}}) - o;
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
-//    std::cout << rt.run () << std::endl;
+    RayTracer rt (camera ()->emitRay (36.1, 22.0), this);
+    std::cout << rt.run () << std::endl;
 //    singleThread ();
-    fixedNumTheads ();
+//    fixedNumTheads ();
 
     std::cout << "finished" << std::endl;
 }
@@ -195,6 +199,9 @@ void Condutor::handlePart (int remainder)
             RayTracer t (_camera->emitRay(x * dx, y * dy), this);
             t.run ();
             _image->setPixel (x, y, t.color ());
+#ifdef LOG
+            info << x << " " << y << " :" << t.color () << std::endl;
+#endif
         }
     }
 }
