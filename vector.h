@@ -138,7 +138,7 @@ template <std::size_t N>
 bool operator== (const Vector<N>& a, const Vector<N> &b)
 {
     for (unsigned int i =0; i < N; ++i)
-        if (a.arg(i) != b.arg(i))
+        if (fabs(a.arg(i) - b.arg(i)) > EPS)
             return false;
     return true;
 }

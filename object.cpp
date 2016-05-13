@@ -556,12 +556,18 @@ void Cobic::preHandle ()
     _dx = standardize (_dx);
     _dy = standardize (_dy);
     _dz = standardize (_dz);
-    _x_h = _center.arg (0) + _a_half;
-    _x_l = _center.arg (0) - _a_half;
-    _y_h = _center.arg (1) + _b_half;
-    _y_l = _center.arg (1) - _b_half;
-    _z_h = _center.arg (2) + _c_half;
-    _z_l = _center.arg (2) - _c_half;
+    if (_dx == unitX && _dy == unitY && _dz == unitZ)
+    {
+        _regular = true;
+        _x_h = _center.arg (0) + _a_half;
+        _x_l = _center.arg (0) - _a_half;
+        _y_h = _center.arg (1) + _b_half;
+        _y_l = _center.arg (1) - _b_half;
+        _z_h = _center.arg (2) + _c_half;
+        _z_l = _center.arg (2) - _c_half;
+    }
+    else
+        _regular = false;
     if (_needBoudingBox)
         _boudingBox = this;
     _sides[0][0] = Plane (_center + _a_half * _dx, _dx);
@@ -635,7 +641,7 @@ Collide Cobic::collide (const Ray &ray) const
     }
     else
     {
-//        tmax1->collide = co1[rankMax].collide || co2[rankMax].collide;
+        //tmax1->collide = co1[rankMax].collide || co2[rankMax].collide;
         if (tmax1->collide)
             return *tmax1;
         else//说明co[0]中所有的distance都小于0

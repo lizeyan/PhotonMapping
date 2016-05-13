@@ -110,6 +110,7 @@ public:
     Collide collide (const Ray& ray) const;
     virtual Color color (const Vec3 &v = Vec3 ()) const;
     void display (std::ostream& os) const;
+    //only for regular cubics
     double xh () const {return _x_h;}
     double xl () const {return _x_l;}
     double yh () const {return _y_h;}
@@ -128,6 +129,7 @@ private:
     double _x_h, _x_l, _y_h, _y_l, _z_h, _z_l;
     Plane _sides[2][3];
     bool _needBoudingBox;
+    bool _regular;
 };
 
 #endif // OBJECT_H
