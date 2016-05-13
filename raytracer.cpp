@@ -69,7 +69,7 @@ Color RayTracer::calcDiffusion (Light *light)
 {
     Color illuminate;
     Object* co;
-    if (light->block (co, collide.point + EPS * collide.normal, condutor ()))
+    if (light->block (co, collide.point - EPS * _ray.second, condutor ()))
     {
         illuminate = co->material ()->refraction () * light->color ();
     }
