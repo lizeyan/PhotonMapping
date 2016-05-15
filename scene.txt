@@ -16,7 +16,7 @@ end
 #add circle light
 start light
     type: point
-    center: 70 0 100
+    center: 1000 50 550
     #normal: 0 0 -1
     #radius: 50
     color: 1 1 1
@@ -62,7 +62,7 @@ end
 start model
     model: ../models/block.obj
     material: 0
-    center: 62 40 20
-    size: 1
+    center: 60 40 20
+    size: 3
     rotate: 0 0 0
 end

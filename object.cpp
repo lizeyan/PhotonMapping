@@ -349,7 +349,7 @@ void Plane::display (std::ostream &os) const
 }
 
 //======================================
-Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor, bool need):Object (material, condutor), _a(a), _b(b), _c(c), _needBoudingBox (need)
+Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor, bool need):Object (material, condutor), _a(a), _b(b), _c(c), _normal (), _needBoudingBox (need)
 {
     preHandle ();
 }
@@ -403,7 +403,7 @@ void Triangle::preHandle ()
             minY = _c.arg (1);
         if (_b.arg (2) > maxZ)
             maxZ = _b.arg (2);
-        else if (_b.arg (0) < minZ)
+        else if (_b.arg (2) < minZ)
             minZ = _b.arg (2);
         if (_c.arg (2) > maxZ)
             maxZ = _c.arg (2);

@@ -53,7 +53,7 @@ void Condutor::run ()
 //    Vec3 link = Vec3(std::array<double,3>{{40, 70, 10}}) - o;
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
-//    RayTracer rt (camera ()->emitRay (38.6, 35.9), this);
+//    RayTracer rt (camera ()->emitRay (32.4, 8.6), this);
 //    std::cout << rt.run () << std::endl;
 //    singleThread ();
     fixedNumTheads ();
