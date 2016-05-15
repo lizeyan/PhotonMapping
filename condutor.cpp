@@ -50,10 +50,10 @@ void Condutor::run ()
 //    ray tracing
 //    Vec3 o = camera ()->center ();
 //    Vec3 o = Vec3(std::array<double,3>{{10.0001, 6.83336, 100.833}});
-//    Vec3 link = Vec3(std::array<double,3>{{40, 70, 10}}) - o;
+//    Vec3 link = Vec3(std::array<double,3>{{2, 10, 0}}) - o;
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
-//    RayTracer rt (camera ()->emitRay (32.4, 8.6), this);
+//    RayTracer rt (camera ()->emitRay (34.1, 41.7), this);
 //    std::cout << rt.run () << std::endl;
 //    singleThread ();
     fixedNumTheads ();

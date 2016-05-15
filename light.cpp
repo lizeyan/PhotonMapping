@@ -165,12 +165,12 @@ bool PointLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) cons
 {
     Vec3 link = standardize (_center - point);
     Ray ray = std::make_pair (point + EPS * link, link);
-    for (const auto& object:condutor->objects ())
+    std::vector<std::pair<Object*, Collide> > potentialObs = condutor->kdTree ()->kdSearch (ray);
+    for (const auto& entry:potentialObs)
     {
-        Collide collide = object->collide (ray);
-        if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
+        if (dot (link, _center - entry.second.point) > EPS && dot(link, point - entry.second.point) < -EPS)
         {
-            ob = object.get ();
+            ob = entry.first;
             return true;
         }
     }

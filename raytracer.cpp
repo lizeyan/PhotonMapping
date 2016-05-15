@@ -70,9 +70,7 @@ Color RayTracer::calcDiffusion (Light *light)
     Color illuminate;
     Object* co;
     if (light->block (co, collide.point, condutor ()))
-    {
         illuminate = co->material ()->refraction () * light->color ();
-    }
     else
         illuminate = light->illuminate (collide.point, collide.normal);
     Color material = nearest->color (collide.point);
@@ -110,6 +108,7 @@ void RayTracer::handleReflection ()
 
 void RayTracer::handleRefraction ()
 {
+    bool front = false;
     Color resColor = color ();
     Vec3 N = standardize (collide.normal);
     Vec3 I = standardize (_ray.second);
@@ -117,6 +116,7 @@ void RayTracer::handleRefraction ()
     double cosi = dot(I, N);
     if (dot(N, I) < 0)
     {
+        front = true;
         cosi = -cosi;
         I = -1 * I;
         n = 1 / n;
@@ -141,6 +141,13 @@ void RayTracer::handleRefraction ()
 //        Log << "refr Color:" << refrColor << std::endl;
 //    }
 //#endif
-    resColor += nearest->material ()->refraction () * refrColor * nearest->material ()->absorb ();
+    if (front)
+        resColor += nearest->material ()->refraction () * refrColor;
+    else
+    {
+        Color absor = nearest->material ()->absorb () * -collide.distance;
+        Color trans = Color (std::array<double, 3>{{std::exp (absor.arg (0)), std::exp (absor.arg (1)), std::exp (absor.arg (2))}} );
+        resColor += nearest->material ()->refraction () * refrColor * trans;
+    }
     setColor (resColor);
 }
