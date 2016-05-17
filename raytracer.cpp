@@ -12,15 +12,13 @@ RayTracer::RayTracer(const Ray& ray, Condutor* condutor, int depth): Tracer (con
 {
 }
 
-Color RayTracer::run ()
+void RayTracer::run ()
 {
     setColor (condutor ()->camera ()->environment ());
     calcNearestCollide ();
     //no collide found
     if (nearest == nullptr)
-    {
-        return color();
-    }
+        return;
 //#ifdef DEBUG
 //    Log << "nearest intersect object:" << *nearest << std::endl;
 //    Log << "collide point of it:" << collide.point << " normal:" << collide.normal << std::endl;
@@ -28,14 +26,13 @@ Color RayTracer::run ()
     //calc diffusion
     handleDiffusion ();
     if (_depth > MAX_RAY_TRACING_DEPTH)
-        return color ();
+        return;
     //calc reflection
     if (nearest->material ()->reflection () > EPS)
         handleReflection ();
     //calc refraction
     if (nearest->material ()->refraction () > EPS)
         handleRefraction ();
-    return color ();
 }
 
 void RayTracer::calcNearestCollide ()
@@ -83,12 +80,15 @@ Color RayTracer::calcDiffusion (Light *light)
 
 void RayTracer::handleDiffusion ()
 {
+    /*
     Color resColor = color ();
     for (const auto& light: condutor ()->lights ())
     {
         resColor += calcDiffusion (light.get ());
     }
     setColor (resColor);
+    */
+    setColor (color () + condutor ()->photonMap ()->search (collide.point));
 }
 
 void RayTracer::handleReflection ()
@@ -100,7 +100,8 @@ void RayTracer::handleReflection ()
     {
         Vec3 R = I - 2 * dot (I, N) * N;
         std::unique_ptr<RayTracer> reflTracer(new RayTracer(std::make_pair(collide.point + EPS * R, R), condutor (), _depth + 1));
-        Color reflColor = reflTracer->run ();
+        reflTracer->run ();
+        Color reflColor = reflTracer->color ();
         resColor += nearest->material ()->reflection () * reflColor * nearest->color (collide.point);
     }
     setColor (resColor);
@@ -133,7 +134,8 @@ void RayTracer::handleRefraction ()
     else
         T = -n * I + (n * cosi - sqrt (cost2)) * N;
     std::unique_ptr<RayTracer> refrTracer(new RayTracer(std::make_pair(collide.point + EPS * T, T), condutor (), _depth + 1));
-    Color refrColor = refrTracer->run ();
+    refrTracer->run ();
+    Color refrColor = refrTracer->color ();
 //#ifdef DEBUG
 //    if (_depth == 0)
 //    {

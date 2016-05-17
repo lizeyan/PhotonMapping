@@ -1,4 +1,4 @@
-#include "kdtree.h"
+#include "triangleTree.h"
 #include "object.h"
 #include "condutor.h"
 #include <algorithm>
@@ -7,12 +7,12 @@
 #ifdef DEBUG
 extern std::ofstream Log;
 #endif
-KdTree::KdTree(Condutor* condutor): _condutor (condutor)
+TriangleTree::TriangleTree(Condutor* condutor): _condutor (condutor)
 {
     buildTree ();
 }
 
-std::vector<std::pair<Object*, Collide> > KdTree::kdSearch (const Ray &ray) const
+std::vector<std::pair<Object*, Collide> > TriangleTree::kdSearch (const Ray &ray) const
 {
     Ray r(ray);
     r.second = standardize (ray.second);
@@ -21,7 +21,7 @@ std::vector<std::pair<Object*, Collide> > KdTree::kdSearch (const Ray &ray) cons
     return std::move (res);
 }
 
-void KdTree::search (const Ray &ray, KdNode *v, std::vector<std::pair<Object*, Collide> >& res) const
+void TriangleTree::search (const Ray &ray, TriangleBox *v, std::vector<std::pair<Object*, Collide> >& res) const
 {
     if (v->isLeaf ())
     {
@@ -38,15 +38,15 @@ void KdTree::search (const Ray &ray, KdNode *v, std::vector<std::pair<Object*, C
         search (ray, v->rc (), res);
 }
 
-void KdTree::buildTree ()
+void TriangleTree::buildTree ()
 {
-    std::vector<KdNode*> leafs;
+    std::vector<TriangleBox*> leafs;
     for (const auto& o: _condutor->objects ())
     {
 #ifdef DEBUG
         Log << "leaf:" << *o << std::endl;
 #endif
-        leafs.push_back (new KdNode (o->boudingBox(), o.get ()));
+        leafs.push_back (new TriangleBox (o->boudingBox(), o.get ()));
     }
 #ifdef DEBUG
     Log << "all leafs: " << leafs.size () << std::endl;
@@ -54,7 +54,7 @@ void KdTree::buildTree ()
     _root.reset (createKdTree (std::begin(leafs), std::end(leafs), 0));
 }
 
-KdNode* KdTree::createKdTree (std::vector<KdNode*>::iterator begin, std::vector<KdNode*>::iterator end, int depth)
+TriangleBox* TriangleTree::createKdTree (std::vector<TriangleBox*>::iterator begin, std::vector<TriangleBox*>::iterator end, int depth)
 {
     static auto xcmp = [&] (const Cobic* a, const Cobic* b) -> bool
     {
@@ -72,7 +72,6 @@ KdNode* KdTree::createKdTree (std::vector<KdNode*>::iterator begin, std::vector<
     if (length == 1)
         return *begin;
     double minX = Bound, maxX = -Bound, minY = Bound, maxY = -Bound, minZ = Bound, maxZ = -Bound;
-    int d = depth % 3;
     for (auto c = begin; c != end; ++c)
     {
         if ((*c)->xl() < minX)
@@ -88,13 +87,14 @@ KdNode* KdTree::createKdTree (std::vector<KdNode*>::iterator begin, std::vector<
         if ((*c)->zh() > maxZ)
             maxZ = (*c)->zh ();
     }
+    int d = depth % 3;
     if (d == 0)
         std::nth_element (begin, begin + (length >> 1), end, xcmp);
     else if (d == 1)
         std::nth_element (begin, begin + (length >> 1), end, ycmp);
     else
         std::nth_element (begin, begin + (length >> 1), end, zcmp);
-    KdNode* lc = createKdTree (begin, begin + (length >> 1), depth + 1);
-    KdNode* rc = createKdTree (begin + (length >> 1), end, depth + 1);
-    return new KdNode (Vec3(std::array<double, 3>{{minX - EPS, minY - EPS, minZ - EPS}}), Vec3(std::array<double, 3>{{maxX + EPS, maxY + EPS, maxZ + EPS}} ), lc, rc);
+    TriangleBox* lc = createKdTree (begin, begin + (length >> 1), depth + 1);
+    TriangleBox* rc = createKdTree (begin + (length >> 1), end, depth + 1);
+    return new TriangleBox (Vec3(std::array<double, 3>{{minX - EPS, minY - EPS, minZ - EPS}}), Vec3(std::array<double, 3>{{maxX + EPS, maxY + EPS, maxZ + EPS}} ), lc, rc);
 }

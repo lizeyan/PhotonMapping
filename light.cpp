@@ -6,7 +6,8 @@
 #include <utility>
 #include <iostream>
 #include <stdexcept>
-extern std::mt19937 rd;
+extern std::minstd_rand rd;
+static std::uniform_real_distribution<> rand11 (-1, 1);
 Light* Light::produce (const std::string &content, Condutor* condutor)
 {
     //必须首先指定类型
@@ -114,7 +115,16 @@ void PointLight::analyseContent (std::stringstream &entryStream)
 
 Ray PointLight::emitPhoton ()
 {
-    return Ray ();
+    double x, y, z, s;
+    do
+    {
+        x = rand11 (rd);
+        y = rand11 (rd);
+        z = rand11 (rd);
+        s = x * x + y * y + z * z;
+    }
+    while (s >= 1.0 || s <= EPS);
+    return Ray (_center, standardize (Vec3(std::array<double, 3> {{x, y, z}})));
 }
 
 Collide PointLight::collide (const Ray &ray) const

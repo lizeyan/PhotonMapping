@@ -7,18 +7,18 @@
 #include <memory>
 #include <vector>
 class Condutor;
-class KdTree
+class TriangleTree
 {
 public:
-    KdTree(Condutor* condutor);
+    TriangleTree(Condutor* condutor);
     std::vector<std::pair<Object*, Collide> > kdSearch (const Ray& ray) const;
 protected:
     void buildTree ();
-    KdNode* createKdTree (std::vector<KdNode*>::iterator begin, std::vector<KdNode*>::iterator end, int depth);
-    void search (const Ray& ray, KdNode* v, std::vector<std::pair<Object*, Collide> >& res) const;
+    TriangleBox* createKdTree (std::vector<TriangleBox*>::iterator begin, std::vector<TriangleBox*>::iterator end, int depth);
+    void search (const Ray& ray, TriangleBox* v, std::vector<std::pair<Object*, Collide> >& res) const;
 private:
     Condutor* _condutor;
-    std::unique_ptr<KdNode> _root;
+    std::unique_ptr<TriangleBox> _root;
 };
 
 #endif // KDTREE_H

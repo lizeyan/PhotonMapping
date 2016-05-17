@@ -15,9 +15,12 @@ SOURCES += main.cpp \
     raytracer.cpp \
     ray.cpp \
     vector.cpp \
-    kdtree.cpp \
-    kdnode.cpp \
-    objectparser.cpp
+    objectparser.cpp \
+    photontracer.cpp \
+    photonmap.cpp \
+    triangleBox.cpp \
+    triangleTree.cpp \
+    photonbox.cpp
 
 HEADERS += \
     condutor.h \
@@ -33,6 +36,9 @@ HEADERS += \
     primitive.h \
     tracer.h \
     raytracer.h \
-    kdtree.h \
-    kdnode.h \
-    objectparser.h
+    objectparser.h \
+    photontracer.h \
+    photonmap.h \
+    triangleBox.h \
+    triangleTree.h \
+    photonbox.h

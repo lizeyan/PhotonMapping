@@ -1,6 +1,8 @@
 #include "base.h"
 #include "condutor.h"
 #include "raytracer.h"
+#include "photontracer.h"
+#include "photonmap.h"
 #include <string>
 #include <regex>
 #include <utility>
@@ -27,6 +29,7 @@ Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectPar
     Log << "read scene" << std::endl;
 #endif
     _kdTree.reset (new KdTree(this));
+    _photonMap.reset (new PhotonMap());
 #ifdef DEBUG
 
     Log << *_camera << std::endl;
@@ -46,7 +49,19 @@ Condutor::~Condutor ()
 
 void Condutor::run ()
 {
-    std::cout << "running" << std::endl;
+    std::cout << "emitting photon" << std::endl;
+    for (const auto& light: _lights)
+    {
+        int photonNum = brightnessValue * model (light->color ());
+        for (int i = 0; i < photonNum; ++i)
+        {
+            PhotonTracer pt (light->emitPhoton(), this);
+            pt.run ();
+            _photonMap->store (pt.photon ());
+        }
+    }
+    _photonMap->build ();
+    std::cout << "ray tracing" << std::endl;
 //    ray tracing
 //    Vec3 o = camera ()->center ();
 //    Vec3 o = Vec3(std::array<double,3>{{10.0001, 6.83336, 100.833}});
@@ -246,7 +261,8 @@ void Condutor::handleSegments (int x1, int x2)
             Log << "x:" << x << ", y:" << y << std::endl;
             logMutex.unlock ();
 #endif
-            Color c = rayTracer.run ();
+            rayTracer.run ();
+            Color c = rayTracer.color ();
 #ifdef DEBUG
             logMutex.lock ();
             Log << "result:" << c << std::endl;
