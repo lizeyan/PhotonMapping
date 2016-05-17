@@ -25,6 +25,7 @@ protected:
     void init ();
     bool check ();
     void preHandle ();
+
 private:
     int _width;
     int _height;
@@ -32,7 +33,11 @@ private:
     Vec3 _dx, _dy;//镜头x,y正方向的单位向量
     Vec3 _center, _normal;//中心，单位法向量
     double _focus;//感光点到image的距离
+    double _radius;//光圈半径
+    double _r2;
     Color _environment;
+
+    std::uniform_real_distribution<> _apertureDis;
 };
 std::ostream& operator<< (std::ostream& os, const Camera& camera);
 #endif // CAMERA_H

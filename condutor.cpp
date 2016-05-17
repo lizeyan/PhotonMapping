@@ -18,7 +18,7 @@ std::mutex logMutex;
 std::mutex infoMutex;
 std::ofstream info ("rayTrace.info");
 #endif
-std::mt19937 rd(time(0));
+std::minstd_rand rd(time(0));
 Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectParser(this))
 {
     init ();
@@ -189,17 +189,22 @@ void Condutor::handlePart (int remainder)
     double dy = 1.0 / camera ()->dpi ();
     int imageX = camera ()->width () * camera ()->dpi ();
     int imageY = camera ()->height () * camera ()->dpi ();
-    std::vector<std::unique_ptr<RayTracer> > lineTracers;
-    std::vector<std::unique_ptr<std::thread> > lineThreads;
+    double scale = 1.0 / double (raysPerPixel);
     for (int x = 0; x < imageX; ++x)
     {
         for (int y = 0; y < imageY; ++y)
         {
             if (! ((x + y) % maxThreadNum == remainder))
                 continue;
-            RayTracer t (_camera->emitRay(x * dx, y * dy), this);
-            t.run ();
-            _image->setPixel (x, y, t.color ());
+            Color res;
+            for (int i = 0; i < raysPerPixel; ++i)
+            {
+                Ray ray = _camera->emitRay(x * dx, y * dy);
+                RayTracer t (ray, this);
+                t.run ();
+                res += t.color ();
+            }
+            _image->setPixel (x, y, res * scale);
 #ifdef LOG
             infoMutex.lock ();
             info << x << " " << y << " :" << t.color () << std::endl;

@@ -5,6 +5,7 @@
 #include <cmath>
 #include <regex>
 #include <stdexcept>
+extern std::minstd_rand rd;
 Camera::Camera(const std::string content)
 {
     init ();
@@ -19,6 +20,8 @@ void Camera::preHandle ()
     _dx = standardize (_dx);
     _dy = standardize (_dy);
     _normal = standardize (_normal);
+    _r2 = _radius * _radius;
+    _apertureDis = std::uniform_real_distribution<> (-_radius, _radius);
 }
 
 void Camera::display (std::ostream &os) const
@@ -65,7 +68,15 @@ Ray Camera::emitRay (double x, double y)
     y = (_height >> 1) - y;
     Vec3 a = _focus * _normal;
     Vec3 b = x * _dx + y * _dy;
-    return std::make_pair (_center, a + b);
+    double deltaX, deltaY;
+    do
+    {
+        deltaX = _apertureDis (rd);
+        deltaY = _apertureDis (rd);
+    }
+    while (deltaX * deltaX + deltaY * deltaY >= _r2);
+    Vec3 c = deltaX * _dx + deltaY * _dy;
+    return std::make_pair (_center - c, a + b + c);
 }
 
 void Camera::analyseContent (const std::string &content)
@@ -100,14 +111,11 @@ void Camera::analyseContent (const std::string &content)
         {
             valueStream >> _environment[0] >> _environment[1] >> _environment[2];
         }
-
-
         else if (key == std::string ("center"))
         {
 
             valueStream >> _center[0] >> _center[1] >> _center[2];
         }
-
         else if (key == std::string ("normal"))
         {
 
@@ -120,6 +128,10 @@ void Camera::analyseContent (const std::string &content)
         else if (key == std::string ("dpi"))
         {
             valueStream >> _dpi;
+        }
+        else if (key == std::string ("radius"))
+        {
+            valueStream >> _radius;
         }
         else
         {

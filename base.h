@@ -4,7 +4,7 @@
 #include <fstream>
 #include <random>
 //#define DEBUG
-#define LOG
+//#define LOG
 const double EPS = 1e-10;
 const double PI = 3.141592654;
 const double PI_Double = 6.283185307;

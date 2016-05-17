@@ -12,6 +12,7 @@
 #include <string>
 const int MAX_RAY_TRACING_DEPTH = 20;
 const int maxThreadNum = 4;
+const int raysPerPixel = 100;
 class ifstream;
 class ofstream;
 class Condutor
