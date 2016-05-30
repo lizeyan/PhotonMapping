@@ -34,6 +34,11 @@ bool PhotonBox::intersect (const Sphere& s) const
 
 bool PhotonBox::contained (const Sphere &s) const
 {
+    if (isLeaf ())
+    {
+        double dx = _photon->point.arg(0) - s.center ().arg (0), dy = _photon->point.arg (1) - s.center ().arg (1), dz = _photon->point.arg (2) - s.center ().arg (2);
+        return s.radius2 () >= dx * dx + dy * dy + dz * dz;
+    }
     double dx = _box.xl () - s.center ().arg (0), dy = _box.yl () - s.center ().arg (1), dz = _box.zl () - s.center ().arg (2);
     if (s.radius2 () < dx * dx + dy * dy + dz * dz)
         return false;

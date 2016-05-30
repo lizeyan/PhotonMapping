@@ -220,6 +220,7 @@ void Condutor::handlePart (int remainder)
                 t.run ();
                 res += t.color ();
             }
+            std::cout << "x, y:" << x << "," << y << " color:" << res << std::endl;
             _image->setPixel (x, y, res * scale);
 #ifdef LOG
             infoMutex.lock ();

@@ -8,14 +8,16 @@ PhotonMap::PhotonMap()
 Color PhotonMap::search (const Vec3 &point) const
 {
     double l = 0, r = Bound, mi = (r + l) / 2;
+//    std::cout << "point:" << point << std::endl;
     std::vector<Photon*> res;
     while (true)
     {
         res.clear ();
         search (Sphere (point, mi, nullptr, nullptr, false), _root.get (), res);
-        if (res.size () == K && r - l <= errorLimit)
+//        std::cout << "radius:" << mi << " res.size:" << res.size () << std::endl;
+        if (res.size () >= K && r - l <= errorLimit)
             break;
-        if (res.size () > K)
+        if (res.size () >= K)
             r = mi;
         else
             l = mi;
@@ -32,7 +34,7 @@ void PhotonMap::search (const Sphere &s, PhotonBox* v, std::vector<Photon*> &res
 {
     if (v->isLeaf ())
     {
-        if (v->intersect (s))
+        if (v->contained (s))
             res.push_back (v->photon ());
         return;
     }
@@ -43,7 +45,7 @@ void PhotonMap::search (const Sphere &s, PhotonBox* v, std::vector<Photon*> &res
     if (v->rc ()->contained (s))
         addBox (v->rc (), res);
     else if (v->rc ()->intersect (s))
-        addBox (v->rc (), res);
+        search (s, v->rc (), res);
 }
 
 void PhotonMap::addBox (PhotonBox *v, std::vector<Photon *> &res)

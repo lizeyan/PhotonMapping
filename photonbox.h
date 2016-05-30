@@ -14,7 +14,7 @@ class PhotonBox
 public:
     PhotonBox (const Vec3& lb, const Vec3 & rt, PhotonBox* lc, PhotonBox* rc);
     PhotonBox (Photon* photon);
-    bool isLeaf () {return _photon != nullptr;}
+    bool isLeaf () const {return _photon != nullptr;}
     PhotonBox* lc () {return _lc.get ();}
     PhotonBox* rc () {return _rc.get ();}
     Photon* photon () {return _photon;}
