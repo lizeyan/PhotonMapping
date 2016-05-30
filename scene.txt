@@ -10,7 +10,7 @@ start camera
     normal: -0.995 0 -0.099875
     focus: 612.94
     dpi: 1
-    radius: 5
+    radius: 1
     environment: 0 0 0
 end
 

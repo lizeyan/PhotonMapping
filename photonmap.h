@@ -6,14 +6,14 @@
 #include "photonbox.h"
 #include <vector>
 #include <memory>
-const unsigned int K = 100;
+const unsigned int K = 10;
 const double errorLimit = 1e-3;
 class PhotonMap
 {
 public:
     PhotonMap();
     void store (const Photon& photon)   { _photons.push_back (std::move (std::unique_ptr<Photon> (new Photon(photon))));}
-    Color search (const Vec3& point) const;
+    std::pair<std::vector<Photon*>, double> search (const Vec3& point) const;
     void build ();
     size_t size() {return _photons.size ();}
 protected:

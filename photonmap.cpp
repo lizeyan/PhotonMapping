@@ -5,7 +5,7 @@ PhotonMap::PhotonMap()
 
 }
 
-Color PhotonMap::search (const Vec3 &point) const
+std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) const
 {
     double l = 0, r = Bound, mi = (r + l) / 2;
 //    std::cout << "point:" << point << std::endl;
@@ -23,11 +23,7 @@ Color PhotonMap::search (const Vec3 &point) const
             l = mi;
         mi = (r + l) / 2;
     }
-    Color resColor;
-    for (const auto& c: res)
-        resColor += c->color;
-    double scale = 1.0 / (static_cast<double>(res.size ()) * PI * mi * mi);
-    return resColor * scale;
+    return std::make_pair (std::move(res), mi);
 }
 
 void PhotonMap::search (const Sphere &s, PhotonBox* v, std::vector<Photon*> &res) const

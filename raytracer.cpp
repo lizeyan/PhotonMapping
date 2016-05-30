@@ -52,15 +52,24 @@ Color RayTracer::calcDiffusion (Light *light)
 
 void RayTracer::handleDiffusion ()
 {
+    auto resPair = condutor ()->photonMap ()->search (collide.point);
+    std::vector<Photon*> photons = resPair.first;
+    double radius = resPair.second;
+    Color resColor;
+    for (const auto& p: photons)
+    {
+        resColor += p->color;
+    }
+    double scale = 1.0 / (double(photons.size ()) * PI * radius * radius);
+    resColor *= scale;
+    setColor (resColor + color ());
     /*
     Color resColor = color ();
     for (const auto& light: condutor ()->lights ())
     {
-        resColor += calcDiffusion (light.get ());
     }
     setColor (resColor);
     */
-    setColor (color () + condutor ()->photonMap ()->search (collide.point));
 }
 
 void RayTracer::handleReflection ()

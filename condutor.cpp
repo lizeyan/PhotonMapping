@@ -172,7 +172,8 @@ void Condutor::addElement (const std::string &name, const std::string &content)
 
 void Condutor::singleThread ()
 {
-    handleSegments (0, camera ()->width ());
+    for (int i = 0; i < maxThreadNum; ++i)
+        handlePart (i);
 }
 void Condutor::oneThreadPerRay ()
 {
@@ -270,6 +271,7 @@ void Condutor::handleSegments (int x1, int x2)
             Log << "result:" << c << std::endl;
             logMutex.unlock ();
 #endif
+            std::cout << "x, y:" << x << "," << y << " color:" << c << std::endl;
             _image->setPixel (x, y, c);
         }
     }
