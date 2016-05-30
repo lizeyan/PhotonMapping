@@ -15,10 +15,11 @@ public:
     PhotonBox (const Vec3& lb, const Vec3 & rt, PhotonBox* lc, PhotonBox* rc);
     PhotonBox (Photon* photon);
     bool isLeaf () {return _photon != nullptr;}
-    PhotonBox* lc () {return _lc;}
-    PhotonBox* rc () {return _rc;}
+    PhotonBox* lc () {return _lc.get ();}
+    PhotonBox* rc () {return _rc.get ();}
     Photon* photon () {return _photon;}
     bool intersect (const Sphere& s) const;
+    bool contained (const Sphere& s) const;
 private:
     Photon* _photon;
     Cobic _box;

@@ -32,6 +32,7 @@ public:
     virtual ~Sphere ();
     Vec3 center () const {return _center;}
     double radius () const {return _radius;}
+    double radius2 () const {return _r2;}
     virtual Collide collide (const Ray &ray) const;
     virtual void display (std::ostream& os) const;
     virtual Color color (const Vec3 &v = Vec3 ()) const;

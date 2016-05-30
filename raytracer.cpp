@@ -8,7 +8,7 @@
 #ifdef DEBUG
 extern std::ofstream Log;
 #endif
-RayTracer::RayTracer(const Ray& ray, Condutor* condutor, int depth): Tracer (condutor), _ray (ray), nearest(nullptr), collide (), _depth (depth)
+RayTracer::RayTracer(const Ray& ray, Condutor* condutor, int depth): Tracer (ray, condutor, depth)
 {
 }
 
@@ -34,34 +34,6 @@ void RayTracer::run ()
     if (nearest->material ()->refraction () > EPS)
         handleRefraction ();
 }
-
-void RayTracer::calcNearestCollide ()
-{
-    nearest = nullptr;
-    collide.distance = Bound;
-    std::vector<std::pair<Object*, Collide> > potentialObs = condutor ()->kdTree ()->kdSearch (_ray);
-    if (potentialObs.size())
-    {
-        collide.collide = true;
-    }
-    for (const auto& entry: potentialObs)
-    {
-        if (entry.second.distance < collide.distance)
-        {
-            collide = std::move (entry.second);
-            nearest = entry.first;
-        }
-    }
-#ifdef DEBUG
-    Log << "depth:" << _depth << std::endl;
-    if (nearest)
-    {
-        Log << "nearest:" << *nearest << std::endl;
-        Log << "collide point:" << collide.point << std::endl;
-    }
-#endif
-}
-
 Color RayTracer::calcDiffusion (Light *light)
 {
     Color illuminate;
@@ -94,11 +66,11 @@ void RayTracer::handleDiffusion ()
 void RayTracer::handleReflection ()
 {
     Color resColor = color ();
-    Vec3 N = standardize (collide.normal);
-    Vec3 I = standardize (_ray.second);
+    Vec3 N = collide.normal;
+    Vec3 I = _ray.second;
     if (dot(N, I) < -EPS)
     {
-        Vec3 R = I - 2 * dot (I, N) * N;
+        Vec3 R = reflect (I, N);
         std::unique_ptr<RayTracer> reflTracer(new RayTracer(std::make_pair(collide.point + EPS * R, R), condutor (), _depth + 1));
         reflTracer->run ();
         Color reflColor = reflTracer->color ();
@@ -111,28 +83,7 @@ void RayTracer::handleRefraction ()
 {
     bool front = false;
     Color resColor = color ();
-    Vec3 N = standardize (collide.normal);
-    Vec3 I = standardize (_ray.second);
-    double n = nearest->material ()->refractivity ();
-    double cosi = dot(I, N);
-    if (dot(N, I) < 0)
-    {
-        front = true;
-        cosi = -cosi;
-        I = -1 * I;
-        n = 1 / n;
-    }
-    else
-    {
-        I = -1 * I;
-        N = -1 * N;
-    }
-    double cost2 = 1 - n * n * (1 - cosi * cosi);
-    Vec3 T;
-    if (cost2 <= 0)//只有从光密介质到光疏介质才可能出现
-        T = 2 * cosi * N - I;
-    else
-        T = -n * I + (n * cosi - sqrt (cost2)) * N;
+    Vec3 T = refract (_ray.second, collide.normal, nearest->material ()->refractivity (), front);
     std::unique_ptr<RayTracer> refrTracer(new RayTracer(std::make_pair(collide.point + EPS * T, T), condutor (), _depth + 1));
     refrTracer->run ();
     Color refrColor = refrTracer->color ();

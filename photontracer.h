@@ -6,13 +6,15 @@
 class PhotonTracer : public Tracer
 {
 public:
-    PhotonTracer(const Ray& ray, Condutor* condutor);
+    PhotonTracer(const Ray& ray, Condutor* condutor, const Color& color, int depth = 0);
     virtual ~PhotonTracer () {};
     void run ();
-    Photon photon () {return _photon;}
+protected:
+    bool handleDiffusion (double& prob);
+    bool handleReflection (double& prob);
+    bool handleRefraction (double& prob);
 private:
-    Ray _ray;
-    Photon _photon;
+    Color _color;
 };
 
 #endif // PHOTONTRACER_H

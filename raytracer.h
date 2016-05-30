@@ -19,13 +19,8 @@ protected:
     void handleDiffusion ();
     void handleReflection ();
     void handleRefraction ();
-    void calcNearestCollide ();
     void setColor (const Color& c) {_color = c;}
 private:
-    Ray _ray;
-    Object* nearest;
-    Collide collide;
-    int _depth;
     Color _color;
 };
 

@@ -9,7 +9,7 @@ start camera
     center: 700 50 70
     normal: -0.995 0 -0.099875
     focus: 612.94
-    dpi: 10
+    dpi: 1
     radius: 5
     environment: 0 0 0
 end

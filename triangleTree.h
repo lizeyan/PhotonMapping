@@ -1,7 +1,7 @@
 #ifndef KDTREE_H
 #define KDTREE_H
 #include "ray.h"
-#include "kdnode.h"
+#include "triangleBox.h"
 #include "object.h"
 #include "vector.h"
 #include <memory>

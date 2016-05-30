@@ -28,7 +28,7 @@ Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectPar
 #ifdef DEBUG
     Log << "read scene" << std::endl;
 #endif
-    _kdTree.reset (new KdTree(this));
+    _kdTree.reset (new TriangleTree(this));
     _photonMap.reset (new PhotonMap());
 #ifdef DEBUG
 
@@ -55,11 +55,11 @@ void Condutor::run ()
         int photonNum = brightnessValue * model (light->color ());
         for (int i = 0; i < photonNum; ++i)
         {
-            PhotonTracer pt (light->emitPhoton(), this);
-            pt.run ();
-            _photonMap->store (pt.photon ());
+            PhotonTracer photonTracer (light->emitPhoton(), this, light->color ());
+            photonTracer.run ();
         }
     }
+    std::cout << "photon map size: " << _photonMap->size () << std::endl;
     _photonMap->build ();
     std::cout << "ray tracing" << std::endl;
 //    ray tracing
@@ -69,7 +69,8 @@ void Condutor::run ()
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
 //    RayTracer rt (camera ()->emitRay (34.1, 41.7), this);
-//    std::cout << rt.run () << std::endl;
+//    rt.run ();
+//    std::cout << rt.color () << std::endl;
 //    singleThread ();
     fixedNumTheads ();
 

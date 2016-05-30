@@ -4,17 +4,14 @@
 #include "light.h"
 #include "color.h"
 #include "object.h"
-#include "kdtree.h"
+#include "triangleTree.h"
 #include "camera.h"
 #include "photonmap.h"
 #include "image.h"
 #include <memory>
 #include <vector>
 #include <string>
-const int MAX_RAY_TRACING_DEPTH = 20;
-const int maxThreadNum = 4;
-const int raysPerPixel = 100;
-const int brightnessValue = 100000;
+
 class ifstream;
 class ofstream;
 class Condutor
@@ -31,7 +28,7 @@ public:
     std::vector<std::unique_ptr<Object> >& objects () {return _objects;}
     std::vector<std::unique_ptr<Material> >& materials () {return _materials;}
     PhotonMap* photonMap () {return _photonMap.get ();}
-    KdTree* kdTree () {return _kdTree.get ();}
+    TriangleTree* kdTree () {return _kdTree.get ();}
 protected:
     void init ();
     void readScene ();
@@ -50,7 +47,7 @@ private:
     std::vector<std::unique_ptr<Material> > _materials;//initialized in readScene.
     std::unique_ptr<Camera> _camera;//innitialized in readScene
 
-    std::unique_ptr<KdTree> _kdTree;
+    std::unique_ptr<TriangleTree> _kdTree;
     std::unique_ptr<ObjectParser> _parser;
     std::unique_ptr<PhotonMap> _photonMap;
 };
