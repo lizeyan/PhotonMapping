@@ -73,7 +73,7 @@ void Condutor::run ()
 //    RayTracer rt (camera ()->emitRay (34.1, 41.7), this);
 //    rt.run ();
 //    std::cout << rt.color () << std::endl;
-//    singleThread ();
+    singleThread ();
 //    fixedNumTheads ();
 
     std::cout << "finished" << std::endl;
@@ -223,7 +223,7 @@ void Condutor::handlePart (int remainder)
                 t.run ();
                 res += t.color ();
             }
-//            std::cout << "x, y:" << x << "," << y << " color:" << res << std::endl;
+            std::cout << "x, y:" << x << "," << y << " color:" << res << std::endl;
             _image->setPixel (x, y, res * scale);
 #ifdef LOG
             infoMutex.lock ();

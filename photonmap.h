@@ -17,7 +17,7 @@ public:
     void build ();
     size_t size() {return _photons.size ();}
 protected:
-    PhotonBox* createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth);
+    PhotonBox* createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth, const Vec3& lb, const Vec3& rt);
     void search (const Sphere& s, PhotonBox* v,  std::vector<Photon*>& res) const;
     bool search (const Vec3& p, PhotonBox* v, std::vector<PhotonBox*>& path) const;
     static void addBox (PhotonBox* v, std::vector<Photon*>& res);

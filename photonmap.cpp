@@ -13,6 +13,11 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
 //    std::cout << "point:" << point << std::endl;
     std::vector<PhotonBox*> path;
     search (point, _root.get (), path);
+    if (path.size () == 0)
+    {
+        std::cout << "point:" << point << std::endl;
+        throw std::logic_error ("path.size == 0");
+    }
     auto it = begin (path);
     auto photonLess = [] (const std::pair<Photon*, double>& a, const std::pair<Photon*, double>& b) -> bool
     {
@@ -30,8 +35,20 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
             photons.push (std::make_pair (p, dis));
         }
     };
-    insertInto ((*it)->lc ()->photon ());
-    insertInto ((*it)->rc ()->photon ());
+    std::stack<PhotonBox*> s;
+    s.push (*it);
+    while (!s.empty ())
+    {
+        PhotonBox* top = s.top ();
+        s.pop ();
+        if (top->isLeaf ())
+            insertInto (top->photon ());
+        else
+        {
+            s.push (top->lc ());
+            s.push (top->rc ());
+        }
+    }
     ++it;
     while (it != end (path))
     {
@@ -65,7 +82,7 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
 
 bool PhotonMap::search (const Vec3 &p, PhotonBox *v, std::vector<PhotonBox *> &path) const
 {
-    if (v->lc ()->isLeaf ())//子节点就是叶节点
+    if (v->lc ()->isLeaf () && v->rc ()->isLeaf ())
     {
         if (v->contain (p))
         {
@@ -75,13 +92,38 @@ bool PhotonMap::search (const Vec3 &p, PhotonBox *v, std::vector<PhotonBox *> &p
         else
             return false;
     }
-    if (search (p, v->lc (), path) || search (p, v->rc (), path))
+    else if (v->lc ()->isLeaf ())
     {
-        path.push_back (v);
-        return true;
+        if (search (p, v->rc (), path) || v->contain (p))
+        {
+            path.push_back (v);
+            return true;
+        }
+        else
+            return false;
+    }
+    else if (v->rc ()->isLeaf ())
+    {
+        if (search (p, v->lc (), path) || v->contain (p))
+        {
+            path.push_back (v);
+            return true;
+        }
+        else
+            return false;
     }
     else
-        return false;
+    {
+        bool lc = search (p, v->lc (), path);
+        bool rc = search (p, v->rc (), path);
+        if (lc || rc)
+        {
+            path.push_back (v);
+            return true;
+        }
+        else
+            return false;
+    }
 }
 
 void PhotonMap::search (const Sphere &s, PhotonBox* v, std::vector<Photon*> &res) const
@@ -115,10 +157,10 @@ void PhotonMap::addBox (PhotonBox *v, std::vector<Photon *> &res)
 
 void PhotonMap::build ()
 {
-    _root.reset (createKdTree (begin (_photons), end (_photons), 0));
+    _root.reset (createKdTree (begin (_photons), end (_photons), 0, Vec3(std::array<double, 3>{{-Bound, -Bound, -Bound}}), Vec3(std::array<double, 3>{{Bound, Bound, Bound}})));
 }
 
-PhotonBox* PhotonMap::createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth)
+PhotonBox* PhotonMap::createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth, const Vec3& lb, const Vec3& rt)
 {
     static auto xcmp = [&] (const std::unique_ptr<Photon>& a, const std::unique_ptr<Photon>& b) -> bool
     {
@@ -135,30 +177,30 @@ PhotonBox* PhotonMap::createKdTree (std::vector<std::unique_ptr<Photon>>::iterat
     int length = std::distance (begin, end);
     if (length == 1)
         return new PhotonBox (begin->get ());
-    double minX = Bound, maxX = -Bound, minY = Bound, maxY = -Bound, minZ = Bound, maxZ = -Bound;
-    for (auto c = begin; c != end; ++c)
-    {
-        if ((*c)->point.arg (0) < minX)
-            minX = (*c)->point.arg (0);
-        else if ((*c)->point.arg (0) > maxX)
-            maxX = (*c)->point.arg (0);
-        if ((*c)->point.arg (1) < minY)
-            minY = (*c)->point.arg (1);
-        else if ((*c)->point.arg (1) > maxY)
-            maxY = (*c)->point.arg (1);
-        if ((*c)->point.arg (2) < minZ)
-            minZ = (*c)->point.arg (2);
-        else if ((*c)->point.arg (2) > maxZ)
-            maxZ = (*c)->point.arg (2);
-    }
     int d = depth % 3;
+    Vec3 lbTmp (lb), rtTmp (rt);
     if (d == 0)
+    {
         std::nth_element (begin, begin + (length >> 1), end, xcmp);
+        double x = (lb.arg (0) + rt.arg (0)) / 2;
+        lbTmp[0] = x;
+        rtTmp[0] = x;
+    }
     else if (d == 1)
+    {
         std::nth_element (begin, begin + (length >> 1), end, ycmp);
+        double y = (lb.arg (1) + rt.arg (1)) / 2;
+        lbTmp[1] = y;
+        rtTmp[1] = y;
+    }
     else
+    {
         std::nth_element (begin, begin + (length >> 1), end, zcmp);
-    return new PhotonBox (Vec3(std::array<double, 3>{{minX - EPS, minY - EPS, minZ - EPS}}), Vec3(std::array<double, 3>{{maxX + EPS, maxY + EPS, maxZ + EPS}} ), createKdTree (begin, begin + (length >> 1), depth + 1), createKdTree (begin + (length >> 1), end, depth + 1));
+        double z = (lb.arg (2) + rt.arg (2)) / 2;
+        lbTmp[2] = z;
+        rtTmp[2] = z;
+    }
+    return new PhotonBox (lb, rt, createKdTree (begin, begin + (length >> 1), depth + 1, lb, rtTmp), createKdTree (begin + (length >> 1), end, depth + 1, lbTmp, rt));
 }
 
 
