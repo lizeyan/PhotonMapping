@@ -29,5 +29,4 @@ const int MAX_RAY_TRACING_DEPTH = 20;
 const int MAX_PHOTON_TRACING_DEPTH = 20;
 const int maxThreadNum = 4;
 const int raysPerPixel = 1;
-const int brightnessValue = 1000;
 #endif // BASE_H

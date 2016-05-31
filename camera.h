@@ -19,6 +19,8 @@ public:
     inline Vec3 dy () {return _dy;}
     inline Vec3 environment () {return _environment;}
     inline double focus () {return _focus;}
+    int brightnessValue () {return _brightnessValue;}
+    int K () {return _K;}
     Ray emitRay (double x, double y);
 protected:
     void analyseContent (const std::string& content);
@@ -36,6 +38,8 @@ private:
     double _radius;//光圈半径
     double _r2;
     Color _environment;
+    int _brightnessValue;
+    int _K;
 
     std::uniform_real_distribution<> _apertureDis;
 };

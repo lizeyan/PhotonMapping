@@ -133,6 +133,10 @@ void Camera::analyseContent (const std::string &content)
         {
             valueStream >> _radius;
         }
+        else if (key == std::string ("K"))
+            valueStream >> _K;
+        else if (key == std::string ("brightnessValue"))
+            valueStream >> _brightnessValue;
         else
         {
             throw std::logic_error ("unexcepted key type in scene, camera");

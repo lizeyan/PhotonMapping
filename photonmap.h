@@ -6,12 +6,12 @@
 #include "photonbox.h"
 #include <vector>
 #include <memory>
-const unsigned int K = 16;
 const double errorLimit = 1e-3;
+class Condutor;
 class PhotonMap
 {
 public:
-    PhotonMap();
+    PhotonMap(Condutor* condutor);
     void store (const Photon& photon)   { _photons.push_back (std::move (std::unique_ptr<Photon> (new Photon(photon))));}
     std::pair<std::vector<Photon*>, double> search (const Vec3& point) const;
     void build ();
@@ -24,6 +24,7 @@ protected:
 private:
     std::vector<std::unique_ptr<Photon> > _photons;
     std::unique_ptr<PhotonBox> _root;
+    Condutor* _condutor;
 };
 
 #endif // PHOTONMAP_H

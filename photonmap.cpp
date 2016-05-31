@@ -1,9 +1,10 @@
 #include "photonmap.h"
+#include "condutor.h"
 #include <utility>
 #include <stack>
 #include <queue>
 #include <iterator>
-PhotonMap::PhotonMap()
+PhotonMap::PhotonMap(Condutor* condutor):_condutor (condutor)
 {
 
 }
@@ -27,7 +28,7 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
     auto insertInto = [this, &photons, &point] (Photon* p)
     {
         double dis = distance (p->point, point);
-        if (photons.size () < K)
+        if (photons.size () < _condutor->camera ()->K ())
             photons.push (std::make_pair (p, dis));
         else if (dis < photons.top ().second)
         {
@@ -72,7 +73,7 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
         ++it;
     }
     std::vector<Photon*> res;
-    for (unsigned i = 0; i < K; ++i)
+    for (unsigned i = 0; i < _condutor->camera ()->K (); ++i)
     {
         res.push_back (photons.top ().first);
         photons.pop ();

@@ -29,7 +29,7 @@ Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectPar
     Log << "read scene" << std::endl;
 #endif
     _kdTree.reset (new TriangleTree(this));
-    _photonMap.reset (new PhotonMap());
+    _photonMap.reset (new PhotonMap(this));
 #ifdef DEBUG
 
     Log << *_camera << std::endl;
@@ -53,7 +53,7 @@ void Condutor::run ()
     std::cout << "emitting photon" << std::endl;
     for (const auto& light: _lights)
     {
-        int photonNum = brightnessValue * model (light->color ());
+        int photonNum = camera ()->brightnessValue ()* model (light->color ());
         for (int i = 0; i < photonNum; ++i)
         {
             PhotonTracer photonTracer (light->emitPhoton(), this, light->color ());

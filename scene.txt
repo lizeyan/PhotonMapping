@@ -12,6 +12,8 @@ start camera
     dpi: 1
     radius: 1
     environment: 0 0 0
+    K: 24
+    brightnessValue: 10000 
 end
 
 #add circle light
