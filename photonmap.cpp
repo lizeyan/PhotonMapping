@@ -182,23 +182,23 @@ PhotonBox* PhotonMap::createKdTree (std::vector<std::unique_ptr<Photon>>::iterat
     if (d == 0)
     {
         std::nth_element (begin, begin + (length >> 1), end, xcmp);
-        double x = (lb.arg (0) + rt.arg (0)) / 2;
+        double x = (*(begin + (length >> 1)))->point.arg (0);
         lbTmp[0] = x;
-        rtTmp[0] = x;
+        rtTmp[0] = x + EPS;
     }
     else if (d == 1)
     {
         std::nth_element (begin, begin + (length >> 1), end, ycmp);
-        double y = (lb.arg (1) + rt.arg (1)) / 2;
+        double y = (*(begin + (length >> 1)))->point.arg (1);
         lbTmp[1] = y;
-        rtTmp[1] = y;
+        rtTmp[1] = y + EPS;
     }
     else
     {
         std::nth_element (begin, begin + (length >> 1), end, zcmp);
-        double z = (lb.arg (2) + rt.arg (2)) / 2;
+        double z = (*(begin + (length >> 1)))->point.arg (2);
         lbTmp[2] = z;
-        rtTmp[2] = z;
+        rtTmp[2] = z + EPS;
     }
     return new PhotonBox (lb, rt, createKdTree (begin, begin + (length >> 1), depth + 1, lb, rtTmp), createKdTree (begin + (length >> 1), end, depth + 1, lbTmp, rt));
 }
