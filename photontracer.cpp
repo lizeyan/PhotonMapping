@@ -33,7 +33,7 @@ bool PhotonTracer::handleDiffusion (double &prob)
         prob -= next;
         return false;
     }
-    PhotonTracer pt(std::make_pair(collide.point, diffuse (collide.normal)), _condutor, _color * nearest->material ()->color (), _depth + 1);
+    PhotonTracer pt(std::make_pair(collide.point, diffuse (collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);
     pt.run ();
     return true;
 }
@@ -46,7 +46,7 @@ bool PhotonTracer::handleReflection (double &prob)
         prob -= next;
         return false;
     }
-    PhotonTracer pt(std::make_pair(collide.point, reflect (_ray.second, collide.normal)), _condutor, _color * nearest->material ()->color (), _depth + 1);
+    PhotonTracer pt(std::make_pair(collide.point, reflect (_ray.second, collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);
     pt.run ();
     return true;
 }

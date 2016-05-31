@@ -73,8 +73,8 @@ void Condutor::run ()
 //    RayTracer rt (camera ()->emitRay (34.1, 41.7), this);
 //    rt.run ();
 //    std::cout << rt.color () << std::endl;
-    singleThread ();
-//    fixedNumTheads ();
+//    singleThread ();
+    fixedNumTheads ();
 
     std::cout << "finished" << std::endl;
 }
