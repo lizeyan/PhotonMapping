@@ -25,7 +25,7 @@ protected:
     int _depth;
 };
 //=======inline functions=====================================
-extern std::minstd_rand rd;
+extern std::mt19937 rd;
 extern std::uniform_real_distribution<> rand01;
 inline Vec3 Tracer::diffuse (const Vec3 &N)
 {

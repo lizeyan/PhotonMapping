@@ -5,7 +5,7 @@
 #include "object.h"
 struct Photon
 {
-    Vec3 point;
+    Vec3 point, dir;
     Color color;
 };
 

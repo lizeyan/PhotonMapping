@@ -5,7 +5,7 @@
 #include <cmath>
 #include <regex>
 #include <stdexcept>
-extern std::minstd_rand rd;
+extern std::mt19937 rd;
 Camera::Camera(const std::string content)
 {
     init ();

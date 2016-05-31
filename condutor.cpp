@@ -20,7 +20,7 @@ std::mutex logMutex;
 std::mutex infoMutex;
 std::ofstream info ("rayTrace.info");
 #endif
-std::minstd_rand rd(time(0));
+std::mt19937 rd(time(0));
 Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectParser(this))
 {
     init ();
@@ -223,7 +223,9 @@ void Condutor::handlePart (int remainder)
                 t.run ();
                 res += t.color ();
             }
-            std::cout << "x, y:" << x << "," << y << " color:" << res << std::endl;
+#ifdef PHOTON_MAPPING
+//            std::cout << "x, y:" << x << "," << y << " color:" << res << std::endl;
+#endif
             _image->setPixel (x, y, res * scale);
 #ifdef LOG
             infoMutex.lock ();

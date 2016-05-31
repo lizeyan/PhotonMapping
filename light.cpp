@@ -6,7 +6,7 @@
 #include <utility>
 #include <iostream>
 #include <stdexcept>
-extern std::minstd_rand rd;
+extern std::mt19937 rd;
 static std::uniform_real_distribution<> rand11 (-1, 1);
 Light* Light::produce (const std::string &content, Condutor* condutor)
 {

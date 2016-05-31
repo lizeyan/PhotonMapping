@@ -2,7 +2,7 @@
 #include "base.h"
 #include "condutor.h"
 #include <random>
-extern std::minstd_rand rd;
+extern std::mt19937 rd;
 std::uniform_real_distribution<> rand01 (0, 1);
 PhotonTracer::PhotonTracer (const Ray& ray, Condutor* condutor, const Color& color, int depth): Tracer (ray, condutor, depth), _color (color)
 {
@@ -24,7 +24,7 @@ void PhotonTracer::run ()
 
 bool PhotonTracer::handleDiffusion (double &prob)
 {
-    _condutor->photonMap ()->store (Photon{collide.point, _color});
+    _condutor->photonMap ()->store (Photon{collide.point, _ray.second, _color});
 
     double next = nearest->material ()->diffusion ();
 

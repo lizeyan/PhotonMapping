@@ -73,7 +73,7 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
         ++it;
     }
     std::vector<Photon*> res;
-    for (unsigned i = 0; i < _condutor->camera ()->K (); ++i)
+    for (int i = 0; i < _condutor->camera ()->K (); ++i)
     {
         res.push_back (photons.top ().first);
         photons.pop ();
