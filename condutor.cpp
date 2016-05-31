@@ -49,6 +49,7 @@ Condutor::~Condutor ()
 
 void Condutor::run ()
 {
+#ifdef PHOTON_MAPPING
     std::cout << "emitting photon" << std::endl;
     for (const auto& light: _lights)
     {
@@ -61,6 +62,7 @@ void Condutor::run ()
     }
     std::cout << "photon map size: " << _photonMap->size () << std::endl;
     _photonMap->build ();
+#endif
     std::cout << "ray tracing" << std::endl;
 //    ray tracing
 //    Vec3 o = camera ()->center ();
@@ -72,7 +74,7 @@ void Condutor::run ()
 //    rt.run ();
 //    std::cout << rt.color () << std::endl;
 //    singleThread ();
-    fixedNumTheads ();
+//    fixedNumTheads ();
 
     std::cout << "finished" << std::endl;
 }
@@ -221,7 +223,7 @@ void Condutor::handlePart (int remainder)
                 t.run ();
                 res += t.color ();
             }
-            std::cout << "x, y:" << x << "," << y << " color:" << res << std::endl;
+//            std::cout << "x, y:" << x << "," << y << " color:" << res << std::endl;
             _image->setPixel (x, y, res * scale);
 #ifdef LOG
             infoMutex.lock ();

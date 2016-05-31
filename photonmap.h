@@ -6,7 +6,7 @@
 #include "photonbox.h"
 #include <vector>
 #include <memory>
-const unsigned int K = 10;
+const unsigned int K = 16;
 const double errorLimit = 1e-3;
 class PhotonMap
 {
@@ -19,6 +19,7 @@ public:
 protected:
     PhotonBox* createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth);
     void search (const Sphere& s, PhotonBox* v,  std::vector<Photon*>& res) const;
+    bool search (const Vec3& p, PhotonBox* v, std::vector<PhotonBox*>& path) const;
     static void addBox (PhotonBox* v, std::vector<Photon*>& res);
 private:
     std::vector<std::unique_ptr<Photon> > _photons;

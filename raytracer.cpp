@@ -24,7 +24,8 @@ void RayTracer::run ()
 //    Log << "collide point of it:" << collide.point << " normal:" << collide.normal << std::endl;
 //#endif
     //calc diffusion
-    handleDiffusion ();
+    if (nearest->material ()->diffusion () > EPS)
+        handleDiffusion ();
     if (_depth > MAX_RAY_TRACING_DEPTH)
         return;
     //calc reflection
@@ -52,24 +53,27 @@ Color RayTracer::calcDiffusion (Light *light)
 
 void RayTracer::handleDiffusion ()
 {
+#ifdef PHOTON_MAPPING
     auto resPair = condutor ()->photonMap ()->search (collide.point);
-    std::vector<Photon*> photons = resPair.first;
+    std::vector<Photon*> photons = std::move(resPair.first);
     double radius = resPair.second;
     Color resColor;
     for (const auto& p: photons)
     {
         resColor += p->color;
     }
-    double scale = 1.0 / (double(photons.size ()) * PI * radius * radius);
+    double scale = nearest->material ()->diffusion () / (double(photons.size ()) * PI * radius * radius);
     resColor *= scale;
+    resColor *= nearest->color (collide.point);
     setColor (resColor + color ());
-    /*
+#else
     Color resColor = color ();
     for (const auto& light: condutor ()->lights ())
     {
+        resColor += calcDiffusion (light.get ());
     }
     setColor (resColor);
-    */
+#endif
 }
 
 void RayTracer::handleReflection ()

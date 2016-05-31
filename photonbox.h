@@ -20,6 +20,7 @@ public:
     Photon* photon () {return _photon;}
     bool intersect (const Sphere& s) const;
     bool contained (const Sphere& s) const;
+    bool contain (const Vec3& point) const;
 private:
     Photon* _photon;
     Cobic _box;

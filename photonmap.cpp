@@ -1,5 +1,8 @@
 #include "photonmap.h"
 #include <utility>
+#include <stack>
+#include <queue>
+#include <iterator>
 PhotonMap::PhotonMap()
 {
 
@@ -7,23 +10,78 @@ PhotonMap::PhotonMap()
 
 std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) const
 {
-    double l = 0, r = Bound, mi = (r + l) / 2;
 //    std::cout << "point:" << point << std::endl;
-    std::vector<Photon*> res;
-    while (true)
+    std::vector<PhotonBox*> path;
+    search (point, _root.get (), path);
+    auto it = begin (path);
+    auto photonLess = [] (const std::pair<Photon*, double>& a, const std::pair<Photon*, double>& b) -> bool
     {
-        res.clear ();
-        search (Sphere (point, mi, nullptr, nullptr, false), _root.get (), res);
-//        std::cout << "radius:" << mi << " res.size:" << res.size () << std::endl;
-        if (res.size () >= K && r - l <= errorLimit)
-            break;
-        if (res.size () >= K)
-            r = mi;
-        else
-            l = mi;
-        mi = (r + l) / 2;
+        return a.second < b.second;
+    };
+    std::priority_queue<std::pair<Photon*, double>, std::vector<std::pair<Photon*, double> >, decltype(photonLess) > photons (photonLess);
+    auto insertInto = [this, &photons, &point] (Photon* p)
+    {
+        double dis = distance (p->point, point);
+        if (photons.size () < K)
+            photons.push (std::make_pair (p, dis));
+        else if (dis < photons.top ().second)
+        {
+            photons.pop ();
+            photons.push (std::make_pair (p, dis));
+        }
+    };
+    insertInto ((*it)->lc ()->photon ());
+    insertInto ((*it)->rc ()->photon ());
+    ++it;
+    while (it != end (path))
+    {
+        PhotonBox* last = *std::prev (it);
+        Sphere s (point, photons.top ().second, nullptr, nullptr, false);
+        if ((*it)->lc () != last && (*it)->lc ()-> intersect (s))
+        {
+            std::vector<Photon*> ps;
+            search (s,  (*it)->lc (), ps);
+            for (const auto& p: ps)
+                insertInto (p);
+        }
+        else if ((*it)->rc () != last && (*it)->rc ()-> intersect (s))
+        {
+
+            std::vector<Photon*> ps;
+            search (s, (*it)->rc (), ps);
+            for (const auto& p: ps)
+                insertInto (p);
+        }
+        ++it;
     }
-    return std::make_pair (std::move(res), mi);
+    std::vector<Photon*> res;
+    for (unsigned i = 0; i < K; ++i)
+    {
+        res.push_back (photons.top ().first);
+        photons.pop ();
+    }
+    return std::make_pair (std::move (res), distance (res.front ()->point, point));
+}
+
+bool PhotonMap::search (const Vec3 &p, PhotonBox *v, std::vector<PhotonBox *> &path) const
+{
+    if (v->lc ()->isLeaf ())//子节点就是叶节点
+    {
+        if (v->contain (p))
+        {
+            path.push_back (v);
+            return true;
+        }
+        else
+            return false;
+    }
+    if (search (p, v->lc (), path) || search (p, v->rc (), path))
+    {
+        path.push_back (v);
+        return true;
+    }
+    else
+        return false;
 }
 
 void PhotonMap::search (const Sphere &s, PhotonBox* v, std::vector<Photon*> &res) const

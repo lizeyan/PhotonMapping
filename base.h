@@ -3,6 +3,7 @@
 #include <regex>
 #include <fstream>
 #include <random>
+#define PHOTON_MAPPING
 //#define DEBUG
 //#define LOG
 const double EPS = 1e-10;
@@ -28,5 +29,5 @@ const int MAX_RAY_TRACING_DEPTH = 20;
 const int MAX_PHOTON_TRACING_DEPTH = 20;
 const int maxThreadNum = 4;
 const int raysPerPixel = 1;
-const int brightnessValue = 10000;
+const int brightnessValue = 1000;
 #endif // BASE_H

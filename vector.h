@@ -88,7 +88,7 @@ Vector<N>& Vector<N>::operator *= (const Vector<N>& a)
 template <std::size_t N>
 Vector<N>& Vector<N>::operator *= (double factor)
 {
-    for (int i = 0; i < N; ++i)
+    for (unsigned i = 0; i < N; ++i)
         _args[i] *= factor;
     return *this;
 

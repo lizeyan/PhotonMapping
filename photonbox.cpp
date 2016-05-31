@@ -48,3 +48,10 @@ bool PhotonBox::contained (const Sphere &s) const
     else
         return true;
 }
+
+bool PhotonBox::contain (const Vec3 &point) const
+{
+    if (isLeaf ())
+        return false;
+    return point.arg (0) <= _box.xh () && point.arg (0) >= _box.xl () && point.arg (1) <= _box.yh () && point.arg (1) >= _box.yl () && point.arg (2) <= _box.zh () && point.arg (2) >= _box.zl ();
+}
