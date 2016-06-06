@@ -13,7 +13,8 @@ void PhotonTracer::run ()
 {
     if (_depth > MAX_PHOTON_TRACING_DEPTH)
         return;
-    condutor ()->photonMap ()->store ({_ray.first, _ray.second, _color});
+    if (_depth == 0)
+        condutor ()->photonMap ()->store ({_ray.first, _ray.second, _color});
     calcNearestCollide ();
     if (nearest == nullptr)
         return;
