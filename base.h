@@ -3,7 +3,7 @@
 #include <regex>
 #include <fstream>
 #include <random>
-#define PHOTON_MAPPING
+ #define PHOTON_MAPPING
 //#define DEBUG
 //#define LOG
 const double EPS = 1e-10;

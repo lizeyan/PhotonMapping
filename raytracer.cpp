@@ -65,8 +65,8 @@ void RayTracer::handleDiffusion ()
             continue;
         resColor += -coef * p->color;
     }
-//    double scale = nearest->material ()->diffusion () / (double(photons.size ()) * PI * radius * radius);
-    double scale = nearest->material ()->diffusion () / double(photons.size ());
+    double scale = nearest->material ()->diffusion () / (double(photons.size ()) * (PI * radius * radius + 1.0));
+//    double scale = nearest->material ()->diffusion () / double(photons.size ());
     resColor *= scale;
     resColor *= nearest->color (collide.point);
     setColor (resColor + color ());

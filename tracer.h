@@ -3,6 +3,7 @@
 #include "color.h"
 #include "ray.h"
 #include "object.h"
+#include "condutor.h"
 #include <random>
 class Condutor;
 class Tracer
@@ -29,7 +30,9 @@ extern std::mt19937 rd;
 extern std::uniform_real_distribution<> rand01;
 inline Vec3 Tracer::diffuse (const Vec3 &N)
 {
-    Vec3 x = vertical (N, Vec3()), y = cross (x, N);
+    Vec3 x = standardize (vertical (N, Vec3())), y = standardize (cross (x, N));
+    if (fabs (model (N) - 1.0) > EPS)
+        throw std::logic_error ("N is not a unit vector, in diffuse");
     double cosPhi = rand01 (rd);
     double sinPhi = sqrt (1 - cosPhi * cosPhi);
     double xita = rand01(rd) * PI_Double;
@@ -64,5 +67,37 @@ inline Vec3 Tracer::refract (const Vec3 &I_, const Vec3 &N_, double n, bool& fro
     else
         return -n * I + (n * cosi - sqrt (cost2)) * N;
 }
+
+inline void Tracer::calcNearestCollide ()
+{
+    nearest = nullptr;
+    collide.distance = Bound;
+    std::vector<std::pair<Object*, Collide> > potentialObs = condutor ()->kdTree ()->kdSearch (_ray);
+    if (potentialObs.size())
+    {
+        collide.collide = true;
+    }
+    for (const auto& entry: potentialObs)
+    {
+        if (entry.second.distance < collide.distance)
+        {
+            collide = std::move (entry.second);
+            nearest = entry.first;
+        }
+    }
+    if (collide.collide)
+    {
+        collide.normal = standardize (collide.normal);
+    }
+#ifdef DEBUG
+    Log << "depth:" << _depth << std::endl;
+    if (nearest)
+    {
+        Log << "nearest:" << *nearest << std::endl;
+        Log << "collide point:" << collide.point << std::endl;
+    }
+#endif
+}
+
 
 #endif // TRACER_H

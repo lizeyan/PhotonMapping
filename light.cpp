@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 extern std::mt19937 rd;
-static std::uniform_real_distribution<> rand11 (-1, 1);
+extern std::uniform_real_distribution<> rand01;
 Light* Light::produce (const std::string &content, Condutor* condutor)
 {
     //必须首先指定类型
@@ -113,18 +113,17 @@ void PointLight::analyseContent (std::stringstream &entryStream)
     }
 }
 
-Ray PointLight::emitPhoton ()
+Photon PointLight::emitPhoton ()
 {
-    double x, y, z, s;
+    Vec3 dir;
     do
     {
-        x = rand11 (rd);
-        y = rand11 (rd);
-        z = rand11 (rd);
-        s = x * x + y * y + z * z;
+        dir[0] = rand01 (rd) * 2 - 1;
+        dir[1] = rand01 (rd) * 2 - 1;
+        dir[2] = rand01 (rd) * 2 - 1;
     }
-    while (s >= 1.0 || s <= EPS);
-    return Ray (_center, standardize (Vec3(std::array<double, 3> {{x, y, z}})));
+    while (model2 (dir) > 1 || model2 (dir) < EPS);
+    return Photon {_center, dir, color ()};
 }
 
 Collide PointLight::collide (const Ray &ray) const
@@ -201,9 +200,10 @@ RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, co
 
 }
 
-Ray RectLight::emitPhoton ()
+Photon RectLight::emitPhoton ()
 {
-    return std::make_pair (Vec3 (), Vec3 ());
+    throw std::logic_error ("not completed");
+    return Photon ();
 }
 
 Collide RectLight::collide (const Ray &ray) const
@@ -365,9 +365,10 @@ CircleLight::CircleLight (const Vec3 &center, const Vec3 &normal, double radius,
 
 }
 
-Ray CircleLight::emitPhoton ()
+Photon CircleLight::emitPhoton ()
 {
-    return Ray ();
+    throw std::logic_error ("not completed");
+    return Photon ();
 }
 
 Collide CircleLight::collide (const Ray &ray) const

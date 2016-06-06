@@ -159,7 +159,7 @@ Vector<N> standardize (const Vector<N> &a)
 }
 
 template <std::size_t N>
-double distance (const Vector<N> &a, const Vector<N> &b)
+inline double distance2 (const Vector<N>& a, const Vector<N>& b)
 {
     double res = 0.0;
     for (unsigned int i = 0; i < N; ++i)
@@ -167,10 +167,22 @@ double distance (const Vector<N> &a, const Vector<N> &b)
     return res;
 }
 
+template <std::size_t N>
+inline double distance (const Vector<N> &a, const Vector<N> &b)
+{
+    return std::sqrt (distance2 (a, b));
+}
+
 template<std::size_t N>
 inline double model (const Vector<N> &a)
 {
     return distance (a, Vector<N> ());
+}
+
+template <std::size_t N>
+inline double model2 (const Vector<N> &a)
+{
+    return distance2 (a, Vector<N> ());
 }
 
 //only 3d
