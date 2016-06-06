@@ -36,7 +36,7 @@ inline Vec3 Tracer::diffuse (const Vec3 &N)
     double cosPhi = rand01 (rd);
     double sinPhi = sqrt (1 - cosPhi * cosPhi);
     double xita = rand01(rd) * PI_Double;
-    return cos (xita) * x * sinPhi + sin (xita) * y * sinPhi + cosPhi * N;
+    return cos (xita) * sinPhi * x + sin (xita) * sinPhi * y + cosPhi * N;
 }
 
 inline Vec3 Tracer::reflect (const Vec3 &I, const Vec3 &N)
