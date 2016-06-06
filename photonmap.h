@@ -12,8 +12,8 @@ class PhotonMap
 {
 public:
     PhotonMap(Condutor* condutor);
-    void store (const Photon& photon)   { _photons.push_back (std::move (std::unique_ptr<Photon> (new Photon(photon))));}
-    std::pair<std::vector<Photon*>, double> search (const Vec3& point) const;
+    void store (const Photon& photon);
+    std::vector<std::pair<Photon*, double> > search (const Vec3& point) const;
     void build ();
     size_t size() {return _photons.size ();}
 protected:

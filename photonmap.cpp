@@ -9,7 +9,7 @@ PhotonMap::PhotonMap(Condutor* condutor):_condutor (condutor)
 
 }
 
-std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) const
+std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point) const
 {
 //    std::cout << "point:" << point << std::endl;
     std::vector<PhotonBox*> path;
@@ -20,10 +20,7 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
         throw std::logic_error ("path.size == 0");
     }
     auto it = begin (path);
-    auto photonLess = [] (const std::pair<Photon*, double>& a, const std::pair<Photon*, double>& b) -> bool
-    {
-        return a.second < b.second;
-    };
+    auto photonLess = [] (const std::pair<Photon*, double>& a, const std::pair<Photon*, double>& b) -> bool {return a.second < b.second;};
     std::priority_queue<std::pair<Photon*, double>, std::vector<std::pair<Photon*, double> >, decltype(photonLess) > photons (photonLess);
     auto insertInto = [this, &photons, &point] (Photon* p)
     {
@@ -72,13 +69,13 @@ std::pair<std::vector<Photon*>, double> PhotonMap::search (const Vec3 &point) co
         }
         ++it;
     }
-    std::vector<Photon*> res;
-    for (int i = 0; i < _condutor->camera ()->K (); ++i)
+    std::vector<std::pair<Photon*, double> > res;
+    for (size_t i = 0; i < _condutor->camera ()->K (); ++i)
     {
-        res.push_back (photons.top ().first);
+        res.push_back (photons.top ());
         photons.pop ();
     }
-    return std::make_pair (std::move (res), distance (res.front ()->point, point));
+    return std::move (res);
 }
 
 bool PhotonMap::search (const Vec3 &p, PhotonBox *v, std::vector<PhotonBox *> &path) const
@@ -158,7 +155,20 @@ void PhotonMap::addBox (PhotonBox *v, std::vector<Photon *> &res)
 
 void PhotonMap::build ()
 {
-    _root.reset (createKdTree (begin (_photons), end (_photons), 0, Vec3(std::array<double, 3>{{-Bound, -Bound, -Bound}}), Vec3(std::array<double, 3>{{Bound, Bound, Bound}})));
+    std::ofstream fout ("photons.txt");
+    for (const auto& photon: _photons)
+    {
+        fout << photon->point.arg(0) << " " << photon->point.arg(1) << " " << photon->point.arg(2)  << std::endl;
+    }
+    fout.close ();
+    _root.reset (createKdTree (begin (_photons), end (_photons), 0, _condutor->lb (), _condutor->rt ()));
+}
+
+void PhotonMap::store (const Photon &photon)
+{
+    Vec3 lb = _condutor->lb (), rt = _condutor->rt (), p = photon.point;
+    if (p.arg (0) <= rt.arg (0) && p.arg (0) >= lb.arg (0) && p.arg (1) <= rt.arg (1) && p.arg (1) >= lb.arg (1) && p.arg (2) <= rt.arg (2) && p.arg (2) >= lb.arg (2))
+        _photons.push_back (std::move (std::unique_ptr<Photon> (new Photon(photon))));
 }
 
 PhotonBox* PhotonMap::createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth, const Vec3& lb, const Vec3& rt)

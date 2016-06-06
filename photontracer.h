@@ -6,7 +6,7 @@
 class PhotonTracer : public Tracer
 {
 public:
-    PhotonTracer(const Photon& ray, Condutor* condutor, const Color& color, int depth = 0);
+    PhotonTracer(const Photon& ray, Condutor* condutor, int depth = 0);
     virtual ~PhotonTracer () {};
     void run ();
 protected:

@@ -4,7 +4,7 @@
 #include <random>
 extern std::mt19937 rd;
 std::uniform_real_distribution<> rand01 (0, 1);
-PhotonTracer::PhotonTracer (const Photon& photon, Condutor* condutor, const Color& color, int depth): Tracer (std::make_pair (photon.point, photon.dir), condutor, depth), _color (photon.color)
+PhotonTracer::PhotonTracer (const Photon& photon, Condutor* condutor, int depth): Tracer (std::make_pair (photon.point, photon.dir), condutor, depth), _color (photon.color)
 {
     _ray.second = standardize (_ray.second);
 }

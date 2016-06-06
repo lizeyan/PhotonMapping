@@ -21,7 +21,7 @@ std::mutex infoMutex;
 std::ofstream info ("rayTrace.info");
 #endif
 std::mt19937 rd(time(0));
-Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectParser(this))
+Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectParser(this)), _lb (std::array<double, 3>{{-Bound, -Bound, -Bound}}), _rt (std::array<double, 3>{{+Bound, +Bound, +Bound}})
 {
     init ();
     readScene ();
@@ -58,10 +58,11 @@ void Condutor::run ()
     std::cout << "emitting photon" << std::endl;
     for (const auto& light: _lights)
     {
-        int photonNum = camera ()->brightnessValue ()* model (light->color ());
-        for (int i = 0; i < photonNum; ++i)
+        size_t photonNum = camera ()->brightnessValue ()* model (light->color ());
+        size_t lastSize = photonMap ()->size ();
+        while (photonMap ()->size () - lastSize < photonNum)
         {
-            PhotonTracer photonTracer (light->emitPhoton(), this, light->color ());
+            PhotonTracer photonTracer (light->emitPhoton(), this); 
             photonTracer.run ();
         }
     }
@@ -112,6 +113,21 @@ void Condutor::readScene ()
         {
             //comment
         }
+        else if (name.empty () && std::regex_match (line, matchRes, entryReg))
+        {
+            std::string key = matchRes[keyRank];
+            std::stringstream valueStream  (matchRes[valueRank]);
+            if (key == std::string ("leftBottom"))
+            {
+                valueStream >> _lb[0] >> _lb[1] >> _lb[2];
+            }
+            else if (key == std::string ("rightTop"))
+            {
+                valueStream >> _rt[0] >> _rt[1] >> _rt[2];
+            }
+            else
+                std::cout << "warning: unexcepted entry, key=" << key << std::endl;
+        }
         else if (std::regex_match(line, spaceReg))
         {
             //spaces
@@ -140,7 +156,9 @@ void Condutor::readScene ()
             }
         }
     }
+
 }
+
 
 void Condutor::addElement (const std::string &name, const std::string &content)
 {

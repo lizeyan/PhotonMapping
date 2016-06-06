@@ -29,6 +29,8 @@ public:
     std::vector<std::unique_ptr<Material> >& materials () {return _materials;}
     PhotonMap* photonMap () {return _photonMap.get ();}
     TriangleTree* kdTree () {return _kdTree.get ();}
+    Vec3 lb () {return _lb;}
+    Vec3 rt () {return _rt;}
 protected:
     void init ();
     void readScene ();
@@ -50,6 +52,8 @@ private:
     std::unique_ptr<TriangleTree> _kdTree;
     std::unique_ptr<ObjectParser> _parser;
     std::unique_ptr<PhotonMap> _photonMap;
+
+    Vec3 _lb, _rt;
 };
 
 #endif // CONDUTOR_H

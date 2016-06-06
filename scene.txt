@@ -2,24 +2,26 @@
 #define all things before the things are reliable on them.
 #every after a '#' in a line is comment
 
+leftBottom: -50 -50 -50
+rightTop: 50 50 50
+
 start camera
-    size: 5 5
-    dx: 1 0 0
-    dy: 0 1 0
-    center: 3 3 3
-    normal: 0 0 -1
-    focus: 90
-    dpi: 100
+    size: 10 10
+    dx: 0 -1 0
+    dy: -0.6 0 1
+    center: 170 3 100
+    normal: -1 0 -0.6
+    focus: 250
+    dpi: 5
     radius: 0.00001
     environment: 0 0 0
-    K: 50
-    brightnessValue: 200000
+    K: 10
+    brightnessValue: 300000
 end
 
-#add circle light
 start light
     type: point
-    center: 3 3 3
+    center: 5 3 3
     #normal: 0 0 -1
     #radius: 50
     color: 1 1 1
@@ -61,7 +63,7 @@ end
 
 start object
     type: sphere
-    center: 1 1 1
+    center: 3 3 1
     radius: 1
     material: 2
 end
