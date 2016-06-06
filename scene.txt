@@ -9,7 +9,7 @@ start camera
     center: 3 3 3
     normal: 0 0 -1
     focus: 90
-    dpi: 10
+    dpi: 100
     radius: 0.00001
     environment: 0 0 0
     K: 50
