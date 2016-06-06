@@ -15,7 +15,7 @@ start camera
     dpi: 5
     radius: 0.00001
     environment: 0 0 0
-    K: 5
+    K: 50
     brightnessValue: 300000
 end
 
