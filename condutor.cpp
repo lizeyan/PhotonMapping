@@ -61,7 +61,7 @@ void Condutor::run ()
         int photonNum = camera ()->brightnessValue ()* model (light->color ());
         for (int i = 0; i < photonNum; ++i)
         {
-            PhotonTracer photonTracer (light->emitPhoton(), this, light->color ());
+            PhotonTracer photonTracer (light->emitPhoton(), this); 
             photonTracer.run ();
         }
     }
