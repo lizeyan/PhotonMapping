@@ -28,7 +28,7 @@ bool PhotonTracer::handleDiffusion (double &prob)
         _photonMap->store (Photon{collide.point, _ray.second, _color});
 
     Color color = nearest->color (collide.point);
-    double next = nearest->material ()->diffusion () * model (color);
+    double next = nearest->material ()->diffusion ();
 
     if (next <= rand01 (rd) * prob)
     {
@@ -38,7 +38,7 @@ bool PhotonTracer::handleDiffusion (double &prob)
     _ray.first = collide.point;
     _ray.second = diffuse (collide.normal);
     _color *= color;
-	_color *= rand01 (rd);
+    _color *= (1.0 / next);
     ++_depth;
     run ();
 //    PhotonTracer pt(std::make_pair(collide.point, diffuse (collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);
@@ -49,7 +49,7 @@ bool PhotonTracer::handleDiffusion (double &prob)
 inline bool PhotonTracer::handleReflection (double &prob)
 {
     Color color = nearest->color (collide.point);
-    double next = nearest->material ()->reflection () * model (color);
+    double next = nearest->material ()->reflection ();
     if (next <= rand01 (rd) * prob)
     {
         prob -= next;
@@ -58,6 +58,7 @@ inline bool PhotonTracer::handleReflection (double &prob)
     _ray.first = collide.point;
     _ray.second = reflect (_ray.second, collide.normal);
     _color *= color;
+    _color *= (1.0 / next);
     ++_depth;
     run ();
 //    PhotonTracer pt(std::make_pair(collide.point, reflect (_ray.second, collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);

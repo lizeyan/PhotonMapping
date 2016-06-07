@@ -33,10 +33,10 @@ inline Vec3 Tracer::diffuse (const Vec3 &N)
     Vec3 x = standardize (vertical (N, Vec3())), y = standardize (cross (x, N));
     if (fabs (model (N) - 1.0) > EPS)
         throw std::logic_error ("N is not a unit vector, in diffuse");
-    double cosPhi = rand01 (rd);
-    double sinPhi = sqrt (1 - cosPhi * cosPhi);
+    double cosPhi2 = rand01 (rd);
+    double sinPhi = sqrt (1.0 - cosPhi2);
     double xita = rand01(rd) * PI_Double;
-    return cos (xita) * sinPhi * x + sin (xita) * sinPhi * y + cosPhi * N;
+    return cos (xita) * sinPhi * x + sin (xita) * sinPhi * y + sqrt (cosPhi2) * N;
 }
 
 inline Vec3 Tracer::reflect (const Vec3 &I, const Vec3 &N)
