@@ -54,6 +54,7 @@ void Condutor::run ()
 //    PhotonTracer photonTrace (std::make_pair(o, link), this, Vec3(std::array<double,3>{{1, 1, 1}}));
 //    photonTrace.run ();
 //    /*
+#ifdef PHOTON_MAPPING
     std::cout << "emitting photon" << std::endl;
     for (const auto& light: _lights)
     {
@@ -70,6 +71,7 @@ void Condutor::run ()
     }
     std::cout << "global photon map size: " << _photonMap->size () << std::endl;
     _photonMap->build ();
+#endif
 //    */
     std::cout << "ray tracing" << std::endl;
 //    ray tracing
@@ -107,13 +109,24 @@ void Condutor::readScene ()
     std::smatch matchRes;
     std::string name;
     std::string content;
+	bool ignore = false;
     while (!input.eof())
     {
         std::getline (input, line);
+		if (ignore)
+			continue;
         if (std::regex_match(line, commentReg))
         {
             //comment
         }
+		else if (line == std::string("/*"))
+		{
+			ignore = true;
+		}
+		else if (line == std::string("*/"))
+		{
+			ignore = false;
+		}
         else if (name.empty () && std::regex_match (line, matchRes, entryReg))
         {
             std::string key = matchRes[keyRank];

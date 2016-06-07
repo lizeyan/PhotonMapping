@@ -17,7 +17,7 @@ public:
     static Vec3 reflect (const Vec3& I, const Vec3& N);
     static Vec3 refract (const Vec3& I, const Vec3& N, double n, bool& front);
 protected:
-    void calcNearestCollide ();
+	static void calcNearestCollide (const Ray& ray_, Object*& nearest_, Collide& collide_, Condutor* condutor);
 protected:
     Ray _ray;
     Condutor* _condutor;
@@ -68,33 +68,33 @@ inline Vec3 Tracer::refract (const Vec3 &I_, const Vec3 &N_, double n, bool& fro
         return -n * I + (n * cosi - sqrt (cost2)) * N;
 }
 
-inline void Tracer::calcNearestCollide ()
+inline void Tracer::calcNearestCollide (const Ray& ray_, Object*& nearest_, Collide& collide_, Condutor* condutor)
 {
-    nearest = nullptr;
-    collide.distance = Bound;
-    std::vector<std::pair<Object*, Collide> > potentialObs = condutor ()->kdTree ()->kdSearch (_ray);
+    nearest_ = nullptr;
+    collide_.distance = Bound;
+    std::vector<std::pair<Object*, Collide> > potentialObs = condutor->kdTree ()->kdSearch (ray_);
     if (potentialObs.size())
     {
-        collide.collide = true;
+        collide_.collide = true;
     }
     for (const auto& entry: potentialObs)
     {
-        if (entry.second.distance < collide.distance)
+        if (entry.second.distance < collide_.distance)
         {
-            collide = std::move (entry.second);
-            nearest = entry.first;
+            collide_ = std::move (entry.second);
+            nearest_ = entry.first;
         }
     }
-    if (collide.collide)
+    if (collide_.collide)
     {
-        collide.normal = standardize (collide.normal);
+        collide_.normal = standardize (collide_.normal);
     }
 #ifdef DEBUG
     Log << "depth:" << _depth << std::endl;
-    if (nearest)
+    if (nearest_)
     {
-        Log << "nearest:" << *nearest << std::endl;
-        Log << "collide point:" << collide.point << std::endl;
+        Log << "nearest:" << *nearest_ << std::endl;
+        Log << "collide point:" << collide_.point << std::endl;
     }
 #endif
 }
