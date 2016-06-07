@@ -70,7 +70,8 @@ void RayTracer::handleDiffusion ()
 {
 	static double scaleFG = 1.0 / finalGatheringK;
 #ifdef PHOTON_MAPPING
-	Color indirect;
+	Color indirect = getIndirect (collide, nearest);
+	/*
 	for (size_t i = 0; i < finalGatheringK; ++i)
 	{
 		Ray ray = std::make_pair (collide.point, diffuse (collide.normal));
@@ -81,6 +82,7 @@ void RayTracer::handleDiffusion ()
 			indirect += getIndirect (co, ne);
 	}
 	indirect *= scaleFG;
+	*/
 #endif
     Color direct;
     for (const auto& light: condutor ()->lights ())
