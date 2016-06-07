@@ -15,7 +15,6 @@ public:
     void store (const Photon& photon);
     std::vector<std::pair<Photon*, double> > search (const Vec3& point) const;
     void build ();
-    void scale ();
     size_t size() {return _photons.size ();}
 protected:
     PhotonBox* createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth, const Vec3& lb, const Vec3& rt);

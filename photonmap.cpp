@@ -78,15 +78,6 @@ std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point) c
     return std::move (res);
 }
 
-void PhotonMap::scale ()
-{
-    double rate = 1.0 / double (_photons.size ());
-    for (auto& photon: _photons)
-    {
-        photon->color *= rate;
-    }
-}
-
 bool PhotonMap::search (const Vec3 &p, PhotonBox *v, std::vector<PhotonBox *> &path) const
 {
     if (v->lc ()->isLeaf () && v->rc ()->isLeaf ())

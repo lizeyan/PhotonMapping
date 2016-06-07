@@ -59,14 +59,16 @@ void Condutor::run ()
     {
         size_t photonNum = camera ()->brightnessValue ()* model (light->color ());
         size_t lastSize = photonMap ()->size ();
+        double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
         while (photonMap ()->size () - lastSize < photonNum)
         {
-            PhotonTracer photonTracer (light->emitPhoton(), this); 
+            Photon photon = light->emitPhoton ();
+            photon.color *= scalePhotonColor;
+            PhotonTracer photonTracer (photon, this);
             photonTracer.run ();
         }
     }
     std::cout << "global photon map size: " << _photonMap->size () << std::endl;
-    _photonMap->scale ();
     _photonMap->build ();
 //    */
     std::cout << "ray tracing" << std::endl;
