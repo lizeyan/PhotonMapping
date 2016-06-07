@@ -29,7 +29,7 @@ void Image::smooth (double l)
     for (int i = 0; i < _width; ++i)
         for (int j = 0; j < _height; ++j)
         {
-            double dis;
+            double dis = 0;
             Color res;
             for (int k = 0; k < 8; ++k)
             {

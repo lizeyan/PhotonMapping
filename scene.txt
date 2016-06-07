@@ -1,9 +1,9 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
-rightTop: 10.001 10.001 10.001
+rightTop: 20.001 20.001 20.001
 
 start camera
-    size: 5 8
+    size: 10 10
     dx: 0 -1 0
     dy: 0 0 1
     center: 20 5 5
@@ -12,7 +12,7 @@ start camera
     dpi: 10
     radius: 0.00001
     environment: 0 0 0
-    K: 10000
+    K: 50
     brightnessValue: 100000
 end
 
@@ -69,7 +69,7 @@ start material# rank5
 	diffusion: 1
 	reflection: 0
 	refraction: 0
-	texture: ../floor.bmp
+	texture: ./floor.bmp
 end
 
 #====================================================================================
@@ -120,10 +120,17 @@ end
 
 start object
     type: sphere
-    center: 5 5 3
+    center: 3 6 3
     radius: 2
-    material: 3
+    material: 0
 end
 
-
-
+/*
+start model
+	model: ./models/Buddha.obj
+	center: 5 4 2
+	size: 3
+	rotate: 0 0 0
+	material: 3
+end
+*/

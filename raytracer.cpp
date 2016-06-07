@@ -15,7 +15,7 @@ RayTracer::RayTracer(const Ray& ray, Condutor* condutor, int depth): Tracer (ray
 void RayTracer::run ()
 {
     setColor (condutor ()->camera ()->environment ());
-    calcNearestCollide ();
+    calcNearestCollide (_ray, nearest, collide, condutor ());
     //no collide found
     if (nearest == nullptr)
         return;
@@ -50,26 +50,48 @@ Color RayTracer::calcDiffusion (Light *light)
     return diff * material * illuminate;
 }
 
-void RayTracer::handleDiffusion ()
+Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
 {
-    Color indirect;
-    std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->photonMap ()->search (collide.point));
+	Color indirect;
+    std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->photonMap ()->search (collide_.point));
     double r = photons.front ().second;
     for (const auto& entry: photons)
     {
-        double coefficient = - dot (entry.first->dir, collide.normal);
-        indirect  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide.point) / (k_wp * r));
+        double coefficient = - dot (entry.first->dir, collide_.normal);
+        indirect  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide_.point) / (k_wp * r));
     }
-    double scale = nearest->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r);
+    double scale = nearest_->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r);
     indirect *= scale;
-    indirect *= nearest->color (collide.point);
+    indirect *= nearest_->color (collide_.point);
+	return indirect;
+}
+
+void RayTracer::handleDiffusion ()
+{
+	static double scaleFG = 1.0 / finalGatheringK;
+#ifdef PHOTON_MAPPING
+	Color indirect;
+	for (size_t i = 0; i < finalGatheringK; ++i)
+	{
+		Ray ray = std::make_pair (collide.point, diffuse (collide.normal));
+		Collide co;
+		Object* ne = nullptr;
+		calcNearestCollide (ray, ne, co, condutor ());
+		if (co.collide)
+			indirect += getIndirect (co, ne);
+	}
+	indirect *= scaleFG;
+#endif
     Color direct;
     for (const auto& light: condutor ()->lights ())
     {
         direct  += calcDiffusion (light.get ());
     }
-//    setColor (indirect * 1e3 + direct + color ());
+#ifdef PHOTON_MAPPING
+    setColor (indirect * 1e3 + direct + color ());
+#else
     setColor (direct + color ());
+#endif
 }
 
 void RayTracer::handleReflection ()
