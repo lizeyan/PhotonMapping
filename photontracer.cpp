@@ -13,8 +13,8 @@ void PhotonTracer::run ()
 {
     if (_depth > MAX_PHOTON_TRACING_DEPTH)
         return;
-    if (_depth == 0)
-        condutor ()->photonMap ()->store ({_ray.first, _ray.second, _color});
+//    if (_depth == 0)
+//        condutor ()->photonMap ()->store ({_ray.first, _ray.second, _color});
     calcNearestCollide ();
     if (nearest == nullptr)
         return;
@@ -26,9 +26,11 @@ void PhotonTracer::run ()
 
 bool PhotonTracer::handleDiffusion (double &prob)
 {
-    _condutor->photonMap ()->store (Photon{collide.point, _ray.second, _color});
+    if (_depth > 0)
+        _condutor->photonMap ()->store (Photon{collide.point, _ray.second, _color});
 
-    double next = nearest->material ()->diffusion ();
+    Color color = nearest->color (collide.point);
+    double next = nearest->material ()->diffusion () * model (color);
 
     if (next <= rand01 (rd) * prob)
     {
@@ -37,7 +39,7 @@ bool PhotonTracer::handleDiffusion (double &prob)
     }
     _ray.first = collide.point;
     _ray.second = diffuse (collide.normal);
-    _color *= nearest->color (collide.point);
+    _color *= color;
     ++_depth;
     run ();
 //    PhotonTracer pt(std::make_pair(collide.point, diffuse (collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);
@@ -47,7 +49,8 @@ bool PhotonTracer::handleDiffusion (double &prob)
 
 inline bool PhotonTracer::handleReflection (double &prob)
 {
-    double next = nearest->material ()->reflection ();
+    Color color = nearest->color (collide.point);
+    double next = nearest->material ()->reflection () * model (color);
     if (next <= rand01 (rd) * prob)
     {
         prob -= next;
@@ -55,7 +58,7 @@ inline bool PhotonTracer::handleReflection (double &prob)
     }
     _ray.first = collide.point;
     _ray.second = reflect (_ray.second, collide.normal);
-    _color *= nearest->color (collide.point);
+    _color *= color;
     ++_depth;
     run ();
 //    PhotonTracer pt(std::make_pair(collide.point, reflect (_ray.second, collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);

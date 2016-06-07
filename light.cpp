@@ -123,7 +123,7 @@ Photon PointLight::emitPhoton ()
         dir[2] = rand01 (rd) * 2 - 1;
     }
     while (model2 (dir) > 1 || model2 (dir) < EPS);
-    return Photon {_center, dir, standardize(color ())};
+    return Photon {_center, dir, color ()};
 }
 
 Collide PointLight::collide (const Ray &ray) const

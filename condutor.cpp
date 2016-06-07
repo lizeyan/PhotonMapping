@@ -49,7 +49,6 @@ Condutor::~Condutor ()
 
 void Condutor::run ()
 {
-#ifdef PHOTON_MAPPING
 //    Vec3 o = Vec3(std::array<double,3>{{100, 5, 100}});
 //    Vec3 link  = Vec3(std::array<double,3>{{5, 5, 1}}) - o;
 //    PhotonTracer photonTrace (std::make_pair(o, link), this, Vec3(std::array<double,3>{{1, 1, 1}}));
@@ -69,15 +68,14 @@ void Condutor::run ()
     std::cout << "photon map size: " << _photonMap->size () << std::endl;
     _photonMap->build ();
 //    */
-#endif
     std::cout << "ray tracing" << std::endl;
 //    ray tracing
 //    Vec3 o = camera ()->center ();
 //    Vec3 o = Vec3(std::array<double,3>{{10.0001, 6.83336, 100.833}});
-//    Vec3 link = Vec3(std::array<double,3>{{2, 10, 0}}) - o;
+//    Vec3 link = Vec3(std::array<double,3>{{5, 5, 10}}) - o;
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
-//    RayTracer rt (camera ()->emitRay (34.1, 41.7), this);
+//    RayTracer rt (camera ()->emitRay (5, 0.2), this);
 //    rt.run ();
 //    std::cout << rt.color () << std::endl;
 //    singleThread ();

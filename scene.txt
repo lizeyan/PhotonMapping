@@ -1,80 +1,109 @@
-#scene description
-#define all things before the things are reliable on them.
-#every after a '#' in a line is comment
-
-leftBottom: -50 -50 -50
-rightTop: 50 50 50
+#cornel box
+leftBottom: -0.001 -0.001 -0.001
+rightTop: 10.001 10.001 10.001
 
 start camera
     size: 10 10
     dx: 0 -1 0
-    dy: -0.6 0 1
-    center: 170 3 100
-    normal: -1 0 -0.6
-    focus: 250
-    dpi: 5
+    dy: 0 0 1
+    center: 20 5 5
+    normal: -1 0 0
+    focus: 10
+    dpi: 50
     radius: 0.00001
     environment: 0 0 0
-    K: 50
+    K: 5
     brightnessValue: 300000
 end
 
 start light
     type: point
-    center: 5 3 3
-    #normal: 0 0 -1
-    #radius: 50
+    center: 5 5 9.000
     color: 1 1 1
 end
 
 start material #rank0
-    color: 1 1 1
+    color: 1 0 0
     absorb: 1 0 0
-    diffusion: 0.5
-    reflection: 0.5
+    diffusion: 1
+    reflection: 0
     refraction: 0
 end
 
-start material #rank1 for plane
-    color: 1 1 1
-    absorb: 1 1 1
+start material #rank1
+    color: 0 1 0
+    absorb: 1 0 0
     diffusion: 1
     reflection: 0
     refraction: 0
 end
 
 start material #rank2
+    color: 0 0 1
+    absorb: 1 0 0
+    diffusion: 1
+    reflection: 0
+    refraction: 0
+end
+
+start material #rank3
     color: 1 1 1
     absorb: 1 0 0
     diffusion: 1
     reflection: 0
     refraction: 0
-    refractivity: 1.7
 end
 
-start material # rank3
-    color: 1 1 1
-    absorb: 1 0 0
-    diffusion: 0
-    reflection: 0
-    refraction: 1
-    refractivity: 1.7
-end
-
+#====================================================================================
 start object
-    type: sphere
-    center: 3 3 1
-    radius: 1
-    material: 2
+    type: plane
+    normal: 0 0 1
+    center: 0 0 0
+    material: 3
 end
 
 start object
     type: plane
-    center: 0 0 -0.001
-    material: 1
-    normal: 0 0 1
-    dx: 5 0 0
-    dy: 0 5 0
+    normal: 0 0 -1
+    center: 0 0 10.0001
+    material: 3
 end
+
+start object
+    type: plane
+    normal: 0 1 0
+    center: 0 0 0
+    material: 1
+end
+
+start object
+    type: plane
+    normal: 1 0 0
+    center: 0 0 0
+    material: 3
+end
+
+start object
+    type: plane
+    normal: 0 -1 0
+    center: 0 10 0
+    material: 0
+end
+
+start object
+    type: plane
+    normal: -1 0 0 
+    center: 20 0 0
+    material: 3
+end
+#====================================================================================
+
+start object
+    type: sphere
+    center: 3 6 2
+    radius: 2
+    material: 1
+end
+
 
 

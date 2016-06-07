@@ -53,27 +53,23 @@ Color RayTracer::calcDiffusion (Light *light)
 
 void RayTracer::handleDiffusion ()
 {
-#ifdef PHOTON_MAPPING
+    Color indirect;
     std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->photonMap ()->search (collide.point));
-    Color resColor = color ();
     double r = photons.front ().second;
     for (const auto& entry: photons)
     {
         double coefficient = - dot (entry.first->dir, collide.normal);
-        resColor += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide.point) / (k_wp * r));
+        indirect  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide.point) / (k_wp * r));
     }
-    double scale = nearest->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r * double(photons.size ()));
-    resColor *= scale;
-    resColor *= nearest->color (collide.point);
-    setColor (resColor);
-#else
-    Color resColor = color ();
+    double scale = nearest->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * double(photons.size ()));
+    indirect  *= scale;
+    indirect  *= nearest->color (collide.point);
+    Color direct;
     for (const auto& light: condutor ()->lights ())
     {
-        resColor += calcDiffusion (light.get ());
+        direct  += calcDiffusion (light.get ());
     }
-    setColor (resColor);
-#endif
+    setColor (indirect + direct + color ());
 }
 
 void RayTracer::handleReflection ()
