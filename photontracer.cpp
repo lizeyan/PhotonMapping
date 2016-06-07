@@ -40,6 +40,7 @@ bool PhotonTracer::handleDiffusion (double &prob)
     _ray.first = collide.point;
     _ray.second = diffuse (collide.normal);
     _color *= color;
+	_color *= rand01 (rd);
     ++_depth;
     run ();
 //    PhotonTracer pt(std::make_pair(collide.point, diffuse (collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);

@@ -61,7 +61,7 @@ void RayTracer::handleDiffusion ()
         double coefficient = - dot (entry.first->dir, collide.normal);
         indirect  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide.point) / (k_wp * r));
     }
-    double scale = nearest->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * double(photons.size ()));
+    double scale = nearest->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * double(photons.size ()) * PI * r * r);
     indirect  *= scale;
     indirect  *= nearest->color (collide.point);
     Color direct;
@@ -69,7 +69,7 @@ void RayTracer::handleDiffusion ()
     {
         direct  += calcDiffusion (light.get ());
     }
-    setColor (indirect + direct + color ());
+    setColor (indirect * 0.02 + direct + color ());
 }
 
 void RayTracer::handleReflection ()

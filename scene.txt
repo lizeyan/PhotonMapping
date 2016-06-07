@@ -3,17 +3,17 @@ leftBottom: -0.001 -0.001 -0.001
 rightTop: 10.001 10.001 10.001
 
 start camera
-    size: 10 10
+    size: 5 8
     dx: 0 -1 0
     dy: 0 0 1
     center: 20 5 5
     normal: -1 0 0
     focus: 10
-    dpi: 50
+    dpi: 100
     radius: 0.00001
     environment: 0 0 0
-    K: 5
-    brightnessValue: 300000
+    K: 100
+    brightnessValue: 1000000
 end
 
 start light
@@ -54,12 +54,32 @@ start material #rank3
     refraction: 0
 end
 
+start material #ran4
+	color :1 1 1
+	absorb: 1 0 0
+	diffusion: 0
+	reflection: 0
+	refraction: 1
+	refractivity: 1.65
+end
+
+start material# rank5
+	color: 1 1 1
+	absorb: 1 0 0
+	diffusion: 1
+	reflection: 0
+	refraction: 0
+	texture: ./floor.bmp
+end
+
 #====================================================================================
 start object
     type: plane
     normal: 0 0 1
     center: 0 0 0
-    material: 3
+    material: 5
+	dx: 10 0 0
+	dy: 0 10 0
 end
 
 start object
@@ -100,9 +120,9 @@ end
 
 start object
     type: sphere
-    center: 3 6 2
+    center: 5 5 3
     radius: 2
-    material: 1
+    material: 4
 end
 
 
