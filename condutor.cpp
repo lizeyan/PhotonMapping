@@ -65,14 +65,15 @@ void Condutor::run ()
             photonTracer.run ();
         }
     }
-    std::cout << "photon map size: " << _photonMap->size () << std::endl;
+    std::cout << "global photon map size: " << _photonMap->size () << std::endl;
+    _photonMap->scale ();
     _photonMap->build ();
 //    */
     std::cout << "ray tracing" << std::endl;
 //    ray tracing
 //    Vec3 o = camera ()->center ();
 //    Vec3 o = Vec3(std::array<double,3>{{10.0001, 6.83336, 100.833}});
-//    Vec3 link = Vec3(std::array<double,3>{{5, 5, 10}}) - o;
+//    Vec3 link = Vec3(std::array<double,3>{{5, 5, 0}}) - o;
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
 //    RayTracer rt (camera ()->emitRay (5, 0.2), this);

@@ -28,6 +28,7 @@ public:
     std::vector<std::unique_ptr<Object> >& objects () {return _objects;}
     std::vector<std::unique_ptr<Material> >& materials () {return _materials;}
     PhotonMap* photonMap () {return _photonMap.get ();}
+    PhotonMap* causticPhotonMap () {return _causticPhotonMap.get ();}
     TriangleTree* kdTree () {return _kdTree.get ();}
     Vec3 lb () {return _lb;}
     Vec3 rt () {return _rt;}
@@ -51,7 +52,7 @@ private:
 
     std::unique_ptr<TriangleTree> _kdTree;
     std::unique_ptr<ObjectParser> _parser;
-    std::unique_ptr<PhotonMap> _photonMap;
+    std::unique_ptr<PhotonMap> _photonMap, _causticPhotonMap;
 
     Vec3 _lb, _rt;
 };

@@ -15,6 +15,7 @@ protected:
     bool handleRefraction (double& prob);
 private:
     Color _color;
+    PhotonMap* _photonMap;
 };
 
 #endif // PHOTONTRACER_H

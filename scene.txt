@@ -9,11 +9,11 @@ start camera
     center: 20 5 5
     normal: -1 0 0
     focus: 10
-    dpi: 100
+    dpi: 10
     radius: 0.00001
     environment: 0 0 0
-    K: 100
-    brightnessValue: 1000000
+    K: 10000
+    brightnessValue: 100000
 end
 
 start light
@@ -69,7 +69,7 @@ start material# rank5
 	diffusion: 1
 	reflection: 0
 	refraction: 0
-	texture: ./floor.bmp
+	texture: ../floor.bmp
 end
 
 #====================================================================================
@@ -122,7 +122,7 @@ start object
     type: sphere
     center: 5 5 3
     radius: 2
-    material: 4
+    material: 3
 end
 
 

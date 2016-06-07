@@ -13,6 +13,42 @@ Image::Image(int width, int height): _width(width), _height(height)
     fill ();
 }
 
+void Image::smooth (double l)
+{
+    static const std::array<int, 8> dx {{}};
+    static const std::array<int, 8> dy {{}};
+    static auto legal = [this] (int x, int y)->bool {return x >= 0 && y >= 0 && x < _width && y < _height;};
+    std::vector<std::vector<Color> > dataTmp;
+    for (int i = 0; i < _width; ++i)
+    {
+        std::vector<Color> column;
+        for (int j = 0; j < _height; ++j)
+            column.push_back (_data[i][j]);
+        dataTmp.push_back (std::move (column));
+    }
+    for (int i = 0; i < _width; ++i)
+        for (int j = 0; j < _height; ++j)
+        {
+            double dis;
+            Color res;
+            for (int k = 0; k < 8; ++k)
+            {
+                int x = i + dx[k], y = j + dy[k];
+                if (legal (x, y))
+                {
+                    res += dataTmp[x][y];
+                    dis += distance (dataTmp[i][j], dataTmp[x][y]);
+                }
+            }
+            if (dis > l)
+            {
+                res += dataTmp[i][j];
+                _data[i][j] = res * 0.1111111111111;
+            }
+        }
+}
+
+
 Image::Image (std::string fileName)
 {
     image.reset (new QImage(fileName.c_str ()));
@@ -53,6 +89,7 @@ void Image::setPixel (int x, int y, const Color &color)
 
 bool Image::save (const std::string &fileName)
 {
+    smooth (1.0);
     for (int i = 0; i < _width; ++i)
         for (int j = 0; j < _height; ++j)
             image->setPixel(i, j, toQColor (_data[i][j]).rgb ());

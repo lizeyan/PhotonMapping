@@ -39,10 +39,9 @@ Color RayTracer::calcDiffusion (Light *light)
 {
     Color illuminate;
     Object* co;
+    illuminate = light->illuminate (collide.point, collide.normal);
     if (light->block (co, collide.point, condutor ()))
-        illuminate = co->material ()->refraction () * light->color ();
-    else
-        illuminate = light->illuminate (collide.point, collide.normal);
+        illuminate *= co->material ()->refraction ();
     Color material = nearest->color (collide.point);
     double diff = nearest->material ()->diffusion ();
 //#ifdef DEBUG
@@ -61,15 +60,16 @@ void RayTracer::handleDiffusion ()
         double coefficient = - dot (entry.first->dir, collide.normal);
         indirect  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide.point) / (k_wp * r));
     }
-    double scale = nearest->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * double(photons.size ()) * PI * r * r);
-    indirect  *= scale;
-    indirect  *= nearest->color (collide.point);
+    double scale = nearest->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r);
+    indirect *= scale;
+    indirect *= nearest->color (collide.point);
     Color direct;
     for (const auto& light: condutor ()->lights ())
     {
         direct  += calcDiffusion (light.get ());
     }
-    setColor (indirect * 0.02 + direct + color ());
+//    setColor (indirect * 1e3 + direct + color ());
+    setColor (direct + color ());
 }
 
 void RayTracer::handleReflection ()

@@ -4,7 +4,7 @@
 #include <random>
 extern std::mt19937 rd;
 std::uniform_real_distribution<> rand01 (0, 1);
-PhotonTracer::PhotonTracer (const Photon& photon, Condutor* condutor, int depth): Tracer (std::make_pair (photon.point, photon.dir), condutor, depth), _color (photon.color)
+PhotonTracer::PhotonTracer (const Photon& photon, Condutor* condutor, int depth): Tracer (std::make_pair (photon.point, photon.dir), condutor, depth), _color (photon.color), _photonMap (condutor->photonMap ())
 {
     _ray.second = standardize (_ray.second);
 }
@@ -13,8 +13,6 @@ void PhotonTracer::run ()
 {
     if (_depth > MAX_PHOTON_TRACING_DEPTH)
         return;
-//    if (_depth == 0)
-//        condutor ()->photonMap ()->store ({_ray.first, _ray.second, _color});
     calcNearestCollide ();
     if (nearest == nullptr)
         return;
@@ -27,7 +25,7 @@ void PhotonTracer::run ()
 bool PhotonTracer::handleDiffusion (double &prob)
 {
     if (_depth > 0)
-        _condutor->photonMap ()->store (Photon{collide.point, _ray.second, _color});
+        _photonMap->store (Photon{collide.point, _ray.second, _color});
 
     Color color = nearest->color (collide.point);
     double next = nearest->material ()->diffusion () * model (color);

@@ -19,6 +19,8 @@ public:
     void setPixel (int x, int y, const Color& color);
     bool save (const std::string& fileName);
     void load (const std::string& fileName);
+protected:
+    void smooth (double l);
 private:
     std::unique_ptr<QImage> image;
     Color** _data;
