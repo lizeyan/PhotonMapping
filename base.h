@@ -28,7 +28,7 @@ const std::regex endReg("^end\\s*(#.*)?$");
 const int MAX_RAY_TRACING_DEPTH = 20;
 const int MAX_PHOTON_TRACING_DEPTH = 20;
 const int maxThreadNum = 25;
-const int raysPerPixel = 1;
+const int raysPerPixel = 10;
 const double k_wp = 1.0;
 const size_t finalGatheringK = 100;
 #endif // BASE_H

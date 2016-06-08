@@ -89,7 +89,7 @@ void Image::setPixel (int x, int y, const Color &color)
 
 bool Image::save (const std::string &fileName)
 {
-    smooth (1.0);
+    smooth (0.2);
     for (int i = 0; i < _width; ++i)
         for (int j = 0; j < _height; ++j)
             image->setPixel(i, j, toQColor (_data[i][j]).rgb ());

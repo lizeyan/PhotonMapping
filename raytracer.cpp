@@ -58,6 +58,8 @@ Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
     for (const auto& entry: photons)
     {
         double coefficient = - dot (entry.first->dir, collide_.normal);
+		if (coefficient <= 0)
+			continue;
         indirect  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide_.point) / (k_wp * r));
     }
     double scale = nearest_->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r);
@@ -90,7 +92,7 @@ void RayTracer::handleDiffusion ()
         direct  += calcDiffusion (light.get ());
     }
 #ifdef PHOTON_MAPPING
-    setColor (indirect + direct + color ());
+    setColor (indirect * 1000 + direct + color ());
 #else
     setColor (direct + color ());
 #endif
