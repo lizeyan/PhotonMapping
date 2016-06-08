@@ -22,7 +22,7 @@ void PhotonTracer::run ()
             handleRefraction (prob);
 }
 
-bool PhotonTracer::handleDiffusion (double &prob)
+inline bool PhotonTracer::handleDiffusion (double &prob)
 {
     if (_depth > 0)
         _photonMap->store (Photon{collide.point, _ray.second, _color});
@@ -76,16 +76,14 @@ inline bool PhotonTracer::handleRefraction (double &prob)
     }
     bool front;
     Vec3 T = refract (_ray.second, collide.normal, nearest->material ()->refractivity (), front);
-    Color c (_color);
     if (!front)
     {
         Color absor = nearest->material ()->absorb () * -collide.distance;
         Color trans = Color (std::array<double, 3>{{std::exp (absor.arg (0)), std::exp (absor.arg (1)), std::exp (absor.arg (2))}} );
-        c *= trans;
+        _color *= trans;
     }
     _ray.first = collide.point;
     _ray.second = T;
-    _color = c;
     ++_depth;
     run ();
 //    PhotonTracer pt (std::make_pair (collide.point, T), _condutor, c, _depth + 1);

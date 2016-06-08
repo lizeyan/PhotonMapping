@@ -70,7 +70,7 @@ Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
 
 void RayTracer::handleDiffusion ()
 {
-	static double scaleFG = 1.0 / finalGatheringK;
+//	static double scaleFG = 1.0 / finalGatheringK;
 #ifdef PHOTON_MAPPING
 	Color indirect = getIndirect (collide, nearest);
 	/*

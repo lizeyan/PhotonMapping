@@ -39,7 +39,7 @@ protected:
     void oneThreadPerRay ();
     void fixedNumTheads ();
     void handleSegments (int x1, int x2);
-    void handlePart (int remainder);
+    void handlePart (unsigned remainder);
     void addElement (const std::string& name, const std::string& content);
 private:
     std::string outputName;
@@ -55,6 +55,7 @@ private:
     std::unique_ptr<PhotonMap> _photonMap, _causticPhotonMap;
 
     Vec3 _lb, _rt;
+    size_t _maxThreadNum;
 };
 
 #endif // CONDUTOR_H

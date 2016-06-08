@@ -53,6 +53,8 @@ void Camera::init ()
 
 bool Camera::check ()
 {
+    if (raysPerPixel () <= 0 || K () <= 0)
+        return false;
     return fabs(dot(_dx, _normal)) < EPS && fabs(dot (_dy, _normal)) < EPS;
 }
 
@@ -137,6 +139,8 @@ void Camera::analyseContent (const std::string &content)
             valueStream >> _K;
         else if (key == std::string ("brightnessValue"))
             valueStream >> _brightnessValue;
+        else if (key == std::string ("raysPerPixel"))
+            valueStream >> _raysPerPixel;
         else
         {
             throw std::logic_error ("unexcepted key type in scene, camera");

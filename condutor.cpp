@@ -139,6 +139,8 @@ void Condutor::readScene ()
             {
                 valueStream >> _rt[0] >> _rt[1] >> _rt[2];
             }
+            else if (key == std::string ("maxThreadNum"))
+                valueStream >> _maxThreadNum;
             else
                 std::cout << "warning: unexcepted entry, key=" << key << std::endl;
         }
@@ -212,7 +214,7 @@ void Condutor::addElement (const std::string &name, const std::string &content)
 
 void Condutor::singleThread ()
 {
-    for (int i = 0; i < maxThreadNum; ++i)
+    for (unsigned i = 0; i < _maxThreadNum; ++i)
         handlePart (i);
 }
 void Condutor::oneThreadPerRay ()
@@ -240,21 +242,21 @@ void Condutor::oneThreadPerRay ()
     }
 }
 
-void Condutor::handlePart (int remainder)
+void Condutor::handlePart (unsigned remainder)
 {
     double dx = 1.0 / camera ()->dpi ();
     double dy = 1.0 / camera ()->dpi ();
-    int imageX = camera ()->width () * camera ()->dpi ();
-    int imageY = camera ()->height () * camera ()->dpi ();
-    double scale = 1.0 / double (raysPerPixel);
-    for (int x = 0; x < imageX; ++x)
+    unsigned imageX = camera ()->width () * camera ()->dpi ();
+    unsigned imageY = camera ()->height () * camera ()->dpi ();
+    double scale = 1.0 / double (_camera->raysPerPixel ());
+    for (unsigned x = 0; x < imageX; ++x)
     {
-        for (int y = 0; y < imageY; ++y)
+        for (unsigned y = 0; y < imageY; ++y)
         {
-            if (! ((x + y) % maxThreadNum == remainder))
+            if (! ((x + y) % _maxThreadNum == remainder))
                 continue;
             Color res;
-            for (int i = 0; i < raysPerPixel; ++i)
+            for (unsigned i = 0; i < _camera->raysPerPixel (); ++i)
             {
                 Ray ray = _camera->emitRay(x * dx, y * dy);
                 RayTracer t (ray, this);
@@ -276,12 +278,12 @@ void Condutor::handlePart (int remainder)
 
 void Condutor::fixedNumTheads ()
 {
-    std::array<std::unique_ptr<std::thread>, maxThreadNum> threads;
-    for (int i = 0; i < maxThreadNum; ++i)
+    std::vector<std::unique_ptr<std::thread> > threads (_maxThreadNum);
+    for (unsigned i = 0; i < _maxThreadNum; ++i)
     {
         threads[i] = std::move (std::unique_ptr<std::thread>(new std::thread(&Condutor::handlePart, this, i)));
     }
-    for (int i = 0; i < maxThreadNum; ++i)
+    for (unsigned i = 0; i < _maxThreadNum; ++i)
         threads[i]->join ();
 }
 

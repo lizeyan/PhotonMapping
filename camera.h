@@ -21,6 +21,7 @@ public:
     inline double focus () {return _focus;}
     int brightnessValue () {return _brightnessValue;}
     size_t K () {return _K;}
+    size_t raysPerPixel () {return _raysPerPixel;}
     Ray emitRay (double x, double y);
 protected:
     void analyseContent (const std::string& content);
@@ -40,6 +41,7 @@ private:
     Color _environment;
     int _brightnessValue;
     size_t _K;
+    size_t _raysPerPixel;
 
     std::uniform_real_distribution<> _apertureDis;
 };
