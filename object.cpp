@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 extern std::mt19937 rd;
+extern std::uniform_real_distribution<> rand01;
 Object* Object::produce (const std::string &content, Condutor* condutor)
 {
     //必须首先指定类型
@@ -196,6 +197,20 @@ void Sphere::display (std::ostream &os) const
     os << "}";
 }
 
+Vec3 Sphere::getRandomLink (const Vec3 &source) const
+{
+    if (!_needBoudingBox)
+        throw std::logic_error ("ask for a random link to a light from a object without boudingbox");
+    Vec3 point;
+    do
+    {
+        point[0] = rand01 (rd) * (_boudingBox->xh () - _boudingBox->xl ()) + _boudingBox->xl ();
+        point[1] = rand01 (rd) * (_boudingBox->yh () - _boudingBox->yl ()) + _boudingBox->yl ();
+        point[2] = rand01 (rd) * (_boudingBox->zh () - _boudingBox->zl ()) + _boudingBox->zl ();
+    }
+    while (distance2 (point, _center) > _r2);
+    return standardize (point - source);
+}
 //=======================================================================================
 Plane::Plane (const Vec3& center, const Vec3& normal, Material* material, Condutor* conductor, bool need):Object(material, conductor), _center (center), _normal (normal), _needBoudingBox (need)
 {
@@ -348,6 +363,23 @@ void Plane::display (std::ostream &os) const
     os << "}";
 }
 
+Vec3 Plane::getRandomLink (const Vec3 &source) const
+{
+    Vec3 dir;
+    do
+    {
+        dir[0] = rand01 (rd);
+        dir[1] = rand01 (rd);
+        dir[2] = rand01 (rd);
+    }
+    while (model2 (dir) > 1.0);
+    double dir_v = dot (dir, _normal);
+    double center_normal = dot (_center - source, _normal);
+    if ((center_normal > 0 && dir_v > 0) || (center_normal < 0 && dir_v < 0))
+        return dir;
+    else
+        return -1 * dir;
+}
 //======================================
 Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor, bool need):Object (material, condutor), _a(a), _b(b), _c(c), _normal (), _needBoudingBox (need)
 {
@@ -411,6 +443,9 @@ void Triangle::preHandle ()
             minZ = _c.arg (2);
         _boudingBox = (new Cobic (Vec3(std::array<double,3> {{(maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2}}), unitX, unitY, unitZ, maxX - minX, maxY - minY, maxZ - minZ, material (), condutor ()));
     }
+    _dx = _b - _a;
+    _dy = standardize (cross (_normal, _dx));
+    _dy *= dot (_dy, _c - _a);
 }
 Triangle::~Triangle ()
 {
@@ -530,6 +565,10 @@ Collide Triangle::collide (const Ray &ray) const
     }
 }
 
+Vec3 Triangle::getRandomLink (const Vec3 &source) const
+{
+    return _a + rand01 (rd) * _dx + rand01 (rd) * _dy - source;
+}
 //=========================================
 
 Cobic::Cobic (std::stringstream &content, Condutor *condutor):_needBoudingBox (true)
@@ -752,4 +791,13 @@ void Cobic::init ()
     _dy = Vec3 (std::array<double, 3>{{0, 1 , 0}});
     _dz = Vec3 (std::array<double, 3>{{0, 0 , 1}});
     _a = 0, _b = 0, _c = 0;
+}
+
+Vec3 Cobic::getRandomLink (const Vec3 &source) const
+{
+    Vec3 dir;
+    dir[0] = rand01(rd) * (xh () - xl ()) + xl ();
+    dir[1] = rand01(rd) * (yh () - yl ()) + yl ();
+    dir[2] = rand01(rd) * (zh () - zl ()) + zl ();
+    return dir - source;
 }

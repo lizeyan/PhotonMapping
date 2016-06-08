@@ -1,5 +1,6 @@
 #include "condutor.h"
 #include "light.h"
+#include "object.h"
 #include "base.h"
 #include <regex>
 #include <cmath>
@@ -47,6 +48,7 @@ Light::Light(const Color& color, Condutor* condutor):Primitive(condutor), _color
 {
 
 }
+
 void Light::display (std::ostream &os) const
 {
     os << "{";
@@ -125,6 +127,11 @@ Photon PointLight::emitPhoton ()
     while (model2 (dir) > 1 || model2 (dir) < EPS);
     return Photon {_center, dir, color ()};
 }
+Photon PointLight::emitPhoton (Object* object)
+{
+    Vec3 dir = object->getRandomLink (_center);
+    return Photon {_center, standardize (dir), color ()};
+}
 
 Collide PointLight::collide (const Ray &ray) const
 {
@@ -201,6 +208,12 @@ RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, co
 }
 
 Photon RectLight::emitPhoton ()
+{
+    throw std::logic_error ("not completed");
+    return Photon ();
+}
+
+Photon RectLight::emitPhoton (Object*)
 {
     throw std::logic_error ("not completed");
     return Photon ();
@@ -370,6 +383,12 @@ Photon CircleLight::emitPhoton ()
     throw std::logic_error ("not completed");
     return Photon ();
 }
+Photon CircleLight::emitPhoton (Object*)
+{
+    throw std::logic_error ("not completed");
+    return Photon ();
+}
+
 
 Collide CircleLight::collide (const Ray &ray) const
 {

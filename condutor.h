@@ -41,6 +41,9 @@ protected:
     void handleSegments (int x1, int x2);
     void handlePart (unsigned remainder);
     void addElement (const std::string& name, const std::string& content);
+
+    void globalPhotonEmitting ();
+    void causticPhotonEmitting ();
 private:
     std::string outputName;
     std::ifstream& input;//initialized in constructor
