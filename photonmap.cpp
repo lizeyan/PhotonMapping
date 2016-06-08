@@ -52,9 +52,9 @@ std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point) c
     while (!s.empty ())
     {
         PhotonBox* top = s.top ();
+        s.pop ();
         if (top == nullptr)
             continue;
-        s.pop ();
         double dis = point.arg (top->dimension ()) - top->split ();
         if (dis < 0)
         {
