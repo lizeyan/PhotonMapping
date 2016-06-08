@@ -76,6 +76,13 @@ std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point) c
             d = knn.top ().second;
         }
     }
+	std::vector<PhotonPair> res;
+	while (!knn.empty ())
+	{
+		res.push_back (knn.top());
+		knn.pop ();
+	}
+	return std::move (res);
 }
 
 void PhotonMap::store (const Photon &photon)

@@ -9,11 +9,11 @@ start camera
     center: 20 5 5
     normal: -1 0 0
     focus: 10
-    dpi: 10
+    dpi: 1
     radius: 0.00001
     environment: 0 0 0
     K: 50
-    brightnessValue: 100000
+    brightnessValue: 10000
 end
 
 start light
