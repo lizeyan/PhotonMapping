@@ -12,19 +12,17 @@ struct Photon
 class PhotonBox
 {
 public:
-    PhotonBox (const Vec3& lb, const Vec3 & rt, PhotonBox* lc, PhotonBox* rc);
-    PhotonBox (Photon* photon);
-    bool isLeaf () const {return _photon != nullptr;}
-    PhotonBox* lc () {return _lc.get ();}
-    PhotonBox* rc () {return _rc.get ();}
-    Photon* photon () {return _photon;}
-    bool intersect (const Sphere& s) const;
-    bool contained (const Sphere& s) const;
-    bool contain (const Vec3& point) const;
+    PhotonBox (PhotonBox* lc, PhotonBox* rc, Photon* photon, int dimension, double split);
+    Photon* photon () const {return _photon;}
+    PhotonBox* lc () const {return _lc.get ();}
+    PhotonBox* rc () const {return _rc.get ();}
+    int dimension () const {return _dimension;}
+    double split () const {return _split;}
 private:
-    Photon* _photon;
-    Cobic _box;
     std::unique_ptr<PhotonBox> _lc, _rc;
+    Photon* _photon;
+    int _dimension;
+    double _split;
 };
 
 #endif // PHOTONBOX_H

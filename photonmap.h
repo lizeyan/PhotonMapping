@@ -11,16 +11,14 @@ class Condutor;
 class PhotonMap
 {
 public:
+    typedef std::vector<std::unique_ptr<Photon> > PhotonVec;
     PhotonMap(Condutor* condutor);
     void store (const Photon& photon);
     std::vector<std::pair<Photon*, double> > search (const Vec3& point) const;
     void build ();
     size_t size() {return _photons.size ();}
 protected:
-    PhotonBox* createKdTree (std::vector<std::unique_ptr<Photon>>::iterator begin, std::vector<std::unique_ptr<Photon>>::iterator end, int depth, const Vec3& lb, const Vec3& rt);
-    void search (const Sphere& s, PhotonBox* v,  std::vector<Photon*>& res) const;
-    bool search (const Vec3& p, PhotonBox* v, std::vector<PhotonBox*>& path) const;
-    static void addBox (PhotonBox* v, std::vector<Photon*>& res);
+    PhotonBox* createKdTree (PhotonVec::iterator begin, PhotonVec::iterator end, int depth = 0);
 private:
     std::vector<std::unique_ptr<Photon> > _photons;
     std::unique_ptr<PhotonBox> _root;
