@@ -2,7 +2,7 @@
 #场景的边界，超出这个范围的光子将被抛弃。
 leftBottom: -0.001 -0.001 -0.001
 rightTop: 20.001 20.001 20.001
-maxThreadNum: 4
+maxThreadNum: 25
 start camera
     size: 10 10
     dx: 0 -1 0
@@ -10,11 +10,11 @@ start camera
     center: 20 5 5
     normal: -1 0 0
     focus: 10
-    dpi: 10
+    dpi: 100
     radius: 0.00001
     environment: 0 0 0
     K: 1000
-    brightnessValue: 100000
+    brightnessValue: 1000000
     raysPerPixel: 1
 end
 
@@ -62,7 +62,7 @@ start material #ran4
 	diffusion: 0
 	reflection: 0
 	refraction: 1
-	refractivity: 1.7
+	refractivity: 1.4
 end
 
 start material# rank5
@@ -129,7 +129,7 @@ start object
     material: 3
 end
 #====================================================================================
-
+/*
 start object
     type: sphere
     center: 3 6 3
@@ -143,13 +143,12 @@ start object
 	radius: 2
 	material: 6
 end
+*/
 
-/*
 start model
 	model: ./models/Buddha.obj
 	center: 5 4 2
-	size: 3
+	size: 6
 	rotate: 0 0 0
-	material: 3
+	material: 4
 end
-*/

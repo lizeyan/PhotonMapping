@@ -113,13 +113,7 @@ void Condutor::readScene ()
     while (!input.eof())
     {
         std::getline (input, line);
-		if (ignore)
-			continue;
-        if (std::regex_match(line, commentReg))
-        {
-            //comment
-        }
-		else if (line == std::string("/*"))
+		if (line == std::string("/*"))
 		{
 			ignore = true;
 		}
@@ -127,7 +121,13 @@ void Condutor::readScene ()
 		{
 			ignore = false;
 		}
-        else if (name.empty () && std::regex_match (line, matchRes, entryReg))
+		if (ignore)
+			continue;
+        if (std::regex_match(line, commentReg))
+        {
+            //comment
+        }
+		else if (name.empty () && std::regex_match (line, matchRes, entryReg))
         {
             std::string key = matchRes[keyRank];
             std::stringstream valueStream  (matchRes[valueRank]);
