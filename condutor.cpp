@@ -30,6 +30,7 @@ Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectPar
 #endif
     _kdTree.reset (new TriangleTree(this));
     _photonMap.reset (new PhotonMap(this));
+    _causticPhotonMap.reset (new PhotonMap(this));
 #ifdef DEBUG
 
     Log << *_camera << std::endl;
@@ -46,16 +47,8 @@ Condutor::~Condutor ()
 {
 
 }
-
-void Condutor::run ()
+void Condutor::globalPhotonEmitting ()
 {
-//    Vec3 o = Vec3(std::array<double,3>{{100, 5, 100}});
-//    Vec3 link  = Vec3(std::array<double,3>{{5, 5, 1}}) - o;
-//    PhotonTracer photonTrace (std::make_pair(o, link), this, Vec3(std::array<double,3>{{1, 1, 1}}));
-//    photonTrace.run ();
-//    /*
-#ifdef PHOTON_MAPPING
-    std::cout << "emitting photon" << std::endl;
     for (const auto& light: _lights)
     {
         size_t photonNum = camera ()->brightnessValue ()* model (light->color ());
@@ -69,8 +62,44 @@ void Condutor::run ()
             photonTracer.run ();
         }
     }
-    std::cout << "global photon map size: " << _photonMap->size () << std::endl;
     _photonMap->build ();
+}
+
+void Condutor::causticPhotonEmitting ()
+{
+    for (const auto& object: _objects)
+    {
+        if (object->material()->reflection() < EPS && object->material()->refraction () < EPS)
+            continue;
+        for (const auto& light: _lights)
+        {
+            size_t photonNum = camera ()->brightnessValue ()* model (light->color ()) * causticScale;
+            size_t lastSize = causticPhotonMap ()->size ();
+            double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
+            while (causticPhotonMap ()->size () - lastSize < photonNum)
+            {
+                Photon photon = light->emitPhoton (object.get ());
+                photon.color *= scalePhotonColor;
+                PhotonTracer photonTracer (photon, this, 0, true);
+                photonTracer.run ();
+            }
+        }
+    }
+}
+
+void Condutor::run ()
+{
+//    Vec3 o = Vec3(std::array<double,3>{{100, 5, 100}});
+//    Vec3 link  = Vec3(std::array<double,3>{{5, 5, 1}}) - o;
+//    PhotonTracer photonTrace (std::make_pair(o, link), this, Vec3(std::array<double,3>{{1, 1, 1}}));
+//    photonTrace.run ();
+//    /*
+#ifdef PHOTON_MAPPING
+    std::cout << "emitting photon" << std::endl;
+    globalPhotonEmitting ();
+    causticPhotonEmitting ();
+    std::cout << "global photon map size: " << _photonMap->size () << std::endl;
+    std::cout << "caustic photon map size:" << _causticPhotonMap->size() << std::endl;
 #endif
 //    */
     std::cout << "ray tracing" << std::endl;

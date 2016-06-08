@@ -17,6 +17,7 @@ public:
 protected:
     Color calcDiffusion (Light* light);
 	Color getIndirect (const Collide &collide, Object* nearest);
+    Color getCaustic (const Collide &collide, Object* nearest);
     void handleDiffusion ();
     void handleReflection ();
     void handleRefraction ();

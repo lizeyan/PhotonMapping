@@ -16,6 +16,7 @@ public:
     Object(Material* = nullptr, Condutor* condutor = nullptr);
     virtual Collide collide (const Ray& ray) const = 0;//返回的碰撞点法向必须是单位向量.传入的应该是单位向量
     virtual void display (std::ostream& os) const;
+    virtual Vec3 getRandomLink (const Vec3& source) const = 0;//应当返回单位向量
     Material* material () const {return _material;}
     virtual Color color (const Vec3& v = Vec3 ()) const = 0;
     inline void setMaterial (Material* m) {_material = m;}
@@ -33,6 +34,7 @@ public:
     Vec3 center () const {return _center;}
     double radius () const {return _radius;}
     double radius2 () const {return _r2;}
+    Vec3 getRandomLink (const Vec3& source) const;//应当返回单位向量
     virtual Collide collide (const Ray &ray) const;
     virtual void display (std::ostream& os) const;
     virtual Color color (const Vec3 &v = Vec3 ()) const;
@@ -57,6 +59,7 @@ public:
     virtual ~Plane ();
     Vec3 center () const {return _center;}
     Vec3 normal () const {return _normal;}
+    Vec3 getRandomLink (const Vec3& source) const;//应当返回单位向量
     void display (std::ostream& os) const;
     Collide collide (const Ray &ray) const;
     double calc (const Vec3 & point) const;
@@ -87,6 +90,7 @@ public:
     inline Vec3 a () {return _a;}
     inline Vec3 b () {return _b;}
     inline Vec3 c () {return _c;}
+    Vec3 getRandomLink (const Vec3& source) const;//应当返回单位向量
     inline Vec3 normal () {return _normal;}
     Collide collide (const Ray &ray) const;
     virtual Color color (const Vec3 &v = Vec3 ()) const;
@@ -100,6 +104,7 @@ private:
     Vec3 _a, _b, _c;
     Vec3 _normal;
     bool _needBoudingBox;
+    Vec3 _dx, _dy;//for getRandomLink
 };
 
 class Cobic: public Object
@@ -111,6 +116,7 @@ public:
     Collide collide (const Ray& ray) const;
     virtual Color color (const Vec3 &v = Vec3 ()) const;
     void display (std::ostream& os) const;
+    Vec3 getRandomLink (const Vec3& source) const;//应当返回单位向量
     //only for regular cubics
     double xh () const {return _x_h;}
     double xl () const {return _x_l;}

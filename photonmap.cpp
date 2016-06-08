@@ -41,7 +41,7 @@ PhotonBox* PhotonMap::createKdTree (PhotonVec::iterator begin, PhotonVec::iterat
     return new PhotonBox (createKdTree (begin, medianIt, depth + 1), createKdTree (medianIt + 1, end, depth), medianIt->get (), dimension, (*medianIt)->point.arg (dimension));
 }
 
-std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point) const
+std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point, size_t size) const
 {
     typedef std::pair<Photon*, double> PhotonPair;
     auto cmp = [] (const PhotonPair& a, const PhotonPair& b) -> bool {return a.second < b.second;};
@@ -71,7 +71,7 @@ std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point) c
         if (fabs (dis) < d)
         {
             knn.push (std::make_pair (top->photon (), distance (point, top->photon ()->point)));
-            if (knn.size () > _condutor->camera ()->K ())
+            if (knn.size () > size)
                 knn.pop ();
             d = knn.top ().second;
         }

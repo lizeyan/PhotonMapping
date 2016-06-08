@@ -68,8 +68,8 @@ end
 start material# rank5
 	color: 1 1 1
 	absorb: 0 0 0
-	diffusion: 0.9
-	reflection: 0.1
+	diffusion: 0.8
+	reflection: 0.2
 	refraction: 0
 	texture: ./floor.bmp
 end

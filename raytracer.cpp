@@ -53,7 +53,7 @@ Color RayTracer::calcDiffusion (Light *light)
 Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
 {
 	Color indirect;
-    std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->photonMap ()->search (collide_.point));
+    std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->photonMap ()->search (collide_.point, condutor ()->camera ()->K ()));
     double r = photons.front ().second;
     for (const auto& entry: photons)
     {
@@ -68,12 +68,37 @@ Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
 	return indirect;
 }
 
+Color RayTracer::getCaustic (const Collide &collide_, Object *nearest_)
+{
+    Color caustic;
+    size_t k = condutor ()->camera ()->K () * causticScale;
+    std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->causticPhotonMap ()->search (collide_.point, k));
+    if (photons.size () <= k)
+        return caustic;
+    double r = photons.front ().second;
+    if (r >= causticMaxRadius)
+        return caustic;
+    for (const auto& entry: photons)
+    {
+        double coefficient = - dot (entry.first->dir, collide_.normal);
+        if (coefficient <= 0)
+            continue;
+        caustic  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide_.point) / (k_wp * r));
+    }
+    double scale = nearest_->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r);
+    caustic *= scale;
+    caustic *= nearest_->color (collide_.point);
+    return caustic;
+}
+
 void RayTracer::handleDiffusion ()
 {
 //	static double scaleFG = 1.0 / finalGatheringK;
 #ifdef PHOTON_MAPPING
-	Color indirect = getIndirect (collide, nearest);
-	/*
+    Color indirect = getCaustic (collide, nearest);
+    if (indirect == Color ())
+        indirect = getIndirect (collide, nearest);
+    /*
 	for (size_t i = 0; i < finalGatheringK; ++i)
 	{
 		Ray ray = std::make_pair (collide.point, diffuse (collide.normal));

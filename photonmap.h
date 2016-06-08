@@ -14,7 +14,7 @@ public:
     typedef std::vector<std::unique_ptr<Photon> > PhotonVec;
     PhotonMap(Condutor* condutor);
     void store (const Photon& photon);
-    std::vector<std::pair<Photon*, double> > search (const Vec3& point) const;
+    std::vector<std::pair<Photon*, double> > search (const Vec3& point, size_t size) const;
     void build ();
     size_t size() {return _photons.size ();}
 protected:

@@ -29,4 +29,6 @@ const int MAX_RAY_TRACING_DEPTH = 20;
 const int MAX_PHOTON_TRACING_DEPTH = 20;
 const double k_wp = 1.1;
 const size_t finalGatheringK = 100;
+const double causticMaxRadius = 1.0;
+const unsigned int causticScale = 1;
 #endif // BASE_H

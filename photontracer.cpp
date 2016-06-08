@@ -4,9 +4,11 @@
 #include <random>
 extern std::mt19937 rd;
 std::uniform_real_distribution<> rand01 (0, 1);
-PhotonTracer::PhotonTracer (const Photon& photon, Condutor* condutor, int depth): Tracer (std::make_pair (photon.point, photon.dir), condutor, depth), _color (photon.color), _photonMap (condutor->photonMap ())
+PhotonTracer::PhotonTracer (const Photon& photon, Condutor* condutor, int depth, bool caustic): Tracer (std::make_pair (photon.point, photon.dir), condutor, depth), _color (photon.color), _photonMap (condutor->photonMap ()), _causitic (caustic)
 {
     _ray.second = standardize (_ray.second);
+    if (_causitic)
+        _photonMap = condutor->causticPhotonMap ();
 }
 
 void PhotonTracer::run ()
@@ -24,7 +26,7 @@ void PhotonTracer::run ()
 
 inline bool PhotonTracer::handleDiffusion (double &prob)
 {
-    if (_depth > 0)
+    if (_depth > 0)//焦散光子直接打在漫反射面上显然也是不存储的。
         _photonMap->store (Photon{collide.point, _ray.second, _color});
 
     Color color = nearest->color (collide.point);
@@ -35,6 +37,8 @@ inline bool PhotonTracer::handleDiffusion (double &prob)
         prob -= next;
         return false;
     }
+    if (_causitic)//焦散光子遇到漫反射面就停止.返回true表示这个光子在俄罗斯转盘中是漫反射，但是因为是焦散光子所以没有继续追踪而已。
+        return true;
     _ray.first = collide.point;
     _ray.second = diffuse (collide.normal);
     _color *= color;
