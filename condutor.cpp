@@ -73,7 +73,7 @@ void Condutor::causticPhotonEmitting ()
             continue;
         for (const auto& light: _lights)
         {
-            size_t photonNum = camera ()->brightnessValue ()* model (light->color ()) * causticScale;
+            size_t photonNum = camera ()->brightnessValue ()* model (light->color ()) * camera ()-> causticScale ();
             size_t lastSize = causticPhotonMap ()->size ();
             double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
             while (causticPhotonMap ()->size () - lastSize < photonNum)
@@ -142,7 +142,7 @@ void Condutor::readScene ()
     while (!input.eof())
     {
         std::getline (input, line);
-		if (line == std::string("/*"))
+        if (line == std::string("/*"))
 		{
 			ignore = true;
 		}
@@ -156,7 +156,7 @@ void Condutor::readScene ()
         {
             //comment
         }
-		else if (name.empty () && std::regex_match (line, matchRes, entryReg))
+        else if (name.empty () && std::regex_match (line, matchRes, entryReg))
         {
             std::string key = matchRes[keyRank];
             std::stringstream valueStream  (matchRes[valueRank]);

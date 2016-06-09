@@ -71,7 +71,7 @@ Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
 Color RayTracer::getCaustic (const Collide &collide_, Object *nearest_)
 {
     Color caustic;
-    size_t k = condutor ()->camera ()->K () * causticScale;
+    size_t k = condutor ()->camera ()->K () * condutor ()->camera ()->causticScale ();
     std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->causticPhotonMap ()->search (collide_.point, k));
     if (photons.size () <= k)
         return caustic;

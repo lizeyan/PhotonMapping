@@ -40,7 +40,8 @@ void ObjectParser::parse (const std::string &content)
         }
         else if (key == std::string ("rotate"))
         {
-            valueStream >> _rotate[0] >> _rotate[1] >> _rotate[2];
+            valueStream >> _rotate[0] >> _rotate[1] >> _rotate[2];    
+            _rotate *= Deg2Rad;
         }
         else if (key == std::string("size"))
         {
@@ -84,8 +85,8 @@ void ObjectParser::analyseFile (const std::string &fileName, Material *material)
         if (key == std::string ("v"))
         {
             valueStream >> vec[0] >> vec[1] >> vec[2];
-            vec = _center + vec * _size;
-            _vertices.push_back (rotate (vec, _rotate));
+            vec = _center + rotate (vec, _rotate) * _size;
+            _vertices.push_back (vec);
         }
         else if (key == std::string ("f"))
         {

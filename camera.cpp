@@ -127,6 +127,10 @@ void Camera::analyseContent (const std::string &content)
         {
             valueStream >> _focus;
         }
+		else if (key == std::string ("causticScale"))
+		{
+			valueStream >> _causticScale;	
+		}
         else if (key == std::string ("dpi"))
         {
             valueStream >> _dpi;
