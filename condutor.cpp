@@ -84,13 +84,21 @@ void Condutor::causticPhotonEmitting ()
             size_t photonNum = camera ()->brightnessValue ()* model (light->color ()) * camera ()-> causticScale ();
             size_t lastSize = causticPhotonMap ()->size ();
             double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
-            while (causticPhotonMap ()->size () - lastSize < photonNum)
+            auto emitting = [this, lastSize, photonNum, &light, &object, &scalePhotonColor] ()
             {
-                Photon photon = light->emitPhoton (object.get ());
-                photon.color *= scalePhotonColor;
-                PhotonTracer photonTracer (photon, this, 0, true);
-                photonTracer.run ();
-            }
+                while (causticPhotonMap ()->size () - lastSize < photonNum)
+                {
+                    Photon photon = light->emitPhoton (object.get ());
+                    photon.color *= scalePhotonColor;
+                    PhotonTracer photonTracer (photon, this, 0, true);
+                    photonTracer.run ();
+                }
+            };
+            std::vector<std::thread> threads (_maxThreadNum);
+            for (auto& th: threads)
+                 th = std::thread (emitting);
+            for (auto& th: threads)
+                 th.join ();
         }
     }
 }
