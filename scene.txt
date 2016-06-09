@@ -2,7 +2,7 @@
 #场景的边界，超出这个范围的光子将被抛弃。
 leftBottom: -10.001 -10.001 -10.001
 rightTop: 10.001 10.001 10.001
-maxThreadNum: 3
+maxThreadNum: 25
 start camera
     size: 2 2
     dx: -1 0.6 0
@@ -10,27 +10,31 @@ start camera
     center: -2 2 0.5
     normal: 0.6 1 -0.6
     focus: 4
-    dpi: 50
-    radius: 0.05
+    dpi: 100
+    radius: 0.00005
     environment: 0 0 0
     K: 10
-    brightnessValue: 10000
+    brightnessValue: 100000
     raysPerPixel: 1
-	causticScale: 0
+	causticScale: 5
 end
 
 /*
 start light
-    type: point
+    type: rectangle
     center: 3 3 3.000
-    color: 1 1 1
+    color: 300 300 300
+	dx: 1 0 0
+	dy: 0 1 0
+	width: 3
+	height: 3
 end
 */
 
 start light
     type: circle
     center: 3 3 3
-    radius: 0.5
+    radius: 1.5
     normal: 0 0 -1
     color: 1 1 1
 end
