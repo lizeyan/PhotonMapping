@@ -210,8 +210,8 @@ RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, co
 
 Photon RectLight::emitPhoton ()
 {
-    double x = rand01 (rd) * _width;
-    double y = rand01 (rd) * _height;
+    double x = rand01 (rd) * _width - _widthHalf;
+    double y = rand01 (rd) * _height - _heightHalf;
     Vec3 dir = randomVector<3> ();
     if (dot (dir, _normal) < 0.0)
         dir = -1 * dir;
@@ -381,7 +381,8 @@ void CircleLight::preHandle ()
 {
     _normal = standardize (_normal);
     _dx = standardize (vertical (_normal, _center));
-    _dy = cross (_normal, _dy);
+    _dy = standardize (cross (_normal, _dx));
+	std::cout << "center:" << _center << " normal:" << _normal << " dx:" << _dx << " dy:" << _dy << std::endl;
 }
 
 Photon CircleLight::emitPhoton ()
@@ -389,8 +390,8 @@ Photon CircleLight::emitPhoton ()
     double x, y;
     do
     {
-        x = rand01 (rd);
-        y = rand01 (rd);
+        x = rand01 (rd) * 2 - 1;
+        y = rand01 (rd) * 2 - 1;
     }
     while (x * x + y * y > 1.0);
     Vec3 dir = randomVector<3> ();
@@ -403,8 +404,8 @@ Photon CircleLight::emitPhoton (Object* object)
     double x, y;
     do
     {
-        x = rand01 (rd);
-        y = rand01 (rd);
+        x = rand01 (rd) * 2 - 1;
+        y = rand01 (rd) * 2 - 1;
     }
     while (x * x + y * y > 1.0);
     Vec3 point = _center + x * _dx * _radius + y * _dy * _radius;
