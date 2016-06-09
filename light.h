@@ -62,6 +62,7 @@ protected:
     void analyseContent (std::stringstream& content);
     void init ();
     bool check ();
+    void preHandle ();
 private:
     Vec3 _center, _normal, _dx, _dy;
     double _width, _height;
@@ -83,9 +84,11 @@ protected:
     void analyseContent (std::stringstream& content);
     void init ();
     bool check ();
+    void preHandle ();
 private:
     Vec3 _center, _normal;
     double _radius;
+    Vec3 _dx, _dy;
 };
 
 #endif // LIGHT_H

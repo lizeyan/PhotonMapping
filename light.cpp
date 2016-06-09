@@ -198,25 +198,40 @@ RectLight::RectLight (std::stringstream &content, Condutor *condutor)
 {
     setCondutor (condutor);
     init ();
+    preHandle ();
     analyseContent (content);
     if (!check ())
         throw std::logic_error ("invalid arguments, RectLight");
 }
+
+void RectLight::preHandle ()
+{
+    _normal = standardize (_normal);
+    _dx = standardize (_dx);
+    _dy = standardize (_dy);
+}
+
 RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, const Vec3 &dy, double width, double height, const Color &color, Condutor *condutor):Light (color, condutor), _center (center), _normal (normal), _dx (dx), _dy (dy), _width (width), _height (height)
 {
-
+    preHandle ();
 }
 
 Photon RectLight::emitPhoton ()
 {
-    throw std::logic_error ("not completed");
-    return Photon ();
+    double x = rand01 (rd) * _width;
+    double y = rand01 (rd) * _height;
+    Vec3 dir = randomVector<3> ();
+    if (dot (dir, _normal) < 0.0)
+        dir = -dir;
+    return Photon {_center + x * _dx + y * _dy, dir, _color};
 }
 
-Photon RectLight::emitPhoton (Object*)
+Photon RectLight::emitPhoton (Object* object)
 {
-    throw std::logic_error ("not completed");
-    return Photon ();
+    double x = rand01 (rd) * _width;
+    double y = rand01 (rd) * _height;
+    Vec3 point = _center + x * _dx + y * _dy;
+    return Photon (point, object->getRandomLink (point), _color);
 }
 
 Collide RectLight::collide (const Ray &ray) const
@@ -369,26 +384,49 @@ CircleLight::CircleLight (std::stringstream &content, Condutor *condutor)
     setCondutor (condutor);
     init ();
     analyseContent (content);
+    preHandle ();
     if (!check ())
         throw std::logic_error ("invalid arguments, CircleLight");
 }
 
 CircleLight::CircleLight (const Vec3 &center, const Vec3 &normal, double radius, const Color &color, Condutor *condutor): Light(color, condutor), _center (center), _normal (normal), _radius (radius)
 {
+    preHandle ();
+}
 
+void CircleLight::preHandle ()
+{
+    _normal = standardize (_normal);
+    _dx = standardize (vertical (_normal, _center));
+    _dy = cross (_normal, _dy);
 }
 
 Photon CircleLight::emitPhoton ()
 {
-    throw std::logic_error ("not completed");
-    return Photon ();
+    double x, y;
+    do
+    {
+        x = rand01 (rd);
+        y = rand01 (rd);
+    }
+    while (x * x + y * y > 1.0);
+    Vec3 dir = randomVector ();
+    if (dot (dir, _normal) < 0.0)
+        dir = -dir;
+    return Photon {_center + _dx * x + _dy * y, dir, _color};
 }
-Photon CircleLight::emitPhoton (Object*)
+Photon CircleLight::emitPhoton (Object* object)
 {
-    throw std::logic_error ("not completed");
-    return Photon ();
+    double x, y;
+    do
+    {
+        x = rand01 (rd);
+        y = rand01 (rd);
+    }
+    while (x * x + y * y > 1.0);
+    Vec3 point = _center + x * _dx + y * _dy;
+    return Photon (point, object->getRandomLink (point), _color);
 }
-
 
 Collide CircleLight::collide (const Ray &ray) const
 {
