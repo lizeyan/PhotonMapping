@@ -1,0 +1,124 @@
+#scene description
+#define all things before the things are reliable on them.
+#every after a '#' in a line is comment
+
+start camera
+    size: 100 100
+    dx: 0 -1 0
+    dy: -0.099875 0 0.995
+    center: 700 50 70
+    normal: -0.995 0 -0.099875
+    focus: 900
+    dpi: 10
+    environment: 0 0 0
+end
+
+#add circle light
+start light
+    type: point
+    center: 100 50 100
+    #normal: 0 0 -1
+    #radius: 50
+    color: 1 1 1
+end
+
+start material #rank0
+    color: 1 1 1
+    absorb: 1 0 0
+    diffusion: 0.5
+    reflection: 0.5
+    refraction: 0
+end
+
+start material #rank1 for plane
+    color: 1 0 0
+    absorb: 1 1 1
+    diffusion: 1
+    reflection: 0
+    refraction: 0
+    texture: ../floor.bmp
+end
+
+start material #rank2
+    color: 1 1 1
+    absorb: 1 0 0
+    diffusion: 0.8
+    reflection: 0.2
+    refraction: 0
+    refractivity: 1.7
+    texture: ../marble.bmp
+end
+
+start material # rank3
+    color: 1 1 1
+    absorb: 1 0 0
+    diffusion: 0
+    reflection: 0
+    refraction: 1
+    refractivity: 1.7
+end
+
+start object
+    type: sphere
+    center: 90 30 10
+    material: 3
+    radius: 10
+end
+
+start object
+    type: sphere
+    center: 90 50 10
+    material: 2
+    radius: 10
+end
+
+start object
+    type: sphere
+    center: 120 40 5
+    material: 0
+    radius: 5
+end
+
+start object
+    type: plane
+    center: 0 0 -0.2
+    material: 1
+    normal: 0 0 1
+    dx: 50 0 0
+    dy: 0 50 0
+end
+
+start object
+    type: plane
+    center: -0.2 0 0
+    material: 0
+    normal: 1 0 0
+    dx: 50 0 0
+    dy: 0 50 0
+end
+
+start object
+    type: plane
+    center: 0 0 100.2
+    material: 0
+    normal: 0 0 -1
+    dx: 50 0 0
+    dy: 0 50 0
+end
+start object
+    type: plane
+    center: 0 -0.2 0
+    material: 0
+    normal: 0 1 0
+    dx: 50 0 0
+    dy: 0 50 0
+end
+
+start object
+    type: plane
+    center: 0 100.2 0
+    material: 0
+    normal: 0 -1 0
+    dx: 50 0 0
+    dy: 0 50 0
+end
