@@ -396,7 +396,7 @@ Photon CircleLight::emitPhoton ()
     Vec3 dir = randomVector<3> ();
     if (dot (dir, _normal) < 0.0)
         dir = -1 * dir;
-    return Photon {_center + _dx * x + _dy * y, dir, color ()};
+    return Photon {_center + _dx * x * _radius + _dy * y * _radius, dir, color ()};
 }
 Photon CircleLight::emitPhoton (Object* object)
 {
