@@ -254,10 +254,12 @@ Color Plane::color (const Vec3 &v) const
     else
     {
         Vec3 r = v - _center;
-        double x = fabs(dot (r, _dx));
-        double y = fabs(dot (r, _dy));
-        double xRadio = (x - _modelDx * int(x / _modelDx)) / _modelDx;
-        double yRadio = (y - _modelDy * int(y / _modelDy)) / _modelDy;
+        double x = fabs(dot (r, _dx)) / _modelDx;
+        double y = fabs(dot (r, _dy)) / _modelDy;
+		double xRadio = x / _modelDx;
+		double yRadio = y / _modelDy;
+		xRadio -= floor (xRadio);
+		yRadio -= floor (yRadio);
         return this->material ()->color (xRadio, yRadio);
     }
 }

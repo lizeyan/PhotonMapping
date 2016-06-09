@@ -1,69 +1,73 @@
 #a temporary test scene
 #场景的边界，超出这个范围的光子将被抛弃。
-leftBottom: -0.001 -0.001 -0.001
-rightTop: 20.001 20.001 20.001
+leftBottom: -10.001 -10.001 -10.001
+rightTop: 10.001 10.001 10.001
 maxThreadNum: 25
 start camera
-    size: 10 10
-    dx: 0 -1 0
-    dy: 0 0 1
-    center: 20 5 5
-    normal: -1 0 0
-    focus: 10
-    dpi: 20
-    radius: 0.00001
+    size: 2 2
+    dx: -1 0.6 0
+    dy: 0.6 1 2.2666666666667
+    center: -2 2 0.5
+    normal: 0.6 1 -0.6
+    focus: 4
+    dpi: 300
+    radius: 0.05
     environment: 0 0 0
-    K: 100
-    brightnessValue: 10000
-    raysPerPixel: 1
+    K: 10
+    brightnessValue: 100000
+    raysPerPixel: 10
 	causticScale: 0
 end
 
 start light
     type: point
-    center: 5 5 10.000
+    center: 3 3 3.000
     color: 1 1 1
 end
 
 start material #rank0
-    color: 1 0 0
+    color: 0 0 0
     absorb: 1 0 0
-    diffusion: 1
+    diffusion: 0
     reflection: 0
-    refraction: 0
+    refraction: 1
+	refractivity: 1.7
 end
 
 start material #rank1
     color: 0 1 0
-    absorb: 1 0 0
-    diffusion: 1
+    absorb: 0 1 0
+    diffusion: 0
     reflection: 0
-    refraction: 0
+    refraction: 1
+	refractivity: 1.7
 end
 
 start material #rank2
     color: 0 0 1
-    absorb: 1 0 0
-    diffusion: 1
+    absorb: 0 0 1
+    diffusion: 0
     reflection: 0
-    refraction: 0
+    refraction: 1
+	refractivity: 1.7
 end
 
 start material #rank3
-    color: 1 1 1
+    color: 0.5 0.5 1
     absorb: 0 0 0
-    diffusion: 1
-    reflection: 0
+    diffusion: 0
+    reflection: 1
     refraction: 0
 end
 
 start material #ran4
 	color :1 1 1
 	absorb: 0 0 0
-	diffusion: 0
-	reflection: 0
-	refraction: 1
+	diffusion: 0.7
+	reflection: 0.3
+	refraction: 0
 	refractivity: 1.4
+	texture: ./marble.bmp
 end
 
 start material# rank5
@@ -86,87 +90,46 @@ start material #ran6
 end
 
 #====================================================================================
-/*
 start object
     type: plane
     normal: 0 0 1
-    center: 0 0 0
+    center: 0 0 -2
     material: 5
-	dx: 500 0 0
-	dy: 0 500 0
-end
-
-start object
-    type: plane
-    normal: 0 0 -1
-    center: 0 0 10.0001
-    material: 3
-end
-
-start object
-    type: plane
-    normal: 0 1 0
-    center: 0 0 0
-    material: 3
-end
-
-start object
-    type: plane
-    normal: 1 0 0
-    center: 0 0 0
-    material: 3
-end
-
-start object
-    type: plane
-    normal: 0 -1 0
-    center: 0 10 0
-    material: 3
-end
-
-start object
-    type: plane
-    normal: -1 0 0
-    center: 20 0 0
-    material: 3
-end
-*/
-#====================================================================================
-/*
-start object
-    type: sphere
-    center: 3 6 3
-    radius: 2
-    material: 4
+	dx: 8 0 0
+	dy: 0 8 0
 end
 
 start object
 	type: sphere
-	center: 6 2 2
-	radius: 2
-	material: 6
+	center: -0.5 5.14 -1.8
+	radius: 0.2
+	material: 0
 end
-*/
-/*
-start model
-	model: ./models/Buddha.obj
-	center: 5 6 2
-	size: 5
-	rotate: 0 0 0
+
+start object
+	type: sphere
+	center: 0 5 -1.8
+	radius: 0.2
+	material: 1
+end
+
+start object
+	type: sphere
+	center: 0.5 5.14 -1.8
+	radius: 0.2
+	material: 2
+end
+
+start object
+	type: sphere
+	center: 1.5 6.3 -1.6
+	radius: 0.4
 	material: 3
 end
-*/
-start model
-	model: ./models/cube.obj
-	center: 0 0 0
-	size: 3
-	rotate: 0 0 0
-	material: 3
-end
-start model
-	model: ./models/cube.obj
-	center: 0 0 0
-	size: 3
-	rotate: 90 0 0
-	material: 3
+
+start object
+	type: sphere
+	center: 0 6 -1.5
+	radius: 0.5
+	material: 4
 end
