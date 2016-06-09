@@ -30,7 +30,7 @@ extern std::mt19937 rd;
 extern std::uniform_real_distribution<> rand01;
 inline Vec3 Tracer::diffuse (const Vec3 &N)
 {
-    Vec3 x = standardize (vertical (N, Vec3())), y = standardize (cross (x, N));
+    Vec3 x = standardize (vertical (N)), y = standardize (cross (x, N));
     if (fabs (model (N) - 1.0) > EPS)
         throw std::logic_error ("N is not a unit vector, in diffuse");
     double cosPhi2 = rand01 (rd);

@@ -380,8 +380,8 @@ CircleLight::CircleLight (const Vec3 &center, const Vec3 &normal, double radius,
 void CircleLight::preHandle ()
 {
     _normal = standardize (_normal);
-    _dx = standardize (vertical (_normal, _center));
-    _dy = standardize (cross (_normal, _dx));
+    _dx = standardize (vertical (_normal));
+    _dy = cross (_normal, _dx);
 	std::cout << "center:" << _center << " normal:" << _normal << " dx:" << _dx << " dy:" << _dy << std::endl;
 }
 
