@@ -19,7 +19,6 @@ public:
     virtual Collide collide (const Ray& ray) const = 0;//检测光线和光源的碰撞，返回碰撞信息
     virtual Vec3 point () const = 0;//返回光源上的一个点
     virtual Color illuminate (const Vec3& point, const Vec3& normal) = 0;//返回光源照亮这个点的颜色。即光源对这个点的直接光照。要求normal必须是单位向量
-    virtual bool block (Object*& ob, const Vec3&, Condutor* condutor) const = 0;
     inline Color color () {return _color;}//返回光源的颜色。
     inline void setColor (const Color& color) {_color = color;}
 private:
@@ -36,7 +35,6 @@ public:
     Collide collide (const Ray &ray) const;
     inline Vec3 point () const {return _center;}
     Color illuminate (const Vec3 &point, const Vec3 &normal);
-    bool block (Object*& ob, const Vec3&, Condutor* condutor) const;
     void display (std::ostream& os) const;
 protected:
     void analyseContent (std::stringstream& content);
@@ -56,7 +54,6 @@ public:
     Collide collide (const Ray &ray) const;
     inline Vec3 point () const {return _center;}
     Color illuminate (const Vec3 &point, const Vec3 &normal);
-    bool block (Object*& ob, const Vec3&, Condutor* condutor) const;
     void display (std::ostream& os) const;
 protected:
     void analyseContent (std::stringstream& content);
@@ -66,6 +63,8 @@ protected:
 private:
     Vec3 _center, _normal, _dx, _dy;
     double _width, _height;
+    double _widthHalf, _heightHalf;
+    size_t _quality;
 };
 
 class CircleLight: public Light
@@ -78,7 +77,6 @@ public:
     Collide collide (const Ray &ray) const;
     inline Vec3 point () const {return _center;}
     Color illuminate (const Vec3 &point, const Vec3 &normal);
-    bool block (Object*& ob, const Vec3&, Condutor* condutor) const;
     void display (std::ostream& os) const;
 protected:
     void analyseContent (std::stringstream& content);
@@ -89,6 +87,7 @@ private:
     Vec3 _center, _normal;
     double _radius;
     Vec3 _dx, _dy;
+    size_t _quality;
 };
 
 #endif // LIGHT_H

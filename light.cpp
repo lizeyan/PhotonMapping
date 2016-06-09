@@ -163,7 +163,14 @@ Collide PointLight::collide (const Ray &ray) const
 Color PointLight::illuminate (const Vec3 &point, const Vec3 &normal)
 {
     Vec3 admitLight = standardize(_center - point);
+    Ray ray = std::make_pair (point + EPS * admitLight, admitLight);
+    std::vector<std::pair<Object*, Collide> > potentialObs = condutor ()->kdTree ()->kdSearch (ray);
     double coefficient = dot (admitLight, normal);
+    for (const auto& entry:potentialObs)
+    {
+        if (dot (admitLight, _center - entry.second.point) > 0.0 && dot(admitLight, point - entry.second.point) < 0.0)
+            coefficient *= entry.first->material ()->refraction ();
+    }
     if (coefficient < 0)
         coefficient = -coefficient;
     return coefficient * color ();
@@ -175,23 +182,6 @@ void PointLight::display (std::ostream &os) const
     Light::display (os);
     os << "_center:" << _center << ";";
     os << "}";
-}
-
-bool PointLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
-{
-    Vec3 link = standardize (_center - point);
-    Ray ray = std::make_pair (point + EPS * link, link);
-    std::vector<std::pair<Object*, Collide> > potentialObs = condutor->kdTree ()->kdSearch (ray);
-    for (const auto& entry:potentialObs)
-    {
-        if (dot (link, _center - entry.second.point) > EPS && dot(link, point - entry.second.point) < -EPS)
-        {
-            ob = entry.first;
-            return true;
-        }
-    }
-    ob = nullptr;
-    return false;
 }
 //==============================================
 RectLight::RectLight (std::stringstream &content, Condutor *condutor)
@@ -209,6 +199,8 @@ void RectLight::preHandle ()
     _normal = standardize (_normal);
     _dx = standardize (_dx);
     _dy = standardize (_dy);
+    _widthHalf = _width / 2;
+    _heightHalf = _height / 2;
 }
 
 RectLight::RectLight (const Vec3 &center, const Vec3 &normal, const Vec3 &dx, const Vec3 &dy, double width, double height, const Color &color, Condutor *condutor):Light (color, condutor), _center (center), _normal (normal), _dx (dx), _dy (dy), _width (width), _height (height)
@@ -228,8 +220,8 @@ Photon RectLight::emitPhoton ()
 
 Photon RectLight::emitPhoton (Object* object)
 {
-    double x = rand01 (rd) * _width;
-    double y = rand01 (rd) * _height;
+    double x = rand01 (rd) * _width - _widthHalf;
+    double y = rand01 (rd) * _height - _heightHalf;
     Vec3 point = _center + x * _dx + y * _dy;
     return Photon {point, object->getRandomLink (point), color ()};
 }
@@ -259,36 +251,23 @@ Collide RectLight::collide (const Ray &ray) const
 
 Color RectLight::illuminate (const Vec3 &point, const Vec3 &normal)
 {
-    static std::uniform_real_distribution<> disX (0, _width);
-    static std::uniform_real_distribution<> disY (0, _height);
-    Vec3 rdPoint = ((_height / 2) - disY(rd)) * _dy + ((_width / 2) - disX (rd)) * _dx + _center;
-    Vec3 admitLight = standardize(rdPoint - point);
-    double coefficient = dot (admitLight, standardize(normal));
-    if (coefficient < 0)
-        return Color ();
-    return coefficient * color ();
-}
-
-bool RectLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
-{
-    static double halfX = _width / 2;
-    static double halfY = _height / 2;
-    static std::array<Vec3, 4> cornors{{Vec3(_center + halfX * _dx + halfY * _dy), Vec3(_center + halfX * _dx - halfY * _dy), Vec3(_center - halfX * _dx + halfY * _dy), Vec3(_center - halfX * _dx - halfY * _dy)}};
-    for (unsigned int i = 0; i < cornors.size(); ++i)
+    static double scale = 1.0 / static_cast<double> (_quality);
+    Color resColor;
+    for (size_t i = 0; i < _quality; ++i)
     {
-        Vec3 link = cornors[i] - point;
-        Ray ray = std::make_pair (point, link);
-        for (const auto& object:condutor->objects ())
+        Vec3 rdPoint = _center + (rand01 (rd) * _width - _widthHalf) * _dx + (rand01(rd) * _height - _heightHalf) * _dy;
+        Vec3 admitLight = standardize(rdPoint - point);
+        std::vector<std::pair<Object*, Collide> > potentialObs = condutor ()->kdTree ()->kdSearch (std::make_pair (point + admitLight * EPS, admitLight));
+        double coefficient = dot (admitLight, standardize(normal));
+        for (const auto& ob: potentialObs)
         {
-            Collide collide = object->collide (ray);
-            if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
-            {
-                ob = object.get ();
-                return true;
-            }
+            if (dot (admitLight, _center - ob.second.point) > 0.0 && dot(admitLight, point - ob.second.point) < 0.0)
+                coefficient *= ob.first->material ()->refraction ();
         }
+        if (coefficient >= 0)
+            resColor += coefficient * color ();
     }
-    return false;
+    return scale * resColor;
 }
 
 void RectLight::display (std::ostream &os) const
@@ -355,6 +334,11 @@ void RectLight::analyseContent (std::stringstream &entryStream)
             std::stringstream valueStream (value);
             valueStream >> _width >> _height;
         }
+        else if (key == std::string ("quality"))
+        {
+            std::stringstream valueStream (value);
+            valueStream >> _quality;
+        }
         else
         {
             throw std::logic_error("unexcepted key type in scene, rectangle light");
@@ -374,7 +358,7 @@ void RectLight::init ()
 
 bool RectLight::check ()
 {
-    return fabs(dot (_dx, _normal)) < EPS && fabs (dot (_dy, _normal)) < EPS;
+    return fabs(dot (_dx, _normal)) < EPS && fabs (dot (_dy, _normal)) < EPS && _quality >= 1 && model2 (_normal) >= EPS;
 }
 
 //===========================================
@@ -423,7 +407,7 @@ Photon CircleLight::emitPhoton (Object* object)
         y = rand01 (rd);
     }
     while (x * x + y * y > 1.0);
-    Vec3 point = _center + x * _dx + y * _dy;
+    Vec3 point = _center + x * _dx * _radius + y * _dy * _radius;
     return Photon {point, object->getRandomLink (point), color ()};
 }
 
@@ -458,49 +442,30 @@ Collide CircleLight::collide (const Ray &ray) const
 
 Color CircleLight::illuminate (const Vec3 &point, const Vec3 &normal)
 {
-    Vec3 dx = vertical (_normal, _center);
-    Vec3 dy = cross (_normal, dx);
-    dx = standardize (dx);
-    dy = standardize (dy);
-    static std::uniform_real_distribution<> disR (0, _radius);
-    double a, b, r2 = _radius * _radius;
-    do
+    static double scale = 1.0 / static_cast<double> (_quality);
+    Color resColor;
+    for (size_t i = 0; i < _quality; ++i)
     {
-        a =disR (rd);
-        b = disR (rd);
-    }
-    while (a * a + b * b > r2);
-    Vec3 rdPoint  = _center + dx * a + dy * b;
-    Vec3 admitLight = standardize(rdPoint - point);
-    double coefficient = dot (admitLight, normal);
-    if (coefficient < 0)
-        return Color ();
-    return coefficient * color ();
-}
-
-bool CircleLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
-{
-    Vec3 dx = vertical (_normal, _center);
-    Vec3 dy = cross (_normal, dx);
-    dx = standardize (dx);
-    dy = standardize (dy);
-    static std::array<Vec3, 4> cornors{{Vec3(_center + dx + dy), Vec3(_center + dx - dy), Vec3(_center - dx + dy), Vec3(_center - dx - dy)}};
-    for (unsigned int i = 0; i < cornors.size(); ++i)
-    {
-        Vec3 link = standardize(cornors[i] - point);
-        Ray ray = std::make_pair (point, link);
-        for (const auto& object:condutor->objects ())
+        double x, y;
+        do
         {
-            Collide collide = object->collide (ray);
-            if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
-            {
-                ob = object.get ();
-                return true;
-            }
+            x = rand01 (rd);
+            y = rand01 (rd);
         }
+        while (x * x + y * y > 1.0);
+        Vec3 rdPoint = _center + x * _dx * _radius + y * _dy * _radius;
+        Vec3 admitLight = standardize(rdPoint - point);
+        std::vector<std::pair<Object*, Collide> > potentialObs = condutor ()->kdTree ()->kdSearch (std::make_pair (point + admitLight * EPS, admitLight));
+        double coefficient = dot (admitLight, standardize(normal));
+        for (const auto& ob: potentialObs)
+        {
+            if (dot (admitLight, _center - ob.second.point) > 0.0 && dot(admitLight, point - ob.second.point) < 0.0)
+                coefficient *= ob.first->material ()->refraction ();
+        }
+        if (coefficient >= 0)
+            resColor += coefficient * color ();
     }
-    ob = nullptr;
-    return false;
+    return scale * resColor;
 }
 
 void CircleLight::display (std::ostream &os) const
@@ -550,6 +515,11 @@ void CircleLight::analyseContent (std::stringstream &entryStream)
             std::stringstream valueStream (value);
             valueStream >> _radius;
         }
+        else if (key == std::string ("quality"))
+        {
+            std::stringstream valueStream (value);
+            valueStream >> _quality;
+        }
         else
         {
             throw std::logic_error("unexcepted key type in scene, rectangle light");
@@ -566,5 +536,5 @@ void CircleLight::init ()
 
 bool CircleLight::check ()
 {
-    return _radius > 0 && model (_normal) > EPS;
+    return _radius > 0 && model (_normal) > EPS && _quality >= 1;
 }

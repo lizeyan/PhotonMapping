@@ -40,8 +40,6 @@ Color RayTracer::calcDiffusion (Light *light)
     Color illuminate;
     Object* co;
     illuminate = light->illuminate (collide.point, collide.normal);
-    if (light->block (co, collide.point, condutor ()))
-        illuminate *= co->material ()->refraction ();
     Color material = nearest->color (collide.point);
     double diff = nearest->material ()->diffusion ();
 //#ifdef DEBUG

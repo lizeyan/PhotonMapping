@@ -125,7 +125,7 @@ void Condutor::run ()
 //    Vec3 link = Vec3(std::array<double,3>{{5, 5, 0}}) - o;
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
-//    RayTracer rt (camera ()->emitRay (5, 0.2), this);
+//    RayTracer rt (camera ()->emitRay (1.65, 1.0), this);
 //    rt.run ();
 //    std::cout << rt.color () << std::endl;
 //    singleThread ();
