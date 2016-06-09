@@ -1,151 +1,166 @@
-#a temporary test scene
-#场景的边界，超出这个范围的光子将被抛弃。
-leftBottom: -10.001 -10.001 -10.001
-rightTop: 10.001 10.001 10.001
+#cornel box
+leftBottom: -0.001 -0.001 -0.001
+rightTop: 20.001 20.001 20.001
 maxThreadNum: 4
 start camera
-    size: 2 2
-    dx: -1 0.6 0
-    dy: 0.6 1 2.2666666666667
-    center: -2 2 0.5
-    normal: 0.6 1 -0.6
-    focus: 4
-    dpi: 100
-    radius: 0.00005
+    size: 10 10
+    dx: 0 -1 0
+    dy: 0 0 1
+    center: 20 5 5
+    normal: -1 0 0
+    focus: 10
+    dpi: 20
+    radius: 0.00001
     environment: 0 0 0
-    K: 10
-    brightnessValue: 1000
+    K: 100
+    brightnessValue: 10000
     raysPerPixel: 1
-	causticScale: 0
+    causticScale: 1
 end
 /*
+start light
+    type: point
+    center: 5 5 9.000
+    color: 1 1 1
+end
 */
 start light
     type: rectangle
-    center: 3 3 3.000
+    center: 5 5 9.000
     color: 1 1 1
-	normal: 0 0 -1
-	dx: 1 0 0
-	dy: 0 1 0
-	size: 3 3
+    normal: 0 0 -1
+    dx: 1 0 0
+    dy: 0 1 0
+    size: 3 3
     quality: 50
 end
-/*
-start light
-    type: circle
-    center: 3 3 3
-    radius: 2
-    normal: 0 0 -1
-    color: 1 1 1
-	quality: 50
-end
-*/
 
 start material #rank0
-    color: 0 0 0
+    color: 1 0 0
     absorb: 1 0 0
-    diffusion: 0
+    diffusion: 1
     reflection: 0
-    refraction: 1
-	refractivity: 1.7
+    refraction: 0
 end
 
 start material #rank1
     color: 0 1 0
-    absorb: 0 1 0
-    diffusion: 0
+    absorb: 1 0 0
+    diffusion: 1
     reflection: 0
-    refraction: 1
-	refractivity: 1.7
+    refraction: 0
 end
 
 start material #rank2
     color: 0 0 1
-    absorb: 0 0 1
-    diffusion: 0
+    absorb: 1 0 0
+    diffusion: 1
     reflection: 0
-    refraction: 1
-	refractivity: 1.7
+    refraction: 0
 end
 
 start material #rank3
-    color: 0.5 0.5 1
-    absorb: 0 0 0
-    diffusion: 0
-    reflection: 1
+    color: 1 1 1
+    absorb: 1 0 0
+    diffusion: 1
+    reflection: 0
     refraction: 0
 end
 
 start material #ran4
-	color :1 1 1
-	absorb: 0 0 0
-	diffusion: 0.7
-	reflection: 0.3
-	refraction: 0
-	refractivity: 1.4
-	texture: ./marble.bmp
+    color :1 1 1
+    absorb: 0 0 0
+    diffusion: 0
+    reflection: 0
+    refraction: 1
+    refractivity: 2.43
 end
 
 start material# rank5
-	color: 1 1 1
-	absorb: 0 0 0
-	diffusion: 0.5
-	reflection: 0.5
-	refraction: 0
-	texture: ./floor.bmp
+    color: 1 1 1
+    absorb: 1 0 0
+    diffusion: 0.9
+    reflection: 0.1
+    refraction: 0
+    texture: ./floor.bmp
 end
 
 start material #ran6
-	color :1 1 1
-	absorb: 0 0 0
-	diffusion: 1
-	reflection: 0
-	refraction: 0
-	refractivity: 1.7
-	texture: ./marble.bmp
+    color :1 1 1
+    absorb: 0 0 0
+    diffusion: 1
+    reflection: 0
+    refraction: 0
+    refractivity: 1.7
+    texture: ./marble.bmp
 end
 
 #====================================================================================
 start object
     type: plane
     normal: 0 0 1
-    center: 0 0 -2
+    center: 0 0 0
     material: 5
-	dx: 8 0 0
-	dy: 0 8 0
+    dx: 10 0 0
+    dy: 0 10 0
 end
 
 start object
-	type: sphere
-	center: -0.5 5.14 -1.8
-	radius: 0.2
-	material: 0
+    type: plane
+    normal: 0 0 -1
+    center: 0 0 10.0001
+    material: 3
 end
 
 start object
-	type: sphere
-	center: 0 5 -1.8
-	radius: 0.2
-	material: 1
+    type: plane
+    normal: 0 1 0
+    center: 0 0 0
+    material: 0
 end
 
 start object
-	type: sphere
-	center: 0.5 5.14 -1.8
-	radius: 0.2
-	material: 2
+    type: plane
+    normal: 1 0 0
+    center: 0 0 0
+    material: 3
 end
 
 start object
-	type: sphere
-	center: 1.5 6.3 -1.6
-	radius: 0.4
-	material: 3
+    type: plane
+    normal: 0 -1 0
+    center: 0 10 0
+    material: 1
 end
 
 start object
-	type: sphere
-	center: 0 6 -1.5
-	radius: 0.5
-	material: 4
+    type: plane
+    normal: -1 0 0
+    center: 20 0 0
+    material: 3
 end
+#====================================================================================
+
+start object
+    type: sphere
+    center: 3 6 3
+    radius: 2
+    material: 4
+end
+
+start object
+    type: sphere
+    center: 6 2 2
+    radius: 2
+    material: 6
+end
+
+/*
+start model
+    model: ./models/Buddha.obj
+    center: 5 4 2
+    size: 3
+    rotate: 0 0 0
+    material: 3
+end
+*/

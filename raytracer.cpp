@@ -59,7 +59,7 @@ Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
 			continue;
         indirect  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide_.point) / (k_wp * r));
     }
-    double scale = nearest_->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r);
+    double scale = nearest_->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r * static_cast<double> (photons.size ()));
     indirect *= scale;
     indirect *= nearest_->color (collide_.point);
 	return indirect;
@@ -68,9 +68,8 @@ Color RayTracer::getIndirect (const Collide &collide_, Object* nearest_)
 Color RayTracer::getCaustic (const Collide &collide_, Object *nearest_)
 {
     Color caustic;
-    size_t k = condutor ()->camera ()->K () * condutor ()->camera ()->causticScale ();
-    std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->causticPhotonMap ()->search (collide_.point, k));
-    if (photons.size () <= k)
+    std::vector<std::pair<Photon*, double> > photons = std::move(condutor ()->causticPhotonMap ()->search (collide_.point, condutor ()->camera ()->K ()));
+    if (photons.size () <= condutor ()->camera ()->K ())
         return caustic;
     double r = photons.front ().second;
     if (r >= causticMaxRadius)
@@ -82,7 +81,7 @@ Color RayTracer::getCaustic (const Collide &collide_, Object *nearest_)
             continue;
         caustic  += coefficient * entry.first->color;
     }
-    double scale = nearest_->material ()->diffusion () / (PI * r * r);
+    double scale = nearest_->material ()->diffusion () / (PI * r * r * static_cast<double> (photons.size ()));
     caustic *= scale;
     caustic *= nearest_->color (collide_.point);
     return caustic;

@@ -59,7 +59,7 @@ void Condutor::globalPhotonEmitting ()
             while (photonMap ()->size () - lastSize < photonNum)
             {
                 Photon photon = light->emitPhoton ();
-                photon.color *= scalePhotonColor;
+//                photon.color *= scalePhotonColor;
                 PhotonTracer photonTracer (photon, this);
                 photonTracer.run ();
             }
@@ -89,7 +89,7 @@ void Condutor::causticPhotonEmitting ()
                 while (causticPhotonMap ()->size () - lastSize < photonNum)
                 {
                     Photon photon = light->emitPhoton (object.get ());
-                    photon.color *= scalePhotonColor;
+//                    photon.color *= scalePhotonColor;
                     PhotonTracer photonTracer (photon, this, 0, true);
                     photonTracer.run ();
                 }
