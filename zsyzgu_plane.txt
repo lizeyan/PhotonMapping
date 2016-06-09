@@ -9,17 +9,16 @@ start camera
     dy: 0.6 1 2.2666666666667
     center: -2 2 0.5
     normal: 0.6 1 -0.6
-    focus: 4
-    dpi: 100
-    radius: 0.00005
+    focus: 3
+    dpi: 500
+    radius: 0.005
     environment: 0 0 0
-    K: 300
-    brightnessValue: 10000
-    raysPerPixel: 1
+    K: 100
+    brightnessValue: 100000
+    raysPerPixel: 10
 	causticScale: 1
 end
 /*
-*/
 start light
     type: rectangle
     center: 3 3 3.000
@@ -28,17 +27,25 @@ start light
 	dx: 1 0 0
 	dy: 0 1 0
 	size: 3 3
-    quality: 50
+    quality: 100
 end
+*/
 /*
+start light
+	type: point
+	center: 3 3 3
+	color: 1 1 1
+end
+*/
 start light
     type: circle
     center: 3 3 3
-    radius: 2
+    radius: 1
     normal: 0 0 -1
     color: 1 1 1
-	quality: 50
+	quality: 100
 end
+/*
 */
 
 start material #rank0
@@ -119,14 +126,14 @@ start object
 	type: sphere
 	center: -0.5 5.14 -1.8
 	radius: 0.2
-	material: 0
+	material: 1
 end
 
 start object
 	type: sphere
 	center: 0 5 -1.8
 	radius: 0.2
-	material: 1
+	material: 0
 end
 
 start object

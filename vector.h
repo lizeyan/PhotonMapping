@@ -215,7 +215,7 @@ inline Vector<N> randomVector ()
     do
     {
         for (size_t i = 0; i < N; ++i)
-            res[i] = rand01 (rd);
+            res[i] = rand01 (rd) * 2 - 1;
     }
     while (model2 (res) > 1.0);
     return std::move (res);

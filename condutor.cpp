@@ -113,8 +113,8 @@ void Condutor::run ()
 #ifdef PHOTON_MAPPING
     std::cout << "emitting photon" << std::endl;
     globalPhotonEmitting ();
-    causticPhotonEmitting ();
     std::cout << "global photon map size: " << _photonMap->size () << std::endl;
+    causticPhotonEmitting ();
     std::cout << "caustic photon map size:" << _causticPhotonMap->size() << std::endl;
 #endif
 //    */

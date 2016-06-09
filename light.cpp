@@ -117,15 +117,7 @@ void PointLight::analyseContent (std::stringstream &entryStream)
 
 Photon PointLight::emitPhoton ()
 {
-    Vec3 dir;
-    do
-    {
-        dir[0] = rand01 (rd) * 2 - 1;
-        dir[1] = rand01 (rd) * 2 - 1;
-        dir[2] = rand01 (rd) * 2 - 1;
-    }
-    while (model2 (dir) > 1 || model2 (dir) < EPS);
-    return Photon {_center, dir, color ()};
+    return Photon {_center, randomVector<3> (), color ()};
 }
 Photon PointLight::emitPhoton (Object* object)
 {
