@@ -54,13 +54,21 @@ void Condutor::globalPhotonEmitting ()
         size_t photonNum = camera ()->brightnessValue ()* model (light->color ());
         size_t lastSize = photonMap ()->size ();
         double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
-        while (photonMap ()->size () - lastSize < photonNum)
+        auto emitting = [this, lastSize, photonNum, &light, scalePhotonColor] ()
         {
-            Photon photon = light->emitPhoton ();
-            photon.color *= scalePhotonColor;
-            PhotonTracer photonTracer (photon, this);
-            photonTracer.run ();
-        }
+            while (photonMap ()->size () - lastSize < photonNum)
+            {
+                Photon photon = light->emitPhoton ();
+                photon.color *= scalePhotonColor;
+                PhotonTracer photonTracer (photon, this);
+                photonTracer.run ();
+            }
+        };
+        std::vector<std::thread> threads (_maxThreadNum);
+        for (auto& th: threads)
+            th = std::thread (emitting);
+        for (auto& th: threads)
+            th.join ();
     }
     _photonMap->build ();
 }

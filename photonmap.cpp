@@ -4,6 +4,8 @@
 #include <stack>
 #include <queue>
 #include <iterator>
+#include <mutex>
+std::mutex storeMutex;
 PhotonMap::PhotonMap(Condutor* condutor):_condutor (condutor)
 {
 
@@ -87,7 +89,9 @@ std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point, s
 
 void PhotonMap::store (const Photon &photon)
 {
+    storeMutex.lock ();
     Vec3 lb = _condutor->lb (), rt = _condutor->rt (), p = photon.point;
     if (p.arg (0) <= rt.arg (0) && p.arg (0) >= lb.arg (0) && p.arg (1) <= rt.arg (1) && p.arg (1) >= lb.arg (1) && p.arg (2) <= rt.arg (2) && p.arg (2) >= lb.arg (2))
         _photons.push_back (std::move (std::unique_ptr<Photon> (new Photon(photon))));
+    storeMutex.unlock ();
 }
