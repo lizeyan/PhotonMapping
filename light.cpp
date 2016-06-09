@@ -280,11 +280,10 @@ bool RectLight::block (Object*& ob, const Vec3 &point, Condutor *condutor) const
         Ray ray = std::make_pair (point, link);
         for (const auto& object:condutor->objects ())
         {
-            if (object.get () == ob || ob->material ()->refraction () > EPS)
-                continue;
             Collide collide = object->collide (ray);
             if (collide.collide && dot (link, _center - collide.point) > EPS && dot(link, point - collide.point) < -EPS)
             {
+                ob = object.get ();
                 return true;
             }
         }

@@ -14,23 +14,22 @@ start camera
     radius: 0.00005
     environment: 0 0 0
     K: 10
-    brightnessValue: 100000
+    brightnessValue: 1000
     raysPerPixel: 1
 	causticScale: 0
 end
 
-/*
 start light
     type: rectangle
     center: 3 3 3.000
-    color: 300 300 300
+    color: 30 30 30
+	normal: 0 0 -1
 	dx: 1 0 0
 	dy: 0 1 0
-	width: 3
-	height: 3
+	size: 3 3
 end
-*/
 
+/*
 start light
     type: circle
     center: 3 3 3
@@ -38,6 +37,7 @@ start light
     normal: 0 0 -1
     color: 1 1 1
 end
+*/
 
 start material #rank0
     color: 0 0 0
