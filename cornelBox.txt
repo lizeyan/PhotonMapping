@@ -1,7 +1,7 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
 rightTop: 20.001 20.001 20.001
-maxThreadNum: 4
+maxThreadNum: 25
 start camera
     size: 10 10
     dx: 0 -1 0
@@ -9,18 +9,30 @@ start camera
     center: 20 5 5
     normal: -1 0 0
     focus: 10
-    dpi: 100
+    dpi: 20
     radius: 0.00001
     environment: 0 0 0
-    K: 1000
-    brightnessValue: 100000
+    K: 10
+    brightnessValue: 10000
     raysPerPixel: 1
+	causticScale: 1
 end
-
+/*
 start light
     type: point
     center: 5 5 9.000
     color: 1 1 1
+end
+*/
+start light
+    type: rectangle
+    center: 5 5 9.000
+    color: 1 1 1
+	normal: 0 0 -1
+	dx: 1 0 0
+	dy: 0 1 0
+	size: 3 3
+    quality: 50
 end
 
 start material #rank0

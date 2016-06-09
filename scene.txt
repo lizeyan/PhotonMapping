@@ -19,6 +19,7 @@ start camera
 	causticScale: 5
 end
 /*
+*/
 start light
     type: rectangle
     center: 3 3 3.000
@@ -29,9 +30,7 @@ start light
 	size: 3 3
     quality: 50
 end
-*/
 /*
-*/
 start light
     type: circle
     center: 3 3 3
@@ -40,6 +39,7 @@ start light
     color: 1 1 1
 	quality: 50
 end
+*/
 
 start material #rank0
     color: 0 0 0
