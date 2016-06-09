@@ -86,6 +86,7 @@ inline bool PhotonTracer::handleRefraction (double &prob)
         Color trans = Color (std::array<double, 3>{{std::exp (absor.arg (0)), std::exp (absor.arg (1)), std::exp (absor.arg (2))}} );
         _color *= trans;
     }
+    _color *= (1.0 / next);
     _ray.first = collide.point;
     _ray.second = T;
     ++_depth;

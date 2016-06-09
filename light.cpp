@@ -188,8 +188,8 @@ RectLight::RectLight (std::stringstream &content, Condutor *condutor)
 {
     setCondutor (condutor);
     init ();
-    preHandle ();
     analyseContent (content);
+    preHandle ();
     if (!check ())
         throw std::logic_error ("invalid arguments, RectLight");
 }
@@ -382,7 +382,6 @@ void CircleLight::preHandle ()
     _normal = standardize (_normal);
     _dx = standardize (vertical (_normal));
     _dy = cross (_normal, _dx);
-	std::cout << "center:" << _center << " normal:" << _normal << " dx:" << _dx << " dy:" << _dy << std::endl;
 }
 
 Photon CircleLight::emitPhoton ()

@@ -80,9 +80,9 @@ Color RayTracer::getCaustic (const Collide &collide_, Object *nearest_)
         double coefficient = - dot (entry.first->dir, collide_.normal);
         if (coefficient <= 0)
             continue;
-        caustic  += coefficient * entry.first->color * std::max (0.0, 1 - distance (entry.first->point, collide_.point) / (k_wp * r));
+        caustic  += coefficient * entry.first->color;
     }
-    double scale = nearest_->material ()->diffusion () / ((1.0 - 2.0 / (3.0 * k_wp) ) * PI * r * r);
+    double scale = nearest_->material ()->diffusion () / (PI * r * r);
     caustic *= scale;
     caustic *= nearest_->color (collide_.point);
     return caustic;
