@@ -6,7 +6,6 @@ Material::Material (double diffusion ,double reflection ,double refraction, cons
 {
     if (_refractivity < EPS)
         throw std::logic_error("zero refractivity");
-	_color = standardize (_color);
 }
 
 Material* Material::produce (const std::string &content)

@@ -12,7 +12,7 @@ start camera
     dpi: 20
     radius: 0.00001
     environment: 0 0 0
-    K: 100
+    K: 1
     brightnessValue: 10000
     raysPerPixel: 1
     causticScale: 1
@@ -79,8 +79,8 @@ end
 start material# rank5
     color: 1 1 1
     absorb: 1 0 0
-    diffusion: 0.9
-    reflection: 0.1
+    diffusion: 0.5
+    reflection: 0.5
     refraction: 0
     texture: ./floor.bmp
 end

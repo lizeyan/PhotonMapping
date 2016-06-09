@@ -2,7 +2,7 @@
 #场景的边界，超出这个范围的光子将被抛弃。
 leftBottom: -10.001 -10.001 -10.001
 rightTop: 10.001 10.001 10.001
-maxThreadNum: 4
+maxThreadNum: 25
 start camera
     size: 2 2
     dx: -1 0.6 0
@@ -13,8 +13,8 @@ start camera
     dpi: 100
     radius: 0.00005
     environment: 0 0 0
-    K: 1000
-    brightnessValue: 100000
+    K: 300
+    brightnessValue: 10000
     raysPerPixel: 1
 	causticScale: 1
 end
@@ -47,7 +47,7 @@ start material #rank0
     diffusion: 0
     reflection: 0
     refraction: 1
-	refractivity: 1.7
+	refractivity: 1.65
 end
 
 start material #rank1
@@ -56,7 +56,7 @@ start material #rank1
     diffusion: 0
     reflection: 0
     refraction: 1
-	refractivity: 1.7
+	refractivity: 1.65
 end
 
 start material #rank2
@@ -65,7 +65,7 @@ start material #rank2
     diffusion: 0
     reflection: 0
     refraction: 1
-	refractivity: 1.7
+	refractivity: 1.65
 end
 
 start material #rank3
