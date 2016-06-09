@@ -2,7 +2,7 @@
 #场景的边界，超出这个范围的光子将被抛弃。
 leftBottom: -10.001 -10.001 -10.001
 rightTop: 10.001 10.001 10.001
-maxThreadNum: 4
+maxThreadNum: 25
 start camera
     size: 2 2
     dx: -1 0.6 0
@@ -10,13 +10,13 @@ start camera
     center: -2 2 0.5
     normal: 0.6 1 -0.6
     focus: 4
-    dpi: 50
+    dpi: 300
     radius: 0.00005
     environment: 0 0 0
     K: 10
-    brightnessValue: 1000
-    raysPerPixel: 1
-	causticScale: 0
+    brightnessValue: 100000
+    raysPerPixel: 10
+	causticScale: 5
 end
 
 start light
@@ -26,8 +26,8 @@ start light
 	normal: 0 0 -1
 	dx: 1 0 0
 	dy: 0 1 0
-	size: 1 1
-    quality: 10
+	size: 3 3
+    quality: 50
 end
 
 /*
