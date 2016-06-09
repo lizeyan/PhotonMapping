@@ -1,5 +1,7 @@
 #include "material.h"
 #include <stdexcept>
+extern std::mt19937 rd;
+extern std::uniform_real_distribution<> rand01;
 Material::Material (double diffusion ,double reflection ,double refraction, const Color& color, const Color& absorb, double refractivity, Image* texture):_diffusion (diffusion), _reflection(reflection), _refraction (refraction), _refractivity(refractivity), _color (color), _absorb (absorb), _texture (texture)
 {
     if (_refractivity < EPS)
@@ -81,5 +83,21 @@ Color Material::color (double x, double y) const
 {
     if (!_texture)
         throw std::logic_error ("unaccessable memory of _texture");
+	if (x < textureEps)
+		x -= rand01 (rd) * textureEps;
+	else if (1.0 - x < textureEps)
+		x += rand01 (rd) * textureEps;
+	if (x < 0.0)
+		x += 1.0;
+	else if (x >= 1.0)
+		x -= 1.0;
+	if (y < textureEps)
+		y -= rand01 (rd) * textureEps;
+	else if (1.0 - y < textureEps)
+		y += rand01 (rd) * textureEps;
+	if (y < 0.0)
+		y += 1.0;
+	else if (y >= 1.0)
+		y -= 1.0;
     return _texture->smoothPixel (x, y);
 }

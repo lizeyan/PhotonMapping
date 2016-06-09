@@ -10,7 +10,7 @@ start camera
     center: -2 2 0.5
     normal: 0.6 1 -0.6
     focus: 4
-    dpi: 300
+    dpi: 100
     radius: 0.00005
     environment: 0 0 0
     K: 10
@@ -18,7 +18,8 @@ start camera
     raysPerPixel: 10
 	causticScale: 5
 end
-
+/*
+*/
 start light
     type: rectangle
     center: 3 3 3.000
@@ -29,7 +30,6 @@ start light
 	size: 3 3
     quality: 50
 end
-
 /*
 start light
     type: circle
@@ -37,6 +37,7 @@ start light
     radius: 1.5
     normal: 0 0 -1
     color: 1 1 1
+	quality: 50
 end
 */
 
