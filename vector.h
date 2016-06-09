@@ -206,6 +206,7 @@ inline Vec3 rotate (const Vec3& vec, const Vec3& r)
     Vec3 res(std::array<double, 3> {{c1 * c2 * vec.arg (0) + (s0 * s1 * c2 - c0 * c1 * s2 ) * vec.arg (1) + (c0 * c2 * s1 + c1 * s0 * s2) * vec.arg (2), c1 * s2 * vec.arg (0) + (c0 * c1 * c2 + s0 * s1 * s2) * vec.arg (1) + (-s0 * c1 * c1 + c0 * s1 * s2) * vec.arg (2), -s1 * vec.arg (0) + c1 * s0 * vec.arg (1) + c0 * c1 * vec.arg (2)}});
     return res;
 }
+extern std::mt19937 rd;
 extern std::uniform_real_distribution<> rand01;
 template <size_t N>
 inline Vector<N> randomVector ()
@@ -214,7 +215,7 @@ inline Vector<N> randomVector ()
     do
     {
         for (size_t i = 0; i < N; ++i)
-            res[i] = rand01 ();
+            res[i] = rand01 (rd);
     }
     while (model2 (res) > 1.0);
     return std::move (res);

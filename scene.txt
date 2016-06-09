@@ -19,9 +19,19 @@ start camera
 	causticScale: 0
 end
 
+/*
 start light
     type: point
     center: 3 3 3.000
+    color: 1 1 1
+end
+*/
+
+start light
+    type: circle
+    center: 3 3 3
+    radius: 0.5
+    normal: 0 0 -1
     color: 1 1 1
 end
 

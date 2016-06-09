@@ -222,8 +222,8 @@ Photon RectLight::emitPhoton ()
     double y = rand01 (rd) * _height;
     Vec3 dir = randomVector<3> ();
     if (dot (dir, _normal) < 0.0)
-        dir = -dir;
-    return Photon {_center + x * _dx + y * _dy, dir, _color};
+        dir = -1 * dir;
+    return Photon {_center + x * _dx + y * _dy, dir, color ()};
 }
 
 Photon RectLight::emitPhoton (Object* object)
@@ -231,7 +231,7 @@ Photon RectLight::emitPhoton (Object* object)
     double x = rand01 (rd) * _width;
     double y = rand01 (rd) * _height;
     Vec3 point = _center + x * _dx + y * _dy;
-    return Photon (point, object->getRandomLink (point), _color);
+    return Photon {point, object->getRandomLink (point), color ()};
 }
 
 Collide RectLight::collide (const Ray &ray) const
@@ -410,10 +410,10 @@ Photon CircleLight::emitPhoton ()
         y = rand01 (rd);
     }
     while (x * x + y * y > 1.0);
-    Vec3 dir = randomVector ();
+    Vec3 dir = randomVector<3> ();
     if (dot (dir, _normal) < 0.0)
-        dir = -dir;
-    return Photon {_center + _dx * x + _dy * y, dir, _color};
+        dir = -1 * dir;
+    return Photon {_center + _dx * x + _dy * y, dir, color ()};
 }
 Photon CircleLight::emitPhoton (Object* object)
 {
@@ -425,7 +425,7 @@ Photon CircleLight::emitPhoton (Object* object)
     }
     while (x * x + y * y > 1.0);
     Vec3 point = _center + x * _dx + y * _dy;
-    return Photon (point, object->getRandomLink (point), _color);
+    return Photon {point, object->getRandomLink (point), color ()};
 }
 
 Collide CircleLight::collide (const Ray &ray) const
