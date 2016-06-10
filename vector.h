@@ -149,7 +149,7 @@ Vector<N> standardize (const Vector<N> &a)
     double s = 0.0;
     for (unsigned int i = 0; i < N; ++i)
         s += (a.arg (i) * a.arg (i));
-    if (fabs(s - 1) < EPS || s < EPS)
+    if (fabs(s - 1) < EPS || s <= 0.0 )
         return a;
     s = sqrt (s);
     Vector<N> res(a);

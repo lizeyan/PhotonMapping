@@ -411,10 +411,8 @@ Color Triangle::color (const Vec3 &v) const
 
 void Triangle::preHandle ()
 {
-    if (_normal == Vec3 ())
-    {
+    if (model2(_normal) < EPS)
         _normal = standardize (cross (_a - _b, _a - _c));
-    }
     if (_needBoudingBox)
     {
         double maxX = _a.arg (0), maxY = _a.arg (1), maxZ = _a.arg (2);
