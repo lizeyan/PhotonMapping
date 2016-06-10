@@ -1,61 +1,61 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
-rightTop: 20.001 20.001 20.001
+rightTop: 2.001 1.001 1.001
 maxThreadNum: 25
 start camera
-    size: 10 10
+    size: 2 2
     dx: 0 -1 0
     dy: 0 0 1
-    center: 20 5 5
+    center: 2 0.5 0.5
     normal: -1 0 0
-    focus: 10
+    focus: 2
     dpi: 100
     radius: 0.00001
     environment: 0 0 0
-    K: 100
+    K: 1000
     brightnessValue: 100000
-    raysPerPixel: 10
+    raysPerPixel: 1
     causticScale: 1
 end
 /*
 start light
     type: point
-    center: 5 5 9.000
+    center: 1.0 0.5 0.9
     color: 1 1 1
 end
 */
 start light
     type: rectangle
-    center: 10 5 9
+    center: 1.0 0.5 0.9
     color: 1 1 1
     normal: 0 0 -1
     dx: 1 0 0
     dy: 0 1 0
-    size: 3 3
-    quality: 500
+    size: 0.05 0.05
+    quality: 100
 end
 
 start material #rank0
     color: 1 0 0
     absorb: 1 0 0
-    diffusion: 0.9
-    reflection: 0.1
+    diffusion: 0.5
+    reflection: 0.5
     refraction: 0
 end
 
 start material #rank1
     color: 0 1 0
     absorb: 1 0 0
-    diffusion: 0.9
-    reflection: 0.1
+    diffusion: 0.5
+    reflection: 0.5
     refraction: 0
 end
 
 start material #rank2
     color: 0 0 1
     absorb: 1 0 0
-    diffusion: 1
-    reflection: 0
+    diffusion: 0.8
+    reflection: 0.2
     refraction: 0
 end
 
@@ -68,11 +68,11 @@ start material #rank3
 end
 
 start material #ran4
-    color :1 1 1
-    absorb: 0 0 0
+    color :1 1 0
+    absorb: 0 0 1
     diffusion: 0
-    reflection: 0
-    refraction: 1
+    reflection: 0.2
+    refraction: 0.8
     refractivity: 1.544
 end
 
@@ -101,14 +101,14 @@ start object
     normal: 0 0 1
     center: 0 0 0
     material: 5
-    dx: 10 0 0
-    dy: 0 10 0
+    dx: 1 0 0
+    dy: 0 1 0
 end
 
 start object
     type: plane
     normal: 0 0 -1
-    center: 0 0 10.0001
+    center: 0 0 1.0001
     material: 3
 end
 
@@ -129,36 +129,36 @@ end
 start object
     type: plane
     normal: 0 -1 0
-    center: 0 10 0
+    center: 0 1 0
     material: 1
 end
 
 start object
     type: plane
     normal: -1 0 0
-    center: 20 0 0
+    center: 2 0 0
     material: 3
 end
 #====================================================================================
-/*
 start object
     type: sphere
-    center: 3 6 3
-    radius: 2
+    center: 0.9 0.4 0.2
+    radius: 0.15
     material: 4
 end
 
+/*
 start object
     type: sphere
-    center: 6 2 2
+    center: 0.6 0.2 0.2
     radius: 2
     material: 6
 end
 */
 start model
     model: ./models/Buddha.obj
-    center: 5 5 4
-    size: 4
+    center: 0.5 0.5 0.4
+    size: 0.4
     rotate: 90 0 90
     material: 3
 end
