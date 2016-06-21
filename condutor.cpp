@@ -75,18 +75,25 @@ void Condutor::globalPhotonEmitting ()
 
 void Condutor::causticPhotonEmitting ()
 {
-    for (const auto& object: _objects)
+    for (const auto& light: _lights)
     {
-        if (object->material()->reflection() < EPS && object->material()->refraction () < EPS)
-            continue;
-        for (const auto& light: _lights)
+        size_t photonNum = camera ()->brightnessValue ()* model (light->color ()) * camera ()-> causticScale ();
+		if (photonNum == 0)
+			continue;
+        double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
+		size_t exceptedObNum = 0;
+		for (const auto& object: _objects)
+			if (object->material()->reflection() >= EPS || object->material()->refraction () >= EPS)
+				++exceptedObNum;
+		for (const auto& object: _objects)
         {
-            size_t photonNum = camera ()->brightnessValue ()* model (light->color ()) * camera ()-> causticScale ();
+			if (object->material()->reflection() < EPS && object->material()->refraction () < EPS)
+				continue;
             size_t lastSize = causticPhotonMap ()->size ();
-            double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
-            auto emitting = [this, lastSize, photonNum, &light, &object, &scalePhotonColor] ()
+			size_t limit = photonNum / exceptedObNum;
+            auto emitting = [this, lastSize, limit, &light, &object, &scalePhotonColor] ()
             {
-                while (causticPhotonMap ()->size () - lastSize < photonNum)
+                while (causticPhotonMap ()->size () - lastSize < limit)
                 {
                     Photon photon = light->emitPhoton (object.get ());
                     photon.color *= scalePhotonColor;
