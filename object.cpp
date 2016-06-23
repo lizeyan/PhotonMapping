@@ -2,6 +2,7 @@
 #include "object.h"
 #include <cmath>
 #include <iostream>
+#include <cstdio>
 extern std::mt19937 rd;
 extern std::uniform_real_distribution<> rand01;
 Object* Object::produce (const std::string &content, Condutor* condutor)
@@ -611,10 +612,16 @@ void Cobic::preHandle ()
         _boudingBox = this;
     _sides[0][0] = Plane (_center + _a_half * _dx, _dx);
     _sides[1][0] = Plane (_center - _a_half * _dx, -1 * _dx);
+    if (_sides[0][0].center ().arg (0) < _sides[1][0].center ().arg (0))
+        std::swap (_sides[0][0], _sides[1][0]);
     _sides[0][1] = Plane (_center + _b_half * _dy, _dy);
     _sides[1][1] = Plane (_center - _b_half * _dy,  -1 *_dy);
+    if (_sides[0][1].center ().arg (1) < _sides[1][1].center ().arg (1))
+        std::swap (_sides[0][1], _sides[1][1]);
     _sides[0][2] = Plane (_center + _c_half * _dz, _dz);
     _sides[1][2] = Plane (_center - _c_half * _dz,  -1 *_dz);
+    if (_sides[0][2].center ().arg (2) < _sides[1][2].center ().arg (2))
+        std::swap (_sides[0][2], _sides[1][2]);
 }
 
 Color Cobic::color (const Vec3 &v) const
@@ -646,6 +653,82 @@ Color Cobic::color (const Vec3 &v) const
 
 Collide Cobic::collide (const Ray &ray) const
 {
+    static auto coDisCmp = [] (const Collide& a, const Collide& b)-> bool {return a.distance < b.distance;};
+    Collide falseRes;
+#define WOO
+#ifdef WOO
+    std::array<const Plane*, 3> firstPlanes{{nullptr, nullptr, nullptr}};
+    //calc first planes
+    if (std::signbit (ray.second.arg (0)))
+    {
+        if (ray.first.arg (0) < _x_l)
+            firstPlanes[0] = &_sides[1][0];
+        else if (ray.first.arg (0) < _x_h)
+            firstPlanes[0] = &_sides[0][0];
+        else
+            return falseRes;
+    }
+    else
+    {
+        if (ray.first.arg (0) > _x_h)
+            firstPlanes[0] = &_sides[0][0];
+        else if (ray.first.arg (0) > _x_l)
+            firstPlanes[0] = &_sides[1][0];
+        else
+            return falseRes;
+    }
+    if (std::signbit (ray.second.arg (1)))
+    {
+        if (ray.first.arg (1) < _y_l)
+            firstPlanes[1] = &_sides[1][1];
+        else if (ray.first.arg (0) < _y_h)
+            firstPlanes[1] = &_sides[0][1];
+        else
+            return falseRes;
+    }
+    else
+    {
+        if (ray.first.arg (1) > _y_h)
+            firstPlanes[1] = &_sides[0][1];
+        else if (ray.first.arg (0) > _y_l)
+            firstPlanes[1] = &_sides[1][1];
+        else
+            return falseRes;
+    }
+    if (std::signbit (ray.second.arg (2)))
+    {
+        if (ray.first.arg (2) < _z_l)
+            firstPlanes[2] = &_sides[1][2];
+        else if (ray.first.arg (0) < _z_h)
+            firstPlanes[2] = &_sides[0][2];
+        else
+            return falseRes;
+    }
+    else
+    {
+        if (ray.first.arg (2) > _z_h)
+            firstPlanes[2] = &_sides[0][2];
+        else if (ray.first.arg (0) > _z_l)
+            firstPlanes[2] = &_sides[1][2];
+        else
+            return falseRes;
+    }
+    //
+    std::array<Collide, 3> collides;
+    for (unsigned i = 0; i < 3; ++i)
+        collides[i] = firstPlanes[i]->collide (ray);
+    std::sort (begin(collides), end(collides), coDisCmp);
+    if (this->contain (ray.first))
+        return collides[0];
+    else
+    {
+        if (this->on (collides[2].point))
+            return collides[2];
+        else
+            return falseRes;
+    }
+
+#else
     Collide co[2][3];
     for (int i = 0; i < 2; ++i)
         for (int j = 0; j < 3; ++j)
@@ -659,11 +742,10 @@ Collide Cobic::collide (const Ray &ray) const
         //此时光线和这一组边平行
         if (co[0][i].distance == Bound && co[1][i].distance == Bound)
         {
-            double d1 = _sides[0][i].calc (ray.first), d2 = _sides[1][i].calc (ray.first);
-            if ((d1 > 0.0 && d2 > 0.0) || (d1 < 0.0 && d2 < 0.0))
-            {
+//            double d1 = _sides[0][i].calc (ray.first), d2 = _sides[1][i].calc (ray.first);
+            if (std::signbit (_sides[0][i].calc (ray.first)) == std::signbit (_sides[1][i].calc (ray.first)) )
+//            if ((d1 > 0.0 && d2 > 0.0) || (d1 < 0.0 && d2 < 0.0))
                 co[0][i].distance = -Bound;
-            }
         }
     }
     Collide *tmax1 = co[0], *tmin2 = co[1];
@@ -686,6 +768,7 @@ Collide Cobic::collide (const Ray &ray) const
         else//说明co[0]中所有的distance都小于0
             return *tmin2;
     }
+#endif
 }
 
 void Cobic::display (std::ostream &os) const

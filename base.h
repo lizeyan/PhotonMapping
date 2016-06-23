@@ -1,5 +1,6 @@
 #ifndef BASE_H
 #define BASE_H
+#include "Utility/timer.hpp"
 #include <regex>
 #include <fstream>
 #include <random>

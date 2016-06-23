@@ -21,6 +21,7 @@ std::mutex infoMutex;
 std::ofstream info ("rayTrace.info");
 #endif
 std::mt19937 rd(time(0));
+extern Utility::Timer<> timer;
 Condutor::Condutor(std::ifstream& _input): input(_input), _parser (new ObjectParser(this)), _lb (std::array<double, 3>{{-Bound, -Bound, -Bound}}), _rt (std::array<double, 3>{{+Bound, +Bound, +Bound}})
 {
     init ();

@@ -6,9 +6,14 @@
 #include <chrono>
 using namespace std;
 #define CMDLINE
+Utility::Timer<> timer;
 int main(int argc, char *argv[])
 {
-    auto startTime = chrono::system_clock::now ();
+//    Vec3 ro (std::array<double, 3> {{90 * Deg2Rad, 0, 90 * Deg2Rad}});
+//    Vec3 vec (std::array<double, 3> {{-0.5, 0.5, 0.5}});
+//    std::cout << rotate (vec, ro) << std::endl;
+//    return 0;
+    timer.start ();
 #ifdef CMDLINE
     string inputFileName, outputFileName;
     if (argc < 2)
@@ -30,9 +35,7 @@ int main(int argc, char *argv[])
     condutor->run ();
     condutor->save (outputFileName);
     input.close ();
-    auto endTime = chrono::system_clock::now ();
-    auto timeCost = chrono::duration_cast<chrono::milliseconds> (endTime - startTime);
-    cout << "total time cost: " << double(timeCost.count()) / 1000 << " seconds" << endl;
+    cout << "total time cost: " << double(timer.report ().count()) / 1000 << " seconds" << endl;
     return 0;
 #endif
 }

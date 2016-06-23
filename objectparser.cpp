@@ -96,11 +96,14 @@ void ObjectParser::analyseFile (const std::string &fileName, Material *material)
 			{
 				firstFace = false;
 				vecSum *= 1.0 / static_cast<double> (_vertices.size ());
+//                std::cout << "rotate:" << _rotate << std::endl;
 				for (auto& point: _vertices)
-				{
-					point -= vecSum;
-					point = _size * rotate (point, _rotate) + _center;
-				}
+                    //std::cout << "point:" << point << std::endl;
+                    //std::cout << "after move:" << point << std::endl;
+                    point = _size * rotate (point - vecSum, _rotate) + _center;
+                    //std::cout << "after rotate:" << point << std::endl;
+                    //point = point * _size + _center;
+                    //std::cout << "after move again:" << point << std::endl;
 			}
             if (std::regex_match(value, simpleFaceReg))
             {

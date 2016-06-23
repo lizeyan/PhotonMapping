@@ -1,7 +1,7 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
 rightTop: 2.001 1.001 1.001
-maxThreadNum: 25
+maxThreadNum: 4
 start camera
     size: 2 2
     dx: 0 -1 0
@@ -9,7 +9,7 @@ start camera
     center: 3 0.5 2.1
     normal: -1 0 -0.6
     focus: 1
-    dpi: 1000
+    dpi: 500
     radius: 0.0001
     environment: 0 0 0
     K: 1000
@@ -83,6 +83,7 @@ start object
 	dy: 0 5 0
 end
 /*
+*/
 start model
 	model: ./models/Buddha.obj
 	center: 0.5 0.5 1
@@ -90,7 +91,6 @@ start model
 	rotate: 90 0 90
 	material: 4
 end
-*/
 /*
 start model
 	model: ./models/block.obj
@@ -99,11 +99,11 @@ start model
 	rotate: 90 0 90
 	material: 4
 end
-*/
 start model
 	model: ./models/cube.obj
 	center: 0.5 0.5 0.5
 	size: 0.5
-	rotate: 90 0 0
+	rotate: 90 0 90
 	material: 4
 end
+*/

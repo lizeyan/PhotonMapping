@@ -3,6 +3,7 @@
 #include "material.h"
 #include "ray.h"
 #include "primitive.h"
+#include <cmath>
 #include <string>
 #include <memory>
 #include <iostream>
@@ -124,6 +125,8 @@ public:
     double yl () const {return _y_l;}
     double zh () const {return _z_h;}
     double zl () const {return _z_l;}
+    bool contain (const Vec3& vec) const {return vec.arg (0) >= _x_l && vec.arg (0) <= _x_h && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h && vec.arg (2) <= _z_h && vec.arg (2) >= _z_l;}
+    bool on (const Vec3& vec) const {return ((fabs (vec.arg (0) - _x_l) < EPS || fabs (vec.arg (0) - _x_h) < EPS) && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h && vec.arg (2) <= _z_h && vec.arg (2) >= _z_l) || ((fabs (vec.arg (1) - _y_l) < EPS || fabs (vec.arg (1) - _y_h) < EPS) && vec.arg (0) >= _x_l && vec.arg (0) <= _x_h && vec.arg (2) <= _z_h && vec.arg (2) >= _z_l) || ((fabs (vec.arg (2) - _z_l) < EPS || fabs (vec.arg (2) - _z_h) < EPS) && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h && vec.arg (0) <= _x_h && vec.arg (0) >= _x_l);}
 protected:
     void analyseContent (std::stringstream& content);
     bool check ();
