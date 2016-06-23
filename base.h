@@ -3,7 +3,7 @@
 #include <regex>
 #include <fstream>
 #include <random>
-#define PHOTON_MAPPING
+//#define PHOTON_MAPPING
 //#define DEBUG
 //#define LOG
 const double EPS = 1e-10;
@@ -30,6 +30,6 @@ const int MAX_RAY_TRACING_DEPTH = 5;
 const int MAX_PHOTON_TRACING_DEPTH = 5;
 const double k_wp = 1.1;
 const size_t finalGatheringK = 100;
-const double causticMaxRadius = 1.0;
+const double causticMaxRadius = 0.1;
 const double textureEps = 0.01;
 #endif // BASE_H

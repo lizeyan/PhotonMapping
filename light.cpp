@@ -205,8 +205,8 @@ Photon RectLight::emitPhoton ()
     double x = rand01 (rd) * _width - _widthHalf;
     double y = rand01 (rd) * _height - _heightHalf;
     Vec3 dir = randomVector<3> ();
-    if (dot (dir, _normal) < 0.0)
-        dir = -1 * dir;
+    //if (dot (dir, _normal) < 0.0)
+        //dir = -1 * dir;
     return Photon {_center + x * _dx + y * _dy, dir, color ()};
 }
 
@@ -386,8 +386,8 @@ Photon CircleLight::emitPhoton ()
     }
     while (x * x + y * y > 1.0);
     Vec3 dir = randomVector<3> ();
-    if (dot (dir, _normal) < 0.0)
-        dir = -1 * dir;
+    //if (dot (dir, _normal) < 0.0)
+        //dir = -1 * dir;
     return Photon {_center + _dx * x * _radius + _dy * y * _radius, dir, color ()};
 }
 Photon CircleLight::emitPhoton (Object* object)
