@@ -9,17 +9,17 @@ start camera
     center: 2 0.5 0.5
     normal: -1 0 0
     focus: 1.8
-    dpi: 100
-    radius: 0.001
+    dpi: 1000
+    radius: 0.01
     environment: 0 0 0
     K: 1000
-    brightnessValue: 1000
-    raysPerPixel: 1
+    brightnessValue: 100000
+    raysPerPixel: 10
     causticScale: 0
 end
 start light
     type: point
-    center: 1.0 0.5 0.9
+    center: 0.1 0.5 0.8
     color: 1 1 1
 end
 /*
@@ -140,20 +140,20 @@ start object
 end
 
 #====================================================================================
-/*
 start object
     type: sphere
-    center: 0.4 0.5 0.6
+    center: 0.2 0.5 0.3
     radius: 0.2
-    material: 3
+    material: 4
 end
 
 start object
     type: sphere
     center: 0.6 0.2 0.2
-    radius: 2
+    radius: 0.2
     material: 6
 end
+/*
 start model
     model: ./models/Buddha.obj
     center: 0.5 0.5 0.4
@@ -161,7 +161,6 @@ start model
     rotate: 90 0 90
     material: 3
 end
-*/
 start model
 	model: ./models/fixed.perfect.dragon.100K.0.07.obj
 	center: 0.4 0.3 0.3
@@ -169,3 +168,4 @@ start model
 	rotate: 90 0 90
 	material: 3
 end
+*/
