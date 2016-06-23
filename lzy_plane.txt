@@ -1,0 +1,109 @@
+#cornel box
+leftBottom: -0.001 -0.001 -0.001
+rightTop: 2.001 1.001 1.001
+maxThreadNum: 25
+start camera
+    size: 2 2
+    dx: 0 -1 0
+    dy: -0.6 0 1
+    center: 3 0.5 2.1
+    normal: -1 0 -0.6
+    focus: 1
+    dpi: 1000
+    radius: 0.0001
+    environment: 0 0 0
+    K: 1000
+    brightnessValue: 1000
+    raysPerPixel: 1
+    causticScale: 0
+end
+start light
+	type: point
+	center: 2 -1 3
+	color: 1 1 1
+end
+#==============================================================
+# material
+#==============================================================
+start material #stone
+	color: 1 1 1
+	absorb: 0 0 0
+	texture: ./stone.jpg
+	diffusion: 1
+	reflection: 0
+	refraction: 0
+	refractivity: 1.0
+end
+
+start material #clear without red
+	color: 1 1 1
+	absorb: 1 0 0
+	diffusion: 0
+	reflection: 0
+	refraction: 1
+	refractivity: 2.54
+end
+
+start material #clear without green
+	color: 1 1 1
+	absorb: 0 1 0
+	diffusion: 0
+	reflection: 0
+	refraction: 1
+	refractivity: 2.54
+end
+
+start material #clear without blue
+	color: 1 1 1
+	absorb: 0 0 1
+	diffusion: 0
+	reflection: 0
+	refraction: 1
+	refractivity: 2.54
+end
+
+start material #gold
+	color: 0.9804 0.84375 0.375
+	absorb: 0.1196 0.15625 0.625
+	diffusion: 0
+	reflection: 0.5
+	refraction: 0.5
+	refractivity: 1.65
+end
+
+#==============================================================
+# object
+#==============================================================
+start object
+	type: plane
+	center: -2 -2 0
+	normal : 0 0 1
+	material: 0
+	dx: 5 0 0
+	dy: 0 5 0
+end
+/*
+start model
+	model: ./models/Buddha.obj
+	center: 0.5 0.5 1
+	size: 1
+	rotate: 90 0 90
+	material: 4
+end
+*/
+/*
+start model
+	model: ./models/block.obj
+	center: 0.5 0.5 0.5
+	size: 0.03
+	rotate: 90 0 90
+	material: 4
+end
+*/
+start model
+	model: ./models/cube.obj
+	center: 0.5 0.5 0.5
+	size: 0.5
+	rotate: 90 0 0
+	material: 4
+end
