@@ -8,22 +8,21 @@ start camera
     dy: 0 0 1
     center: 2 0.5 0.5
     normal: -1 0 0
-    focus: 2
+    focus: 1.8
     dpi: 100
-    radius: 0.00001
+    radius: 0.01
     environment: 0 0 0
     K: 1000
-    brightnessValue: 100000
-    raysPerPixel: 1
-    causticScale: 1
+    brightnessValue: 10000
+    raysPerPixel: 10
+    causticScale: 0
 end
-/*
 start light
     type: point
-    center: 1.0 0.5 0.9
+    center: 0.1 0.5 0.8
     color: 1 1 1
 end
-*/
+/*
 start light
     type: rectangle
     center: 1.0 0.5 0.9
@@ -34,9 +33,10 @@ start light
     size: 0.05 0.05
     quality: 100
 end
+*/
 
 start material #rank0
-    color: 1 0 0
+    color: 1 0.5 0.5
     absorb: 1 0 0
     diffusion: 0.5
     reflection: 0.5
@@ -62,8 +62,8 @@ end
 start material #rank3
     color: 1 1 1
     absorb: 1 0 0
-    diffusion: 1
-    reflection: 0
+    diffusion: 0.9
+    reflection: 0.1
     refraction: 0
 end
 
@@ -71,8 +71,8 @@ start material #ran4
     color :1 1 0
     absorb: 0 0 1
     diffusion: 0
-    reflection: 0.2
-    refraction: 0.8
+    reflection: 0
+    refraction: 1
     refractivity: 1.544
 end
 
@@ -117,44 +117,43 @@ start object
     normal: 0 1 0
     center: 0 0 0
     material: 0
+	dx: 1 0 0
+	dy: 0 0 1
 end
 
 start object
     type: plane
     normal: 1 0 0
     center: 0 0 0
-    material: 3
+    material: 1
+	dx: 0 1 0
+	dy: 0 0 1
 end
 
 start object
     type: plane
     normal: 0 -1 0
     center: 0 1 0
-    material: 1
+    material: 2
+	dx: 1 0 0
+	dy: 0 0 1
 end
 
-start object
-    type: plane
-    normal: -1 0 0
-    center: 2 0 0
-    material: 3
-end
 #====================================================================================
 start object
     type: sphere
-    center: 0.9 0.4 0.2
-    radius: 0.15
+    center: 0.2 0.5 0.3
+    radius: 0.2
     material: 4
 end
 
-/*
 start object
     type: sphere
     center: 0.6 0.2 0.2
-    radius: 2
+    radius: 0.2
     material: 6
 end
-*/
+/*
 start model
     model: ./models/Buddha.obj
     center: 0.5 0.5 0.4
@@ -162,12 +161,11 @@ start model
     rotate: 90 0 90
     material: 3
 end
-/*
 start model
 	model: ./models/fixed.perfect.dragon.100K.0.07.obj
-	center: 0 0 0
-	size: 4
-	rotate: 0 0 0
+	center: 0.4 0.3 0.3
+	size: 0.4
+	rotate: 90 0 90
 	material: 3
 end
 */

@@ -22,7 +22,7 @@ public:
     int brightnessValue () {return _brightnessValue;}
     size_t K () {return _K;}
     size_t raysPerPixel () {return _raysPerPixel;}
-	unsigned int causticScale () {return _causticScale;}
+	double causticScale () {return _causticScale;}
     Ray emitRay (double x, double y);
 protected:
     void analyseContent (const std::string& content);
@@ -45,7 +45,7 @@ private:
     size_t _raysPerPixel;
 
     std::uniform_real_distribution<> _apertureDis;
-	unsigned int _causticScale;
+	double _causticScale;
 };
 std::ostream& operator<< (std::ostream& os, const Camera& camera);
 #endif // CAMERA_H

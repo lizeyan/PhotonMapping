@@ -10,11 +10,11 @@ start camera
     center: -2 2 0.5
     normal: 0.6 1 -0.6
     focus: 5
-    dpi: 500
+    dpi: 100
     radius: 0.01
     environment: 0 0 0
     K: 100
-    brightnessValue: 100000
+    brightnessValue: 10000
     raysPerPixel: 10
 	causticScale: 1
 end
@@ -22,7 +22,7 @@ end
 start light
     type: rectangle
     center: 3 3 3.000
-    color: 1 1 1
+    color: 1.5 1.5 1.5
 	normal: 0 0 -1
 	dx: 1 0 0
 	dy: 0 1 0
@@ -105,11 +105,10 @@ end
 start material #ran6
 	color :1 1 1
 	absorb: 0 0 0
-	diffusion: 1
+	diffusion: 0
 	reflection: 0
-	refraction: 0
-	refractivity: 1.7
-	texture: ./marble.bmp
+	refraction: 1
+	refractivity: 1.544
 end
 
 #====================================================================================
@@ -156,3 +155,12 @@ start object
 	radius: 0.5
 	material: 4
 end
+/*
+start model
+	model: ./models/fixed.perfect.dragon.100K.0.07.obj
+	center: 0 6 -1.5
+	size: 0.7
+	rotate: 90 0 90
+	material: 6
+end
+*/
