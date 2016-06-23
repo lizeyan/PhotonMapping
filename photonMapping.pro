@@ -41,4 +41,8 @@ HEADERS += \
     photonmap.h \
     triangleBox.h \
     triangleTree.h \
-    photonbox.h
+    photonbox.h \
+    timer.hpp
+
+DISTFILES += \
+    scene.txt

@@ -1,7 +1,7 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
 rightTop: 2.001 1.001 1.001
-maxThreadNum: 3
+maxThreadNum: 4
 start camera
     size: 2 2
     dx: 0 -1 0
