@@ -10,16 +10,16 @@ start camera
     normal: -1 0 0
     focus: 1.8
     dpi: 1000
-    radius: 0.01
+    radius: 0.1
     environment: 0 0 0
     K: 1000
-    brightnessValue: 100000
+    brightnessValue: 1000
     raysPerPixel: 10
     causticScale: 0
 end
 start light
     type: point
-    center: 0.1 0.5 0.8
+    center: 0.1 0.5 0.9
     color: 1 1 1
 end
 /*

@@ -74,6 +74,8 @@ void ObjectParser::analyseFile (const std::string &fileName, Material *material)
     std::string line;
     std::smatch matchRes;
     Vec3 vec;
+	bool firstFace = true;
+	Vec3 vecSum;
     while (!fin.eof ())
     {
         std::getline (fin, line);
@@ -85,11 +87,21 @@ void ObjectParser::analyseFile (const std::string &fileName, Material *material)
         if (key == std::string ("v"))
         {
             valueStream >> vec[0] >> vec[1] >> vec[2];
-            vec = _center + rotate (vec, _rotate) * _size;
+			vecSum += vec;
             _vertices.push_back (vec);
         }
         else if (key == std::string ("f"))
         {
+			if (firstFace)
+			{
+				firstFace = false;
+				vecSum *= 1.0 / static_cast<double> (_vertices.size ());
+				for (auto& point: _vertices)
+				{
+					point -= vecSum;
+					point = _size * rotate (point, _rotate) + _center;
+				}
+			}
             if (std::regex_match(value, simpleFaceReg))
             {
                 int ranks[3];
