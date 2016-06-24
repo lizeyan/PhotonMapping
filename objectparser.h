@@ -19,7 +19,8 @@ private:
     Vec3 _rotate;
     double _size;
     std::vector<Vec3> _vertices;
-    std::vector<Vec3> _normals;
+    std::vector<std::pair<Vec3, std::size_t> > _normals;
+    std::vector<std::tuple<std::size_t, std::size_t, std::size_t> > _faces;
 };
 
 #endif // OBJECTPARSER_H

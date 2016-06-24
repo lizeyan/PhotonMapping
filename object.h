@@ -87,6 +87,7 @@ class Triangle: public Object
 public:
     Triangle (const Vec3& _a, const Vec3& b, const Vec3& c, Material* material = nullptr, Condutor* condutor = nullptr, bool need = false);
     Triangle (std::stringstream& content, Condutor* condutor = nullptr);
+    Triangle (const Vec3& _a, const Vec3& b, const Vec3& c, Material* material, Condutor* condutor, const Vec3& na, const Vec3& nb, const Vec3& nc);
     virtual ~Triangle ();
     inline Vec3 a () {return _a;}
     inline Vec3 b () {return _b;}
@@ -106,6 +107,8 @@ private:
     Vec3 _normal;
     bool _needBoudingBox;
     Vec3 _dx, _dy;//for getRandomLink
+    bool _phongShading;
+    Vec3 _normal_a, _normal_b, _normal_c;
 };
 
 class Cobic: public Object
@@ -128,6 +131,8 @@ public:
     bool contain (const Vec3& vec) const {return vec.arg (0) >= _x_l && vec.arg (0) <= _x_h && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h && vec.arg (2) <= _z_h && vec.arg (2) >= _z_l;}
     bool on (const Vec3& vec) const {return ((fabs (vec.arg (0) - _x_l) < EPS || fabs (vec.arg (0) - _x_h) < EPS) && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h && vec.arg (2) <= _z_h && vec.arg (2) >= _z_l) || ((fabs (vec.arg (1) - _y_l) < EPS || fabs (vec.arg (1) - _y_h) < EPS) && vec.arg (0) >= _x_l && vec.arg (0) <= _x_h && vec.arg (2) <= _z_h && vec.arg (2) >= _z_l) || ((fabs (vec.arg (2) - _z_l) < EPS || fabs (vec.arg (2) - _z_h) < EPS) && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h && vec.arg (0) <= _x_h && vec.arg (0) >= _x_l);}
 protected:
+    bool almostIn (const Vec3& vec) const {return (vec.arg (0) >= _x_l && vec.arg (0) <= _x_h && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h) || (vec.arg (2) >= _z_l && vec.arg (2) <= _z_h && vec.arg (1) >= _y_l && vec.arg (1) <= _y_h) || (vec.arg (0) >= _x_l && vec.arg (0) <= _x_h && vec.arg (2) >= _z_l && vec.arg (2) <= _z_h);}
+    bool partlyIn (const Vec3& vec) const {return (vec.arg (0) <= _x_h && vec.arg (0) >= _x_l) || (vec.arg (1) <= _y_h && vec.arg (1) >= _y_l) || (vec.arg (2) <= _z_h && vec.arg (2) >= _z_l);}
     void analyseContent (std::stringstream& content);
     bool check ();
     void init ();

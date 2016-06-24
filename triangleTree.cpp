@@ -30,8 +30,13 @@ void TriangleTree::search (const Ray &ray, TriangleBox *v, std::vector<std::pair
             res.push_back (std::make_pair (v->object(), std::move(tmp)));
         return;
     }
+//    std::cout << "current node:" << v->boudingBox () << std::endl;
     Collide tmp1 = v->lc ()->collide (ray);
+//    std::cout << "\tlc:" << v->lc ()->boudingBox () << std::endl;
+//    std::cout << "\t" << tmp1.collide << " " << tmp1.normal << " " << tmp1.point << " " << tmp1.distance << std::endl;
     Collide tmp2 = v->rc ()->collide (ray);
+//    std::cout << "\trc:" << v->rc ()->boudingBox () << std::endl;
+//    std::cout << "\t" << tmp2.collide << " " << tmp2.normal << " " << tmp2.point << " " << tmp2.distance << std::endl;
     if (tmp1.collide)
         search (ray, v->lc (), res);
     if (tmp2.collide)

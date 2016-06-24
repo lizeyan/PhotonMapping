@@ -31,6 +31,19 @@ std::ostream& operator<< (std::ostream& os, const Vector<N>& vec)
     return os;
 }
 template <std::size_t N>
+bool operator< (const Vector<N>& a, const Vector<N>& b)
+{
+    for (std::size_t i = 0; i < N; ++i)
+    {
+        if (a.arg (i) < b.arg (i))
+            return true;
+        else if (a.arg (i) > b.arg (i))
+            return false;
+    }
+    return false;
+}
+
+template <std::size_t N>
 Vector<N>::Vector (const std::array<double, N> &args):_args(args)
 {
 }

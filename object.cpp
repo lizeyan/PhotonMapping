@@ -384,12 +384,12 @@ Vec3 Plane::getRandomLink (const Vec3 &source) const
         return -1 * dir;
 }
 //======================================
-Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor, bool need):Object (material, condutor), _a(a), _b(b), _c(c), _normal (), _needBoudingBox (need)
+Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material* material, Condutor *condutor, bool need):Object (material, condutor), _a(a), _b(b), _c(c), _normal (), _needBoudingBox (need), _phongShading (false)
 {
     preHandle ();
 }
 
-Triangle::Triangle (std::stringstream &content, Condutor *condutor):_needBoudingBox (true)
+Triangle::Triangle (std::stringstream &content, Condutor *condutor):_needBoudingBox (true), _phongShading (false)
 {
     init ();
     setCondutor (condutor);
@@ -397,6 +397,11 @@ Triangle::Triangle (std::stringstream &content, Condutor *condutor):_needBouding
     preHandle ();
     if (!check ())
         throw std::logic_error ("incorrect argument of triangle");
+}
+
+Triangle::Triangle (const Vec3 &a, const Vec3 &b, const Vec3 &c, Material *material, Condutor *condutor, const Vec3& na, const Vec3& nb, const Vec3& nc):Object (material, condutor), _a (a), _b (b), _c (c), _normal (), _needBoudingBox (true), _phongShading (true), _normal_a (na), _normal_b (nb), _normal_c (nc)
+{
+    preHandle ();
 }
 
 Color Triangle::color (const Vec3 &v) const
@@ -547,18 +552,24 @@ Collide Triangle::collide (const Ray &ray) const
     Vec3 S;
     double det1, det2, det3;
     double det0 = det (ray.second, e1, e2);
-    if (fabs (det0) < EPS)
+    if (fabs (det0) <= EPS)
         goto fail;
     S = _a - ray.first;
     det1 = det (S, e1, e2), det2 = det (ray.second, S, e2), det3 = det (ray.second, e1, S);
-    if (det0 > 0.0 && (det1 < 0.0 || det2 + det3 > det0 || det2 < 0.0 || det3 < 0.0))
+    if (det0 > EPS && (det1 < EPS || det2 + det3 > det0 || det2 < EPS || det3 < EPS))
         goto fail;
-    if (det0 < 0.0 && (det1 > 0.0 || det2 + det3 < det0 || det2 > 0.0 || det3 > 0.0))
+    if (det0 < EPS && (det1 > EPS || det2 + det3 < det0 || det2 > EPS || det3 > EPS))
         goto fail;
     res.collide = true;
     res.distance = det1 / det0;
     res.point = ray.first + res.distance * ray.second;
-    res.normal = _normal;
+    if (!_phongShading)
+        res.normal = _normal;
+    else
+    {
+        double beta = det2 / det0, gamma = det3 / det0;
+        res.normal = _normal_a * (1.0 - beta - gamma) + _normal_b * beta + _normal_c * gamma;
+    }
     return res;
     fail:
     {
@@ -655,71 +666,176 @@ Collide Cobic::collide (const Ray &ray) const
 {
     static auto coDisCmp = [] (const Collide& a, const Collide& b)-> bool {return a.distance < b.distance;};
     Collide falseRes;
+    //
+//#define DEBUG_WOO
+#ifdef DEBUG_WOO
+    std::cout << *this << std::endl;
+    std::cout << "ray:" << ray.first << " " << ray.second << std::endl;
+#endif
 #define WOO
 #ifdef WOO
     std::array<const Plane*, 3> firstPlanes{{nullptr, nullptr, nullptr}};
     //calc first planes
+    size_t insideDemCnt = 0;
     if (std::signbit (ray.second.arg (0)))
     {
-        if (ray.first.arg (0) < _x_l)
-            firstPlanes[0] = &_sides[1][0];
-        else if (ray.first.arg (0) < _x_h)
+#ifdef DEBUG_WOO
+        std::cout << "minus ray.second.x" << std::endl;
+#endif
+        if (ray.first.arg (0) > _x_h)
+        {
+#ifdef DEBUG_WOO
+            std::cout << "choose sides[0][0]" << std::endl;
+#endif
             firstPlanes[0] = &_sides[0][0];
+        }
+        else if (ray.first.arg (0) > _x_l)
+        {
+            ++insideDemCnt;
+            firstPlanes[0] = &_sides[1][0];
+        }
         else
             return falseRes;
     }
     else
     {
-        if (ray.first.arg (0) > _x_h)
-            firstPlanes[0] = &_sides[0][0];
-        else if (ray.first.arg (0) > _x_l)
+#ifdef DEBUG_WOO
+        std::cout << "plus ray.second.x" << std::endl;
+#endif
+        if (ray.first.arg (0) < _x_l)
+        {
+#ifdef DEBUG_WOO
+            std::cout << "choosing sides[1][0]" << std::endl;
+#endif
             firstPlanes[0] = &_sides[1][0];
+        }
+        else if (ray.first.arg (0) < _x_h)
+        {
+            ++insideDemCnt;
+            firstPlanes[0] = &_sides[0][0];
+        }
         else
             return falseRes;
     }
     if (std::signbit (ray.second.arg (1)))
     {
-        if (ray.first.arg (1) < _y_l)
-            firstPlanes[1] = &_sides[1][1];
-        else if (ray.first.arg (0) < _y_h)
+#ifdef DEBUG_WOO
+        std::cout << "minus ray.second.y" << std::endl;
+#endif
+        if (ray.first.arg (1) > _y_h)
+        {
+#ifdef DEBUG_WOO
+            std::cout << "choosing sides[0][1]" << std::endl;
+#endif
             firstPlanes[1] = &_sides[0][1];
+        }
+        else if (ray.first.arg (1) > _y_l)
+        {
+            ++insideDemCnt;
+            firstPlanes[1] = &_sides[1][1];
+        }
         else
             return falseRes;
     }
     else
     {
-        if (ray.first.arg (1) > _y_h)
-            firstPlanes[1] = &_sides[0][1];
-        else if (ray.first.arg (0) > _y_l)
+#ifdef DEBUG_WOO
+        std::cout << "plus ray.second.y" << std::endl;
+#endif
+        if (ray.first.arg (1) < _y_l)
+        {
+#ifdef DEBUG_WOO
+            std::cout << "choosing sides[1][1]" << std::endl;
+#endif
             firstPlanes[1] = &_sides[1][1];
+        }
+        else if (ray.first.arg (1) < _y_h)
+        {
+            ++insideDemCnt;
+            firstPlanes[1] = &_sides[0][1];
+        }
         else
             return falseRes;
     }
     if (std::signbit (ray.second.arg (2)))
     {
-        if (ray.first.arg (2) < _z_l)
-            firstPlanes[2] = &_sides[1][2];
-        else if (ray.first.arg (0) < _z_h)
+#ifdef DEBUG_WOO
+        std::cout << "minus ray.second.z" << std::endl;
+#endif
+        if (ray.first.arg (2) > _z_h)
+        {
+#ifdef DEBUG_WOO
+            std::cout << "choosing sides[0][2]" << std::endl;
+#endif
             firstPlanes[2] = &_sides[0][2];
+        }
+        else if (ray.first.arg (2) > _z_l)
+        {
+            ++insideDemCnt;
+            firstPlanes[2] = &_sides[1][2];
+        }
         else
             return falseRes;
     }
     else
     {
-        if (ray.first.arg (2) > _z_h)
-            firstPlanes[2] = &_sides[0][2];
-        else if (ray.first.arg (0) > _z_l)
+#ifdef DEBUG_WOO
+        std::cout << "plus ray.second.z" << std::endl;
+#endif
+        if (ray.first.arg (2) < _z_l)
+        {
+#ifdef DEBUG_WOO
+            std::cout << "choosing sides[1][2]" << std::endl;
+#endif
             firstPlanes[2] = &_sides[1][2];
+        }
+        else if (ray.first.arg (2) < _z_h)
+        {
+            ++insideDemCnt;
+            firstPlanes[2] = &_sides[0][2];
+        }
         else
             return falseRes;
     }
     //
+#ifdef DEBUG_WOO
+    std::cout << "first Planes" << std::endl;
+    for (unsigned i = 0; i < 3; ++i)
+        std::cout << *firstPlanes[i] << std::endl;
+    //
+#endif
     std::array<Collide, 3> collides;
     for (unsigned i = 0; i < 3; ++i)
+    {
         collides[i] = firstPlanes[i]->collide (ray);
+        if (collides[i].collide == false)
+            collides[i].distance = Bound;
+    }
     std::sort (begin(collides), end(collides), coDisCmp);
-    if (this->contain (ray.first))
+    //
+#ifdef DEBUG_WOO
+    std::cout << "collides" << std::endl;
+    for (unsigned i = 0; i < 3; ++i)
+        std::cout << "point:" << collides[i].point << " distance:" << collides[i].distance << " normal:" << collides[i].normal << std::endl;
+#endif
+    if (insideDemCnt == 3)
+    {
         return collides[0];
+    }
+    else if (insideDemCnt == 2)
+    {
+        if (this->on (collides[0].point))
+            return collides[0];
+        else
+            return falseRes;
+    }
+    else if (insideDemCnt == 1)
+    {
+        if (this->on (collides[1].point))
+            return collides[1];
+        else
+            return falseRes;
+    }
     else
     {
         if (this->on (collides[2].point))
@@ -727,7 +843,6 @@ Collide Cobic::collide (const Ray &ray) const
         else
             return falseRes;
     }
-
 #else
     Collide co[2][3];
     for (int i = 0; i < 2; ++i)

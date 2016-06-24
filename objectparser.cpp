@@ -61,6 +61,7 @@ void ObjectParser::clean ()
 {
     _vertices.clear ();
     _normals.clear ();
+    _faces.clear ();
 }
 
 void ObjectParser::analyseFile (const std::string &fileName, Material *material)
@@ -89,6 +90,7 @@ void ObjectParser::analyseFile (const std::string &fileName, Material *material)
             valueStream >> vec[0] >> vec[1] >> vec[2];
 			vecSum += vec;
             _vertices.push_back (vec);
+            _normals.push_back (std::make_pair (Vec3 (), 0));
         }
         else if (key == std::string ("f"))
         {
@@ -110,7 +112,14 @@ void ObjectParser::analyseFile (const std::string &fileName, Material *material)
                 int ranks[3];
                 for (int i = 0; i < 3; ++i)
                     valueStream >> ranks[i];
-                _condutor->objects ().push_back (std::move(std::unique_ptr<Triangle>(new Triangle(_vertices[ranks[0] - 1], _vertices[ranks[1] - 1], _vertices[ranks[2] - 1], material, _condutor, true))));
+//                _condutor->objects ().push_back (std::move(std::unique_ptr<Triangle>(new Triangle(_vertices[ranks[0] - 1], _vertices[ranks[1] - 1], _vertices[ranks[2] - 1], material, _condutor, true))));
+                _faces.push_back (std::make_tuple (ranks[0] - 1, ranks[1] - 1, ranks[2] - 1));
+                Vec3 normal = standardize (cross (_vertices[ranks[0] - 1] - _vertices[ranks[1] - 1], _vertices[ranks[0] - 1] - _vertices[ranks[2] - 1]));
+                for (std::size_t i = 0; i < 3; ++i)
+                {
+                    _normals[ranks[i] - 1].first += normal;
+                    _normals[ranks[i] - 1].second += 1;
+                }
             }
             else if (std::regex_match(value, fullFaceReg))
             {
@@ -129,5 +138,9 @@ void ObjectParser::analyseFile (const std::string &fileName, Material *material)
         {
             throw std::logic_error ("unexcepted key type in obj file");
         }
+    }
+    for (const auto& entry: _faces)
+    {
+        _condutor->objects ().push_back (std::move (std::unique_ptr<Triangle> (new Triangle (_vertices[std::get<0>(entry)], _vertices[std::get<1> (entry)], _vertices[std::get<2> (entry)], material, _condutor, _normals[std::get<0>(entry)].first * (1.0 / double( _normals[std::get<0>(entry)].second)), _normals[std::get<1>(entry)].first * (1.0 / double( _normals[std::get<1>(entry)].second)), _normals[std::get<2>(entry)].first * (1.0 / double( _normals[std::get<2>(entry)].second))))));
     }
 }

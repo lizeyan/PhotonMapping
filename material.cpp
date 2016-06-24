@@ -82,21 +82,21 @@ Color Material::color (double x, double y) const
 {
     if (!_texture)
         throw std::logic_error ("unaccessable memory of _texture");
-	if (x < textureEps)
-		x -= rand01 (rd) * textureEps;
-	else if (1.0 - x < textureEps)
-		x += rand01 (rd) * textureEps;
-	if (x < 0.0)
-		x += 1.0;
-	else if (x >= 1.0)
-		x -= 1.0;
-	if (y < textureEps)
-		y -= rand01 (rd) * textureEps;
-	else if (1.0 - y < textureEps)
-		y += rand01 (rd) * textureEps;
-	if (y < 0.0)
-		y += 1.0;
-	else if (y >= 1.0)
-		y -= 1.0;
+    if (x < textureEps)
+        x -= rand01 (rd) * textureEps;
+    else if (1.0 - x < textureEps)
+        x += rand01 (rd) * textureEps;
+    if (x < 0.0)
+        x += 1.0;
+    else if (x >= 1.0)
+        x -= 1.0;
+    if (y < textureEps)
+        y -= rand01 (rd) * textureEps;
+    else if (1.0 - y < textureEps)
+        y += rand01 (rd) * textureEps;
+    if (y < 0.0)
+        y += 1.0;
+    else if (y >= 1.0)
+        y -= 1.0;
     return _texture->smoothPixel (x, y);
 }

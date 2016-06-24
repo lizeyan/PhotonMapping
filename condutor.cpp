@@ -16,6 +16,7 @@
 std::ofstream Log("rayTrace.log");
 std::mutex logMutex;
 #endif
+//#define LOG
 #ifdef LOG
 std::mutex infoMutex;
 std::ofstream info ("rayTrace.info");
@@ -130,10 +131,10 @@ void Condutor::run ()
 //    ray tracing
 //    Vec3 o = camera ()->center ();
 //    Vec3 o = Vec3(std::array<double,3>{{10.0001, 6.83336, 100.833}});
-//    Vec3 link = Vec3(std::array<double,3>{{5, 5, 0}}) - o;
+//    Vec3 link = Vec3(std::array<double,3>{{0.2, 0.5, 0.05}}) - o;
 //    Vec3 link = Vec3 (std::array<double, 3>{{-0.768221, -0.640184, 0}});
 //    RayTracer rt (std::make_pair(o, link), this);
-//    RayTracer rt (camera ()->emitRay (1.65, 1.0), this);
+//    RayTracer rt (camera ()->emitRay (1.0, 1.236), this);
 //    rt.run ();
 //    std::cout << rt.color () << std::endl;
 //    singleThread ();
@@ -322,7 +323,7 @@ void Condutor::handlePart (unsigned remainder)
             _image->setPixel (x, y, res * scale);
 #ifdef LOG
             infoMutex.lock ();
-            info << x << " " << y << " :" << t.color () << std::endl;
+            info << x << " " << y << " :" << res * scale << std::endl;
             infoMutex.unlock ();
 #endif
         }

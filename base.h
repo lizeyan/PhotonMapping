@@ -7,7 +7,7 @@
 //#define PHOTON_MAPPING
 //#define DEBUG
 //#define LOG
-const double EPS = 1e-10;
+const double EPS = 1e-5;
 const double PI = 3.141592654;
 const double PI_Double = 6.283185307;
 const double PI_Half = 1.5707963267948966192313216916398;
@@ -27,8 +27,8 @@ const std::regex spaceReg("^\\s*$");
 const std::regex startReg("^start\\s+([\\w\\d-_.](\\s*[\\w\\d-_.])*)\\s*(#.*)?$");
 const int elementNameRank = 1;
 const std::regex endReg("^end\\s*(#.*)?$");
-const int MAX_RAY_TRACING_DEPTH = 5;
-const int MAX_PHOTON_TRACING_DEPTH = 5;
+const int MAX_RAY_TRACING_DEPTH = 20;
+const int MAX_PHOTON_TRACING_DEPTH = 20;
 const double k_wp = 1.1;
 const size_t finalGatheringK = 100;
 const double causticMaxRadius = 0.1;
