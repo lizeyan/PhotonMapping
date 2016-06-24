@@ -46,7 +46,7 @@ PhotonBox* PhotonMap::createKdTree (PhotonVec::iterator begin, PhotonVec::iterat
 std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point, size_t size) const
 {
     typedef std::pair<Photon*, double> PhotonPair;
-    auto cmp = [] (const PhotonPair& a, const PhotonPair& b) -> bool {return a.second < b.second;};
+    static auto cmp = [] (const PhotonPair& a, const PhotonPair& b) -> bool {return a.second < b.second;};
     std::priority_queue<PhotonPair, std::vector<PhotonPair>, decltype (cmp)> knn (cmp);
     std::stack<PhotonBox*> s;
     s.push (_root.get ());
@@ -58,10 +58,10 @@ std::vector<std::pair<Photon*, double> > PhotonMap::search (const Vec3 &point, s
         if (top == nullptr)
             continue;
         double dis = point.arg (top->dimension ()) - top->split ();
-        if (dis < 0)
+        if (std::signbit (dis))
         {
             s.push (top->lc ());
-            if (d + dis > 0)
+            if (d > -dis )
                 s.push (top->rc ());
         }
         else
