@@ -1,7 +1,7 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
 rightTop: 1.001 1.001 1.001
-maxThreadNum: 4
+maxThreadNum: 25
 start camera
     size: 2 2 
     dx: 0 -1 0
@@ -13,7 +13,7 @@ start camera
     radius: 0.0001
     environment: 0 0 0
     K: 1000
-    brightnessValue: 1000
+    brightnessValue: 100000
     raysPerPixel: 1
     causticScale: 0
 end
@@ -44,7 +44,7 @@ start material #wood
     reflection: 0
     refraction: 0
     refractivity: 1.0
-    #texture: ./wood.jpg
+    texture: ./wood.jpg
 end
 
 start material #marble
@@ -54,7 +54,7 @@ start material #marble
     reflection: 0
     refraction: 0
     refractivity: 1.0
-    #texture: ./marble.bmp
+    texture: ./marble.bmp
 end
 
 start material #red
@@ -163,13 +163,13 @@ start object
     dy: 1 0 0
 end
 #=======================================
-/*
 start object
     type: sphere
     center: 0.2 0.5 0.2
     radius: 0.1
     material: 6
 end
+/*
 start model
     model: ./models/Buddha.obj
     center: 0.8 0.8 1
@@ -193,7 +193,6 @@ start model
     rotate: 0 0 0
     material: 6
 end
-*/
 start model
     model: ./models/dinosaur.2k.obj
     center: 0.15 0.5 0.35
@@ -201,3 +200,4 @@ start model
     rotate: 0 0 0
     material: 6
 end
+*/
