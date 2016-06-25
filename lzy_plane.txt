@@ -1,7 +1,7 @@
 #cornel box
 leftBottom: -10.001 -10.001 -10.001
 rightTop: 10.001 10.001 10.001
-maxThreadNum: 30
+maxThreadNum: 4
 start camera
     size: 4 4
     dx: 0 -1 0
@@ -9,7 +9,7 @@ start camera
     center: 4 0 3.3
     normal: -1 0 -0.8
     focus: 4
-    dpi: 100
+    dpi: 50
     radius: 0.0001
     environment: 0 0 0
     K: 20
@@ -154,7 +154,7 @@ end
 */
 start model
     model: ./models/dinosaur.2k.obj
-    center: -0.8 0.3 1
+    center: 1.0 0.8 1
     size: 0.025
     rotate: 0 0 0
     material: 3
@@ -162,7 +162,7 @@ end
 /*
 start model
 	model: ./models/fixed.perfect.dragon.100K.0.07.obj
-	center: 1.0 0.0 1.0
+	center: 1.0 0.8 1.0
 	size: 1.2
 	rotate: 90 0 90
 	material: 3

@@ -556,9 +556,9 @@ Collide Triangle::collide (const Ray &ray) const
         goto fail;
     S = _a - ray.first;
     det1 = det (S, e1, e2), det2 = det (ray.second, S, e2), det3 = det (ray.second, e1, S);
-    if (det0 > EPS && (det1 < EPS || det2 + det3 > det0 || det2 < EPS || det3 < EPS))
+    if (det0 > 0.0 && (det1 < 0.0 || det2 + det3 > det0 || det2 < 0.0 || det3 < 0.0))
         goto fail;
-    if (det0 < EPS && (det1 > EPS || det2 + det3 < det0 || det2 > EPS || det3 > EPS))
+    if (det0 < 0.0 && (det1 > 0.0 || det2 + det3 < det0 || det2 > 0.0 || det3 > 0.0))
         goto fail;
     res.collide = true;
     res.distance = det1 / det0;
