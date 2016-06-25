@@ -12,7 +12,7 @@ start camera
     dpi: 500
     radius: 0.0001
     environment: 0 0 0
-    K: 1000
+    K: 50
     brightnessValue: 100000
     raysPerPixel: 1
     causticScale: 0
@@ -20,6 +20,11 @@ end
 start light
     type: point
     center: 0.5 0.5 0.95
+    color: 1 1 1
+end
+start light
+    type: point
+    center: 0.01 0.5 0.55
     color: 1 1 1
 end
 /*
