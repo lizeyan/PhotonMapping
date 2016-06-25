@@ -93,7 +93,6 @@ void Condutor::causticPhotonEmitting ()
 				continue;
             size_t lastSize = causticPhotonMap ()->size ();
 			size_t limit = photonNum / exceptedObNum;
-			std::cout << limit << std::endl;
             while (causticPhotonMap ()->size () - lastSize < limit)
             {
                 Photon photon = light->emitPhoton (object.get ());

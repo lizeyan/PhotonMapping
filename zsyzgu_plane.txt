@@ -2,21 +2,21 @@
 #场景的边界，超出这个范围的光子将被抛弃。
 leftBottom: -10.001 -10.001 -10.001
 rightTop: 10.001 10.001 10.001
-maxThreadNum: 25
+maxThreadNum: 30
 start camera
     size: 2 2
     dx: -1 0.6 0
     dy: 0.6 1 2.2666666666667
     center: -2 2 0.5
     normal: 0.6 1 -0.6
-    focus: 5
-    dpi: 100
-    radius: 0.01
+    focus: 4
+    dpi: 500
+    radius: 0.2
     environment: 0 0 0
-    K: 1000
-    brightnessValue: 10000
-    raysPerPixel: 1
-	causticScale: 1
+    K: 200
+    brightnessValue: 0000
+    raysPerPixel: 50
+	causticScale: 0
 end
 /*
 start light
@@ -29,21 +29,20 @@ start light
 	size: 3 3
     quality: 100
 end
-*/
-/*
 start light
 	type: point
 	center: 3 3 3
 	color: 1 1 1
 end
 */
+
 start light
     type: circle
     center: 3 3 3
-    radius: 1
+    radius: 1.0
     normal: 0 0 -1
-    color: 1 1 1
-	quality: 100
+	color: 1 1 1
+	quality: 10
 end
 /*
 */
@@ -72,15 +71,16 @@ start material #rank2
     diffusion: 0
     reflection: 0
     refraction: 1
-	refractivity: 1.65
+	refractivity: 2.54
 end
 
 start material #rank3
     color: 0.5 0.5 1
     absorb: 0 0 0
     diffusion: 0
-    reflection: 1
-    refraction: 0
+    reflection: 0.5
+    refraction: 0.5
+	refractivity: 1.8
 end
 
 start material #ran4
@@ -96,29 +96,29 @@ end
 start material# rank5
 	color: 1 1 1
 	absorb: 0 0 0
-	diffusion: 0.5
-	reflection: 0.5
+	diffusion: 1.0
+	reflection: 0.0
 	refraction: 0
-	texture: ./floor.bmp
+	texture: ./wood.jpg
 end
 
-start material #ran6
-	color :1 1 1
-	absorb: 0 0 0
-	diffusion: 0
+start material #gold rank5 without refra
+	color: 0.9804 0.84375 0.375
+	absorb: 0.1196 0.15625 0.625
+	diffusion: 1
 	reflection: 0
-	refraction: 1
-	refractivity: 1.544
+	refraction: 0
+	refractivity: 1.4
 end
 
 #====================================================================================
 start object
     type: plane
     normal: 0 0 1
-    center: 0 0 -2
+    center: -3 -3 -2
     material: 5
-	dx: 8 0 0
-	dy: 0 8 0
+	dx: 7 0 0
+	dy: 0 7 0
 end
 
 start object
@@ -132,7 +132,7 @@ start object
 	type: sphere
 	center: 0 5 -1.8
 	radius: 0.2
-	material: 6
+	material: 1
 end
 
 start object
@@ -148,19 +148,20 @@ start object
 	radius: 0.4
 	material: 3
 end
-
+/*
 start object
 	type: sphere
 	center: 0 6 -1.5
 	radius: 0.5
 	material: 4
 end
-/*
+*/
+
 start model
 	model: ./models/fixed.perfect.dragon.100K.0.07.obj
 	center: 0 6 -1.5
-	size: 0.7
-	rotate: 90 0 90
+	size: 0.5
+	rotate: 90 0 150
 	material: 6
 end
-*/
+

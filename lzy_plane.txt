@@ -13,9 +13,9 @@ start camera
     radius: 0.01
     environment: 0 0 0
     K: 200
-    brightnessValue: 100000
-    raysPerPixel: 20
-    causticScale: 0
+    brightnessValue: 10000
+    raysPerPixel: 1
+    causticScale: 10
 end
 /*
 start light
@@ -24,7 +24,6 @@ start light
 	color: 1 1 1
 end
 */
-/*
 start light # that get caustic
     type: rectangle
     center: 0 -1 3
@@ -35,7 +34,7 @@ start light # that get caustic
     dy: 0 1 0
     quality: 10
 end
-*/
+/*
 start light 
     type: rectangle
     center: 0.3 -1 3
@@ -46,6 +45,7 @@ start light
     dy: 0 1 0
     quality: 10
 end
+*/
 #==============================================================
 # material
 #==============================================================
@@ -80,18 +80,18 @@ end
 start material #clear without blue
 	color: 1 1 1
 	absorb: 0 0 1
-	diffusion: 0
-	reflection: 0
-	refraction: 1
-	refractivity: 1.05
+	diffusion: 0.1
+	reflection: 0.1
+	refraction: 0.8
+	refractivity: 2.54
 end
 
 start material #gold
 	color: 0.9804 0.84375 0.375
 	absorb: 0.1196 0.15625 0.625
-	diffusion: 0.8
-	reflection: 0.2
-	refraction: 0
+	diffusion: 0.1
+	reflection: 0.1
+	refraction: 0.8
 	refractivity: 1.4
 end
 
@@ -124,13 +124,13 @@ start object
 	dx: 0 5 0
 	dy: 5 0 0
 end
-/*
 start object
 	type: sphere
 	center: 1.3 -1 0.5
 	radius: 0.5
 	material: 2
 end
+/*
 start model
 	model: ./models/Buddha.obj
 	center: -1 0.5 1
@@ -139,13 +139,13 @@ start model
 	material: 5
 end
 */
-/*
 start object
 	type: sphere
 	center: 1.0 0.8 0.5
 	radius: 0.5
 	material:3 
 end
+/*
 start model
 	model: ./models/block.obj
 	center: 0.5 0.5 0.5
@@ -170,8 +170,8 @@ end
 */
 start model
 	model: ./models/fixed.perfect.dragon.100K.0.07.obj
-	center: 1.3 0.0 1.8
-	size: 0.8
+	center: -2.0 1.8 0.9
+	size: 0.9
 	rotate: 90 0 90
-	material: 6
+	material: 5
 end

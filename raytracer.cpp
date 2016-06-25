@@ -91,9 +91,13 @@ void RayTracer::handleDiffusion ()
 {
 //	static double scaleFG = 1.0 / finalGatheringK;
 #ifdef PHOTON_MAPPING
-    Color indirect = getCaustic (collide, nearest);
-    if (indirect == Color ())
-        indirect = getIndirect (collide, nearest);
+	Color indirect;
+	if (condutor ()->photonMap()->size())
+	{
+		indirect = getCaustic (collide, nearest);
+		if (indirect == Color ())
+			indirect = getIndirect (collide, nearest);
+	}
     /*
 	for (size_t i = 0; i < finalGatheringK; ++i)
 	{

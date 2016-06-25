@@ -1,30 +1,25 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
 rightTop: 1.001 1.001 1.001
-maxThreadNum: 25
+maxThreadNum: 30
 start camera
     size: 2 2 
     dx: 0 -1 0
     dy: 0 0 1
-    center: 0.9 0.5 0.5
+    center: 0.9999 0.5 0.5
     normal: -1 0 0
     focus: 0.8
-    dpi: 500
+    dpi: 200
     radius: 0.0001
     environment: 0 0 0
-    K: 50
-    brightnessValue: 100000
+    K: 200
+    brightnessValue: 500000
     raysPerPixel: 1
     causticScale: 0
 end
 start light
     type: point
     center: 0.5 0.5 0.95
-    color: 1 1 1
-end
-start light
-    type: point
-    center: 0.01 0.5 0.55
     color: 1 1 1
 end
 /*
@@ -49,7 +44,7 @@ start material #wood
     reflection: 0
     refraction: 0
     refractivity: 1.0
-    texture: ./wood.jpg
+    #texture: ./wood.jpg
 end
 
 start material #marble
@@ -62,8 +57,8 @@ start material #marble
     texture: ./marble.bmp
 end
 
-start material #red
-    color: 1 0 0 
+start material #grass green
+    color: 0.6093 0.796875 0.19921875 
     absorb: 0 0 0
     diffusion: 1
     reflection: 0
@@ -71,13 +66,22 @@ start material #red
     refractivity: 1.0
 end
 
-start material #blue
-    color: 0 0 1 
+start material #pink
+    color: 1 0 0.609375
     absorb: 0 0 0
     diffusion: 1
     reflection: 0
     refraction: 0
     refractivity: 1.0
+end
+
+start material #rank4
+	color: 1 1 1
+	absorb: 0 0 0
+	diffusion: 1
+	reflection: 0
+	refraction: 0
+	refractivity: 1.0
 end
 
 start material #clear without red 4
@@ -139,7 +143,7 @@ start object
     type: plane
     center: 0 0 0
     normal : 0 1 0
-    material: 3
+    material: 2
     dx: 1 0 0
     dy: 0 0 1
 end
@@ -147,7 +151,7 @@ start object
     type: plane
     center: 1 1 1
     normal : 0 0 -1
-    material: 2
+    material: 4
     dx: 0 1 0
     dy: 1 0 0
 end
@@ -155,7 +159,7 @@ start object
     type: plane
     center: 1 1 1
     normal : -1 0 0
-    material: 1
+    material: 4
     dx: 0 1 0
     dy: 1 0 0
 end
@@ -163,7 +167,7 @@ start object
     type: plane
     center: 1 1 1
     normal : 0 -1 0
-    material: 2
+    material: 3
     dx: 0 1 0
     dy: 1 0 0
 end
@@ -171,7 +175,7 @@ end
 start object
     type: sphere
     center: 0.2 0.5 0.2
-    radius: 0.1
+    radius: 0.2
     material: 6
 end
 /*
@@ -204,5 +208,14 @@ start model
     size: 0.008
     rotate: 0 0 0
     material: 6
+end
+*/
+/*
+start model
+	model: ./models/fixed.perfect.dragon.100K.0.07.obj
+	center: 0.2 0.5 0.35
+	size: 0.3
+	rotate: 90 0 90
+	material: 4
 end
 */
