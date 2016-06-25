@@ -1,58 +1,46 @@
 #cornel box
-leftBottom: -10.001 -10.001 -10.001
-rightTop: 10.001 10.001 10.001
-maxThreadNum: 30
+leftBottom: -0.001 -0.001 -0.001
+rightTop: 2.001 1.001 1.001
+maxThreadNum: 4
 start camera
-    size: 4 4
+    size: 1 1
     dx: 0 -1 0
-    dy: -0.8 0 1
-    center: 4 0 3.3
-    normal: -1 0 -0.8
-    focus: 4
+    dy: 0 0 1
+    center: 4 0 2.5
+    normal: -1 0 0
+    focus: 1
     dpi: 100
-    radius: 0.01
+    radius: 0.0001
     environment: 0 0 0
-    K: 200
-    brightnessValue: 10000
+    K: 100
+    brightnessValue: 1000
     raysPerPixel: 1
     causticScale: 10
 end
-/*
 start light
-	type: circle
-	center: -2 -2 3
+	type: point
+	center: 0.8 0.5 2
 	color: 1 1 1
 end
-*/
-start light # that get caustic
-    type: rectangle
-    center: 0 -1 3
-    size: 0.1 0.1
-    normal: 0 0 -1
-    color: 1 1 1
-    dx: 1 0 0
-    dy: 0 1 0
-    quality: 10
-end
 /*
-start light 
+start light
     type: rectangle
-    center: 0.3 -1 3
-    size: 0.1 0.1
-    normal: 0 0 -1
+    center: 2 -1 3
+    size: 2 2
+    normal: 0 -1 0
     color: 1 1 1
     dx: 1 0 0
-    dy: 0 1 0
+    dy: 0 0 1
     quality: 10
 end
 */
 #==============================================================
 # material
 #==============================================================
-start material #wood
+start material #stone
 	color: 1 1 1
 	absorb: 0 0 0
-	texture: ./wood.jpg
+	texture: ./word.jpg
 	diffusion: 1
 	reflection: 0
 	refraction: 0
@@ -62,90 +50,75 @@ end
 start material #clear without red
 	color: 1 1 1
 	absorb: 1 0 0
-	diffusion: 0.1
-	reflection: 0.1
-	refraction: 0.8
+	diffusion: 0
+	reflection: 0
+	refraction: 1
 	refractivity: 2.54
 end
 
 start material #clear without green
 	color: 1 1 1
 	absorb: 0 1 0
-	diffusion: 0.1
-	reflection: 0.1
-	refraction: 0.8
+	diffusion: 0
+	reflection: 0
+	refraction: 1
 	refractivity: 2.54
 end
 
 start material #clear without blue
 	color: 1 1 1
 	absorb: 0 0 1
-	diffusion: 0.1
-	reflection: 0.1
-	refraction: 0.8
+	diffusion: 0
+	reflection: 0
+	refraction: 1
 	refractivity: 2.54
 end
 
 start material #gold
 	color: 0.9804 0.84375 0.375
 	absorb: 0.1196 0.15625 0.625
-	diffusion: 0.1
-	reflection: 0.1
-	refraction: 0.8
-	refractivity: 1.4
-end
-
-start material #gold rank5 without refra
-	color: 0.9804 0.84375 0.375
-	absorb: 0.1196 0.15625 0.625
-	diffusion: 1
-	reflection: 0
-	refraction: 0
-	refractivity: 1.4
-end
-
-start material #rank6
-	color: 1 1 1
-	absorb: 0 0 0
 	diffusion: 0
 	reflection: 0
 	refraction: 1
-	refractivity: 1.33333333
+	refractivity: 1.4
 end
 
+start material #glass
+	color: 0.9804 0.84375 0.375
+	absorb: 0.453 0.617 0.78
+	diffusion: 0.01
+	reflection: 0.01
+	refraction: 0.98
+	refractivity: 1.65
+end
 #==============================================================
 # object
 #==============================================================
 start object
 	type: plane
-	center: -2 -2 0
+	center: -8 -2 0
 	normal : 0 0 1
 	material: 0
-	dx: 0 5 0
-	dy: 5 0 0
+	dx: 0 12 0
+	dy: 10 0 0
 end
-start object
-	type: sphere
-	center: 1.3 -1 0.5
-	radius: 0.5
-	material: 2
+
+start model
+	model: ./models/Mug.obj
+	center: 0.8 0.8 1
+	size: 0.01
+	rotate: 0 0 60
+	material: 5
 end
+
 /*
 start model
 	model: ./models/Buddha.obj
-	center: -1 0.5 1
+	center: 0.8 0.8 1
 	size: 1
 	rotate: 90 0 90
-	material: 5
+	material: 4
 end
-*/
-start object
-	type: sphere
-	center: 1.0 0.8 0.5
-	radius: 0.5
-	material:3 
-end
-/*
 start model
 	model: ./models/block.obj
 	center: 0.5 0.5 0.5
@@ -160,18 +133,4 @@ start model
 	rotate: 90 0 90
 	material: 4
 end
-start model
-    model: ./models/dinosaur.2k.obj
-    center: 1.0 0.3 1
-    size: 0.025
-    rotate: 0 0 0
-    material: 3
-end
 */
-start model
-	model: ./models/fixed.perfect.dragon.100K.0.07.obj
-	center: -2.0 1.8 0.9
-	size: 0.9
-	rotate: 90 0 90
-	material: 5
-end

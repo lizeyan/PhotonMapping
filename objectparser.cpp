@@ -49,7 +49,7 @@ void ObjectParser::parse (const std::string &content)
         }
         else
         {
-            throw std::logic_error ("unexcepted key type in scene, object model");
+            throw std::logic_error ("unexcepted key type in scene, object model" + key);
         }
     }
     if (material == nullptr)
