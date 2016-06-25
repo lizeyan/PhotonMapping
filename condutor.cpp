@@ -77,37 +77,30 @@ void Condutor::globalPhotonEmitting ()
 
 void Condutor::causticPhotonEmitting ()
 {
+	size_t exceptedObNum = 0;
+	for (const auto& object: _objects)
+		if (object->material()->reflection() >= EPS || object->material()->refraction () >= EPS)
+			++exceptedObNum;
     for (const auto& light: _lights)
     {
         size_t photonNum = camera ()->brightnessValue ()* model (light->color ()) * camera ()-> causticScale ();
 		if (photonNum == 0)
 			continue;
         double scalePhotonColor = 1.0 / static_cast<double> (photonNum);
-		size_t exceptedObNum = 0;
-		for (const auto& object: _objects)
-			if (object->material()->reflection() >= EPS || object->material()->refraction () >= EPS)
-				++exceptedObNum;
 		for (const auto& object: _objects)
         {
 			if (object->material()->reflection() < EPS && object->material()->refraction () < EPS)
 				continue;
             size_t lastSize = causticPhotonMap ()->size ();
 			size_t limit = photonNum / exceptedObNum;
-            auto emitting = [this, lastSize, limit, &light, &object, &scalePhotonColor] ()
+			std::cout << limit << std::endl;
+            while (causticPhotonMap ()->size () - lastSize < limit)
             {
-                while (causticPhotonMap ()->size () - lastSize < limit)
-                {
-                    Photon photon = light->emitPhoton (object.get ());
-                    photon.color *= scalePhotonColor;
-                    PhotonTracer photonTracer (photon, this, 0, true);
-                    photonTracer.run ();
-                }
-            };
-            std::vector<std::thread> threads (_maxThreadNum);
-            for (auto& th: threads)
-                 th = std::thread (emitting);
-            for (auto& th: threads)
-                 th.join ();
+                Photon photon = light->emitPhoton (object.get ());
+                photon.color *= scalePhotonColor;
+                PhotonTracer photonTracer (photon, this, 0, true);
+                photonTracer.run ();
+            }
         }
     }
 }
