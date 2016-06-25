@@ -42,7 +42,7 @@ inline bool PhotonTracer::handleDiffusion (double &prob)
     _ray.first = collide.point;
     _ray.second = diffuse (collide.normal);
     _color *= color;
-    _color *= (1.0 / next);
+//    _color *= (1.0 / next);
     ++_depth;
     run ();
 //    PhotonTracer pt(std::make_pair(collide.point, diffuse (collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);
@@ -62,7 +62,7 @@ inline bool PhotonTracer::handleReflection (double &prob)
     _ray.first = collide.point;
     _ray.second = reflect (_ray.second, collide.normal);
     _color *= color;
-    _color *= (1.0 / next);
+//    _color *= (1.0 / next);
     ++_depth;
     run ();
 //    PhotonTracer pt(std::make_pair(collide.point, reflect (_ray.second, collide.normal)), _condutor, _color * nearest->color (collide.point), _depth + 1);
@@ -86,7 +86,7 @@ inline bool PhotonTracer::handleRefraction (double &prob)
         Color trans = Color (std::array<double, 3>{{std::exp (absor.arg (0)), std::exp (absor.arg (1)), std::exp (absor.arg (2))}} );
         _color *= trans;
     }
-    _color *= (1.0 / next);
+//    _color *= (1.0 / next);
     _ray.first = collide.point;
     _ray.second = T;
     ++_depth;
