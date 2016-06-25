@@ -13,9 +13,9 @@ start camera
     dpi: 100
     radius: 0.01
     environment: 0 0 0
-    K: 100
+    K: 1000
     brightnessValue: 10000
-    raysPerPixel: 10
+    raysPerPixel: 1
 	causticScale: 1
 end
 /*
@@ -132,7 +132,7 @@ start object
 	type: sphere
 	center: 0 5 -1.8
 	radius: 0.2
-	material: 1
+	material: 6
 end
 
 start object
