@@ -9,39 +9,39 @@ start camera
     center: 4 0 2.5
     normal: -1 0 0
     focus: 1
-    dpi: 100
-    radius: 0.0001
-    environment: 0 0 0
+    dpi: 800
+    radius: 0.00001
+    environment: 0.01 0.01 0.01
     K: 100
-    brightnessValue: 10000
+    brightnessValue: 00000
     raysPerPixel: 1
     causticScale: 0
 end
-start light
-	type: point
-	center: 1.0 -2 5
-	color: 1 1 1
-end
 /*
 start light
-    type: rectangle
-    center: 2 -1 3
-    size: 2 2
-    normal: 0 -1 0
-    color: 1 1 1
-    dx: 1 0 0
-    dy: 0 0 1
-    quality: 10
+	type: point
+	center: 1.3 1.5 5
+	color: 1 1 1
 end
 */
+start light
+    type: rectangle
+    center: 1.4 1.5 5
+    size: 0.2 0.2
+    normal: 0 0 -1
+    color: 1 1 1
+    dx: 1 0 0
+    dy: 0 1 0
+    quality: 50
+end
 #==============================================================
 # material
 #==============================================================
 start material #stone
 	color: 1 1 1
 	absorb: 0 0 0
-	texture: ./word.jpg
-	diffusion: 1
+	texture: ./floor.bmp
+    diffusion: 1
 	reflection: 0
 	refraction: 0
 	refractivity: 1.0
@@ -74,12 +74,12 @@ start material #clear without blue
 	refractivity: 2.54
 end
 
-start material #gold
+start material #gold rank4
 	color: 0.9804 0.84375 0.375
 	absorb: 0.1196 0.15625 0.625
-	diffusion: 0
+	diffusion: 1
 	reflection: 0
-	refraction: 1
+	refraction: 0
 	refractivity: 1.4
 end
 
@@ -103,6 +103,14 @@ start object
 	dy: 10 0 0
 end
 start model
+    model: ./models/horse.fine.90k.obj
+    center: 0.8 1.5 1.0
+    size: 1
+    rotate: 0 0 180
+    material: 4
+end
+/*
+start model
 	model: ./models/Cup.obj
 	center: 1.0 1.5 1.5
 	size: 0.02
@@ -110,7 +118,7 @@ start model
 	material: 5
 end
 
-/*
+
 start model
 	model: ./models/Buddha.obj
 	center: 1.0 1.5 1
