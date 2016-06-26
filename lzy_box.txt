@@ -9,24 +9,23 @@ start camera
     center: 0.9999 0.5 0.5
     normal: -1 0 0
     focus: 0.7
-    dpi: 100
-    radius: 0.0000001
+    dpi: 400
+    radius: 0.01
     environment: 0 0 0
-    K: 100
-    brightnessValue: 500000
-    raysPerPixel: 1
+    K: 50
+    brightnessValue: 1000000
+    raysPerPixel: 10
     causticScale: 0
+end
+start light
+    type: point
+    center: 0.6 0.5 0.95
+    color: 1 1 1
 end
 /*
 start light
-    type: point
-    center: 0.3 0.5 0.95
-    color: 1 1 1
-end
-*/
-start light
     type: rectangle
-    center: 0.6 0.5 0.98
+    center: 0.5 0.5 0.90
     size: 0.3 0.3
     normal: 0 0 -1
     color: 1 1 1
@@ -34,6 +33,7 @@ start light
     dy: 0 1 0
     quality: 10
 end
+*/
 #==============================================================
 # material
 #==============================================================
@@ -78,10 +78,10 @@ end
 start material #rank4
 	color: 1 1 1
 	absorb: 0 0 0
-	diffusion: 0.3
-	reflection: 0
-	refraction: 0.7
-	refractivity: 1
+	diffusion: 0.05
+	reflection: 0.05
+	refraction: 0.9
+	refractivity: 1.33333
 end
 
 start material #clear without red 5
@@ -172,13 +172,13 @@ start object
     dy: 1 0 0
 end
 #=======================================
+/*
 start object
     type: sphere
     center: 0.3 0.5 0.45
-    radius: 0.2
+    radius: 0.3
     material: 4
 end
-/*
 start model
     model: ./models/Buddha.obj
     center: 0.8 0.8 1
@@ -210,14 +210,14 @@ start model
     material: 6
 end
 */
-/*
 start model
 	model: ./models/fixed.perfect.dragon.100K.0.07.obj
-	center: 0.3 0.5 0.45
-	size: 0.5
+	center: 0.35 0.4 0.50
+	size: 0.55
 	rotate: 90 0 -135
 	material: 4
 end
+/*
 start model
 	model: ./models/Cup.obj
 	center: 0.2 0.5 0.45

@@ -117,7 +117,7 @@ void RayTracer::handleDiffusion ()
         direct  += calcDiffusion (light.get ());
     }
 #ifdef PHOTON_MAPPING
-    setColor (indirect * 100  + color ());
+    setColor (indirect * 10 + direct + color ());
 #else
     setColor (direct + color ());
 #endif
