@@ -1,6 +1,6 @@
 #cornel box
 leftBottom: -0.001 -0.001 -0.001
-rightTop: 2.001 1.001 1.001
+rightTop: 2.001 2.001 2.001
 maxThreadNum: 4
 start camera
     size: 1 1
@@ -13,13 +13,13 @@ start camera
     radius: 0.0001
     environment: 0 0 0
     K: 100
-    brightnessValue: 1000
+    brightnessValue: 10000
     raysPerPixel: 1
-    causticScale: 10
+    causticScale: 0
 end
 start light
 	type: point
-	center: 0.8 0.5 2
+	center: 1.0 -2 5
 	color: 1 1 1
 end
 /*
@@ -102,11 +102,10 @@ start object
 	dx: 0 12 0
 	dy: 10 0 0
 end
-
 start model
-	model: ./models/Mug.obj
-	center: 0.8 0.8 1
-	size: 0.01
+	model: ./models/Cup.obj
+	center: 1.0 1.5 1.5
+	size: 0.02
 	rotate: 0 0 60
 	material: 5
 end
@@ -114,7 +113,7 @@ end
 /*
 start model
 	model: ./models/Buddha.obj
-	center: 0.8 0.8 1
+	center: 1.0 1.5 1
 	size: 1
 	rotate: 90 0 90
 	material: 4
