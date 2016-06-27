@@ -8,13 +8,13 @@ start camera
     dy: 0 0 1
     center: 0.9999 0.5 0.5
     normal: -1 0 0
-    focus: 0.7
-    dpi: 400
-    radius: 0.01
+    focus: 0.8
+    dpi: 100
+    radius: 0.001
     environment: 0 0 0
-    K: 50
-    brightnessValue: 1000000
-    raysPerPixel: 10
+    K: 200
+    brightnessValue: 100000
+    raysPerPixel: 1
     causticScale: 0
 end
 start light
@@ -172,13 +172,19 @@ start object
     dy: 1 0 0
 end
 #=======================================
-/*
 start object
     type: sphere
-    center: 0.3 0.5 0.45
-    radius: 0.3
+    center: 0.22 0.7 0.35
+    radius: 0.2
     material: 4
 end
+start object
+    type: sphere
+    center: 0.25 0.1 0.15
+    radius: 0.1
+    material: 0
+end
+/*
 start model
     model: ./models/Buddha.obj
     center: 0.8 0.8 1
@@ -193,15 +199,15 @@ start model
     rotate: 0 0 0
     material: 6
 end
-*/
-/*
 start model
     model: ./models/cube.obj
-    center: 0.4 0.5 0.25
+    center: 0.4 0.5 0.2
     size: 0.2
-    rotate: 0 0 0
-    material: 6
+    rotate: 0 0 45
+    material: 0
 end
+*/
+/*
 start model
     model: ./models/dinosaur.2k.obj
     center: 0.15 0.5 0.35
@@ -210,14 +216,14 @@ start model
     material: 6
 end
 */
+/*
 start model
 	model: ./models/fixed.perfect.dragon.100K.0.07.obj
 	center: 0.35 0.4 0.50
-	size: 0.55
+	size: 0.45
 	rotate: 90 0 -135
 	material: 4
 end
-/*
 start model
 	model: ./models/Cup.obj
 	center: 0.2 0.5 0.45
