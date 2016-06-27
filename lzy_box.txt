@@ -9,12 +9,12 @@ start camera
     center: 0.9999 0.5 0.5
     normal: -1 0 0
     focus: 0.8
-    dpi: 100
+    dpi: 500
     radius: 0.001
     environment: 0 0 0
-    K: 200
-    brightnessValue: 100000
-    raysPerPixel: 1
+    K: 1000
+    brightnessValue: 2000000
+    raysPerPixel: 3
     causticScale: 0
 end
 start light
