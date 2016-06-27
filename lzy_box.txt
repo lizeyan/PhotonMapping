@@ -9,13 +9,13 @@ start camera
     center: 0.9999 0.5 0.5
     normal: -1 0 0
     focus: 0.8
-    dpi: 500
+    dpi: 100
     radius: 0.001
     environment: 0 0 0
-    K: 1000
-    brightnessValue: 2000000
+    K: 50
+    brightnessValue: 20000
     raysPerPixel: 3
-    causticScale: 0
+    causticScale: 10
 end
 start light
     type: point
@@ -143,7 +143,7 @@ start object
     type: plane
     center: 0 0 0
     normal : 0 1 0
-    material: 2
+    material: 3
     dx: 1 0 0
     dy: 0 0 1
 end
@@ -151,7 +151,7 @@ start object
     type: plane
     center: 1 1 1
     normal : 0 0 -1
-    material: 2
+    material: 1
     dx: 0 1 0
     dy: 1 0 0
 end

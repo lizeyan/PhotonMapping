@@ -95,8 +95,8 @@ void RayTracer::handleDiffusion ()
 	if (condutor ()->photonMap()->size())
 	{
 		indirect = getCaustic (collide, nearest);
-		if (indirect == Color ())
-			indirect = getIndirect (collide, nearest);
+		//if (indirect == Color ())
+		//	indirect = getIndirect (collide, nearest);
 	}
     /*
 	for (size_t i = 0; i < finalGatheringK; ++i)
@@ -117,7 +117,7 @@ void RayTracer::handleDiffusion ()
         direct  += calcDiffusion (light.get ());
     }
 #ifdef PHOTON_MAPPING
-    setColor (indirect * 5 + direct + color ());
+    setColor (indirect * 5 + color ());
 #else
     setColor (direct + color ());
 #endif
